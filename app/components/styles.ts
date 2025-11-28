@@ -1,3 +1,4 @@
+/* eslint-disable import/prefer-default-export */
 import {Dimensions, Platform, StyleSheet} from 'react-native';
 import {Styles} from './types';
 

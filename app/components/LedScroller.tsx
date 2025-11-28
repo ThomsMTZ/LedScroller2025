@@ -1,15 +1,8 @@
 import React, {useEffect, useState} from 'react';
-import {
-    Dimensions,
-    StatusBar,
-    Text,
-    TextStyle,
-    View
-} from 'react-native';
+import {Dimensions, StatusBar, Text, TextStyle, View} from 'react-native';
 import Animated, {
     cancelAnimation,
     Easing,
-    runOnJS,
     SharedValue,
     useAnimatedStyle,
     useSharedValue,
@@ -27,6 +20,7 @@ import {LedScrollerProps} from './types';
 import GridOverlay from './GridOverlay';
 import HintContainer from './HintContainer';
 import SettingsModal from './SettingsModal';
+import {scheduleOnRN} from "react-native-worklets";
 
 const {width} = Dimensions.get('window');
 
@@ -35,7 +29,7 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
     const [text, setText] = useState<string>(initialText);
     const [hue, setHue] = useState<number>(120); // Teinte HSL (120 = Vert)
     const [isSettingsOpen, setSettingsOpen] = useState<boolean>(false);
-    const [speed, setSpeed] = useState<number>(5000);
+    const [speed, setSpeed] = useState<number>(150000);
 
     // 2. SHARED VALUES (Reanimated)
     // Ces valeurs vivent dans le UI Thread
@@ -77,8 +71,8 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
     const doubleTapGesture = Gesture.Tap()
         .numberOfTaps(2)
         .onEnd(() => {
-            // runOnJS permet de rappeler le Thread JS pour changer le State React
-            runOnJS(setSettingsOpen)(true);
+    // scheduleOnRN permet de rappeler le Thread JS pour changer le State React
+            scheduleOnRN(setSettingsOpen,true);
         });
 
     // On combine les gestes (Race = le premier détecté gagne, ou Simultaneous selon besoin)
@@ -99,12 +93,12 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
     // 6. RENDER
     return (
         <View style={styles.container}>
-            <StatusBar hidden />
+            <StatusBar hidden/>
 
             <GestureDetector gesture={composedGestures}>
                 <View style={styles.interactiveArea}>
                     {/* Calque Grille LED (Simulation) */}
-                    <GridOverlay />
+                    <GridOverlay/>
 
                     <Animated.View style={[styles.scroller, animatedTextStyle]}>
                         {/* Astuce: Monospace simule l'alignement LED en attendant une Font custom */}
@@ -114,7 +108,7 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
                     </Animated.View>
 
                     {/* Indication UX discrète */}
-                    <HintContainer />
+                    <HintContainer/>
                 </View>
             </GestureDetector>
 

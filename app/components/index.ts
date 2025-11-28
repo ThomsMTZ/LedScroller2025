@@ -1,3 +1,4 @@
+/* eslint-disable import/prefer-default-export */
 export {default as LedScroller} from './LedScroller';
 export {default as SettingsModal} from './SettingsModal';
 export {default as GridOverlay} from './GridOverlay';

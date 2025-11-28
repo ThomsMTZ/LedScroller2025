@@ -1,3 +1,4 @@
+/* eslint-disable import/prefer-default-export */
 import {TextStyle, ViewStyle} from 'react-native';
 
 // Interface pour les props du composant LedScroller
