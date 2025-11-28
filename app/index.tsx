@@ -41,7 +41,7 @@ const {width} = Dimensions.get('window');
 
 // Modern 2025 color palette
 const COLORS = {
-    background: ['#0a0a0a', '#1a1a2e', '#16213e'],
+    background: ['#0a0a0a', '#1a1a2e', '#16213e'] as const,
     accent: '#00d4ff',
     surface: 'rgba(30, 30, 50, 0.8)',
     surfaceLight: 'rgba(255, 255, 255, 0.05)',
@@ -191,7 +191,7 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = "BONJOUR 2025"})
 
             {/* Modern gradient background */}
             <LinearGradient
-                colors={COLORS.background as [string, string, string]}
+                colors={[...COLORS.background]}
                 style={styles.gradientBackground}
                 start={{x: 0, y: 0}}
                 end={{x: 1, y: 1}}
@@ -219,6 +219,9 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = "BONJOUR 2025"})
                     <View style={[styles.ledDisplay, {borderColor: `hsl(${hue}, 100%, 30%)`}]}>
                         <View style={[styles.ledBorder, {
                             shadowColor: `hsl(${hue}, 100%, 50%)`,
+                            shadowOffset: {width: 0, height: 0},
+                            shadowOpacity: 0.8,
+                            shadowRadius: 20,
                             backgroundColor: 'rgba(0, 0, 0, 0.8)',
                         }]}>
                             {/* Calque Grille LED (Simulation) */}
