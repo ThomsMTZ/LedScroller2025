@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import {
-    Dimensions,
     Modal,
     Platform,
     StatusBar,
@@ -9,6 +8,7 @@ import {
     TextInput,
     TextStyle,
     TouchableOpacity,
+    useWindowDimensions,
     View,
     ViewStyle
 } from 'react-native';
@@ -33,8 +33,6 @@ import Slider from '@react-native-community/slider';
 import {Ionicons} from '@expo/vector-icons';
 
 // --- TYPAGE & CONSTANTES ---
-
-const {width} = Dimensions.get('window');
 
 // Interface pour les props du composant (extensible futur)
 interface LedScrollerProps {
@@ -75,6 +73,9 @@ export default function App() {
 
 const LedScroller: React.FC<LedScrollerProps> = ({initialText = "BONJOUR 2025"}) => {
 
+    // Get dimensions that update on orientation change
+    const {width} = useWindowDimensions();
+
     // 1. STATE (Typage explicite ou inféré)
     const [text, setText] = useState<string>(initialText);
     const [hue, setHue] = useState<number>(120); // Teinte HSL (120 = Vert)
@@ -100,7 +101,7 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = "BONJOUR 2025"})
             -1, // Infini
             false // Pas de reverse
         );
-    }, [text, speed]); // Se relance si le texte ou la vitesse change
+    }, [text, speed, width]); // Se relance si le texte, la vitesse, ou la largeur change
 
     // 4. GESTION DES GESTES (Gesture Handler 2.0)
 
@@ -149,7 +150,7 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = "BONJOUR 2025"})
                     {/* Calque Grille LED (Simulation) */}
                     <View style={styles.gridOverlay} pointerEvents="none"/>
 
-                    <Animated.View style={[styles.scroller, animatedTextStyle]}>
+                    <Animated.View style={[styles.scroller, {minWidth: width * 2}, animatedTextStyle]}>
                         {/* Astuce: Monospace simule l'alignement LED en attendant une Font custom */}
                         <Text style={styles.textBase} numberOfLines={1}>
                             {text}
@@ -238,8 +239,7 @@ const styles = StyleSheet.create<Styles>({
         overflow: 'hidden'
     },
     scroller: {
-        flexDirection: 'row',
-        minWidth: width * 2
+        flexDirection: 'row'
     },
     textBase: {
         fontWeight: 'bold',

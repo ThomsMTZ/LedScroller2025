@@ -3,7 +3,7 @@
     "name": "LedScroller2025",
     "slug": "LedScroller2025",
     "version": "1.0.0",
-    "orientation": "portrait",
+    "orientation": "default",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
