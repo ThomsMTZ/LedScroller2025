@@ -57,7 +57,8 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
             -1, // Infini
             false // Pas de reverse
         );
-    }, [text, speed, translateX]); // Se relance si le texte ou la vitesse change
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [text, speed]); // Se relance si le texte ou la vitesse change
 
     // 4. GESTION DES GESTES (Gesture Handler 2.0)
 
