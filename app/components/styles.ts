@@ -1,5 +1,5 @@
 /* eslint-disable import/prefer-default-export */
-import {Dimensions, Platform, StyleSheet} from 'react-native';
+import {Dimensions, StyleSheet} from 'react-native';
 import {Styles} from './types';
 
 const {width} = Dimensions.get('window');
@@ -20,8 +20,11 @@ export const styles = StyleSheet.create<Styles>({
     },
     textBase: {
         fontWeight: 'bold',
-        fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
+        fontFamily: 'LedFont',
         includeFontPadding: false,
+        textShadowRadius: 15,
+        textShadowOffset: { width: 0, height: 0 },
+        color: '#00FF41',
     },
     gridOverlay: {
         ...StyleSheet.absoluteFillObject,
