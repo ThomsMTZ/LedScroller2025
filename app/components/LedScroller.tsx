@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {Dimensions, StatusBar, Text, TextStyle, View} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { StatusBar, Text, TextStyle, useWindowDimensions, View } from 'react-native';
 import Animated, {
     cancelAnimation,
     Easing,
@@ -15,51 +15,50 @@ import {
     GestureUpdateEvent,
     PinchGestureHandlerEventPayload
 } from 'react-native-gesture-handler';
-import {styles} from './styles';
-import {LedScrollerProps} from './types';
+import { styles } from './styles';
+import { LedScrollerProps } from './types';
 import GridOverlay from './GridOverlay';
 import HintContainer from './HintContainer';
 import SettingsModal from './SettingsModal';
-import {scheduleOnRN} from "react-native-worklets";
 
-const {width} = Dimensions.get('window');
+const LedScroller: React.FC<LedScrollerProps> = ({ initialText = 'BONJOUR 2025' }) => {
+    // Largeur de l'écran
+    const { width } = useWindowDimensions();
 
-const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'}) => {
-    // 1. STATE (Typage explicite ou inféré)
+    // 1. STATE
     const [text, setText] = useState<string>(initialText);
-    const [hue, setHue] = useState<number>(120); // Teinte HSL (120 = Vert)
+    const [hue, setHue] = useState<number>(120);
     const [isSettingsOpen, setSettingsOpen] = useState<boolean>(false);
-    const [speed, setSpeed] = useState<number>(150000);
+    const [speed, setSpeed] = useState<number>(15000);
 
-    // 2. SHARED VALUES (Reanimated)
-    // Ces valeurs vivent dans le UI Thread
+    // 2. SHARED VALUES
     const translateX: SharedValue<number> = useSharedValue(width);
     const fontSize: SharedValue<number> = useSharedValue(120);
     const savedFontSize: SharedValue<number> = useSharedValue(120);
 
-    // 3. BOUCLE D'ANIMATION
+    // 3. ANIMATION LOOP (Simplifiée et Robuste)
     useEffect(() => {
+        // Stop ancienne anim
         cancelAnimation(translateX);
-        translateX.value = width; // Reset position droite
 
+        // Force la position de départ (bord droit)
+        translateX.value = width;
+
+        // Lance la nouvelle anim immédiatement
         translateX.value = withRepeat(
             withTiming(-width * 4, {
-                // On part loin à gauche
                 duration: speed,
                 easing: Easing.linear
             }),
             -1, // Infini
-            false // Pas de reverse
+            false // Restart depuis le début
         );
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [text, speed]); // Se relance si le texte ou la vitesse change
+    }, [text, speed, width]); // Dépendances critiques
 
-    // 4. GESTION DES GESTES (Gesture Handler 2.0)
-
-    // Geste : Pincement pour zoomer
+    // 4. GESTES
     const pinchGesture = Gesture.Pinch()
         .onUpdate((e: GestureUpdateEvent<PinchGestureHandlerEventPayload>) => {
-            'worklet'; // Indique que cette fonction tourne sur le UI Thread
+            'worklet';
             fontSize.value = savedFontSize.value * e.scale;
         })
         .onEnd(() => {
@@ -67,52 +66,50 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
             savedFontSize.value = fontSize.value;
         });
 
-    // Geste : Double Tap pour ouvrir les options
     const doubleTapGesture = Gesture.Tap()
         .numberOfTaps(2)
+        .runOnJS(true) // Thread Switching propre
         .onEnd(() => {
-    // scheduleOnRN permet de rappeler le Thread JS pour changer le State React
-            scheduleOnRN(setSettingsOpen,true);
+            setSettingsOpen(true);
         });
 
-    // On combine les gestes (Race = le premier détecté gagne, ou Simultaneous selon besoin)
-    // Ici Race fonctionne bien car un Pinch n'est pas un Tap
     const composedGestures = Gesture.Race(pinchGesture, doubleTapGesture);
 
-    // 5. STYLES ANIMÉS
+    // 5. STYLES
     const animatedTextStyle = useAnimatedStyle(() => {
         return {
-            transform: [{translateX: translateX.value}],
+            transform: [{ translateX: translateX.value }],
             fontSize: fontSize.value,
             color: `hsl(${hue}, 100%, 50%)`,
             textShadowColor: `hsl(${hue}, 100%, 50%)`,
-            textShadowRadius: 15 // Effet Glow néon
+            textShadowRadius: 15
         } as TextStyle;
     });
 
     // 6. RENDER
     return (
         <View style={styles.container}>
-            <StatusBar hidden/>
+            <StatusBar hidden />
 
             <GestureDetector gesture={composedGestures}>
                 <View style={styles.interactiveArea}>
-                    {/* Calque Grille LED (Simulation) */}
-                    <GridOverlay/>
+                    <GridOverlay />
 
-                    <Animated.View style={[styles.scroller, animatedTextStyle]}>
-                        {/* Astuce: Monospace simule l'alignement LED en attendant une Font custom */}
+                    {/* Conteneur animé */}
+                    <Animated.View style={[
+                        styles.scroller,
+                        { minWidth: width * 2 }, // Assure que le conteneur est assez large
+                        animatedTextStyle
+                    ]}>
                         <Text style={styles.textBase} numberOfLines={1}>
                             {text}
                         </Text>
                     </Animated.View>
 
-                    {/* Indication UX discrète */}
-                    <HintContainer/>
+                    <HintContainer />
                 </View>
             </GestureDetector>
 
-            {/* MODALE DE CONFIGURATION (Bottom Sheet Style) */}
             <SettingsModal
                 visible={isSettingsOpen}
                 onClose={() => setSettingsOpen(false)}
