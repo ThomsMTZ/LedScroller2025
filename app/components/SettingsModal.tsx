@@ -44,7 +44,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                     <Text style={styles.label}>Vitesse</Text>
                     <Slider
                         style={{width: '100%', height: 40}}
-                        minimumValue={30000}
+                        minimumValue={5000}
                         maximumValue={5000}
                         value={speed}
                         onSlidingComplete={onSpeedChange}

@@ -5,12 +5,10 @@ import { useFonts, Codystar_400Regular } from '@expo-google-fonts/codystar';
 import { LedScroller } from './components';
 
 export default function App() {
-    // 2. Hook de chargement
     let [fontsLoaded] = useFonts({
         'LedFont': Codystar_400Regular,
     });
 
-    // 3. Écran de chargement (Splash Screen temporaire)
     if (!fontsLoaded) {
         return (
             <View style={styles.loadingContainer}>
@@ -19,7 +17,6 @@ export default function App() {
         );
     }
 
-    // 4. Une fois chargé, on affiche l'app normalement
     return (
         <GestureHandlerRootView style={{ flex: 1, backgroundColor: '#000' }}>
             <LedScroller />
@@ -32,6 +29,6 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#000', // Fond noir pour éviter le flash blanc
+        backgroundColor: '#000',
     },
 });

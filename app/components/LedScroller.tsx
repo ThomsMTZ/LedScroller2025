@@ -22,7 +22,6 @@ import HintContainer from './HintContainer';
 import SettingsModal from './SettingsModal';
 
 const LedScroller: React.FC<LedScrollerProps> = ({ initialText = 'BONJOUR 2025' }) => {
-    // Largeur de l'écran
     const { width } = useWindowDimensions();
 
     // 1. STATE
@@ -36,12 +35,11 @@ const LedScroller: React.FC<LedScrollerProps> = ({ initialText = 'BONJOUR 2025' 
     const fontSize: SharedValue<number> = useSharedValue(120);
     const savedFontSize: SharedValue<number> = useSharedValue(120);
 
-    // 3. ANIMATION LOOP (Simplifiée et Robuste)
+    // 3. ANIMATION LOOP
     useEffect(() => {
         // Stop ancienne anim
         cancelAnimation(translateX);
-
-        // Force la position de départ (bord droit)
+        // Reset position de départ
         translateX.value = width;
 
         // Lance la nouvelle anim immédiatement
@@ -50,10 +48,10 @@ const LedScroller: React.FC<LedScrollerProps> = ({ initialText = 'BONJOUR 2025' 
                 duration: speed,
                 easing: Easing.linear
             }),
-            -1, // Infini
-            false // Restart depuis le début
+            -1,
+            false
         );
-    }, [text, speed, width]); // Dépendances critiques
+    }, [text, speed, width]);
 
     // 4. GESTES
     const pinchGesture = Gesture.Pinch()
@@ -68,7 +66,7 @@ const LedScroller: React.FC<LedScrollerProps> = ({ initialText = 'BONJOUR 2025' 
 
     const doubleTapGesture = Gesture.Tap()
         .numberOfTaps(2)
-        .runOnJS(true) // Thread Switching propre
+        .runOnJS(true) // Thread Switching
         .onEnd(() => {
             setSettingsOpen(true);
         });
@@ -93,12 +91,9 @@ const LedScroller: React.FC<LedScrollerProps> = ({ initialText = 'BONJOUR 2025' 
 
             <GestureDetector gesture={composedGestures}>
                 <View style={styles.interactiveArea}>
-                    <GridOverlay />
-
-                    {/* Conteneur animé */}
                     <Animated.View style={[
                         styles.scroller,
-                        { minWidth: width * 2 }, // Assure que le conteneur est assez large
+                        { minWidth: width * 2 },
                         animatedTextStyle
                     ]}>
                         <Text style={styles.textBase} numberOfLines={1}>
@@ -106,9 +101,12 @@ const LedScroller: React.FC<LedScrollerProps> = ({ initialText = 'BONJOUR 2025' 
                         </Text>
                     </Animated.View>
 
-                    <HintContainer />
+                    <GridOverlay />
+
                 </View>
             </GestureDetector>
+
+            <HintContainer />
 
             <SettingsModal
                 visible={isSettingsOpen}
