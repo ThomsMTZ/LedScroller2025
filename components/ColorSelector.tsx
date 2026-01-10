@@ -2,24 +2,32 @@ import React from 'react';
 import {TouchableOpacity, View} from 'react-native';
 import {styles} from './styles';
 import {ColorSelectorProps} from './types';
+import {LED_COLORS} from './constants';
 
 const ColorSelector: React.FC<ColorSelectorProps> = ({selectedHue, onHueChange}) => {
-    const hueOptions = [0, 120, 240, 60, 300];
-
     return (
-        <View style={styles.colorRow}>
-            {hueOptions.map((h) => (
+        <View style={styles.colorGrid}>
+            {LED_COLORS.map((color) => (
                 <TouchableOpacity
-                    key={h}
+                    key={color.hue}
                     style={[
-                        styles.colorDot,
-                        {
-                            backgroundColor: `hsl(${h}, 100%, 50%)`,
-                            borderWidth: selectedHue === h ? 2 : 0
+                        styles.colorButton,
+                        selectedHue === color.hue && styles.colorButtonSelected,
+                        selectedHue === color.hue && {
+                            borderColor: `hsl(${color.hue}, 100%, 50%)`,
                         }
                     ]}
-                    onPress={() => onHueChange(h)}
-                />
+                    onPress={() => onHueChange(color.hue)}
+                    activeOpacity={0.7}
+                >
+                    <View style={[
+                        styles.colorDot,
+                        {
+                            backgroundColor: `hsl(${color.hue}, 100%, 50%)`,
+                            shadowColor: `hsl(${color.hue}, 100%, 50%)`,
+                        }
+                    ]}/>
+                </TouchableOpacity>
             ))}
         </View>
     );

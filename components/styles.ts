@@ -1,41 +1,76 @@
-import { Dimensions, StyleSheet } from 'react-native';
-import { Styles } from './types';
+import {Dimensions, Platform, StyleSheet} from 'react-native';
+import {Styles} from './types';
+import {COLORS} from './constants';
 
-const { width } = Dimensions.get('window');
+const {width} = Dimensions.get('window');
 
 export const styles = StyleSheet.create<Styles>({
     container: {
         flex: 1,
-        backgroundColor: '#050505',
-
+        backgroundColor: '#0a0a0a',
+    },
+    gradientBackground: {
+        ...StyleSheet.absoluteFillObject,
+    },
+    header: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingHorizontal: 24,
+        paddingTop: Platform.OS === 'ios' ? 60 : 50,
+        paddingBottom: 20,
+    },
+    headerTitle: {
+        color: COLORS.text,
+        fontSize: 28,
+        fontWeight: 'bold',
+        letterSpacing: 1,
+    },
+    headerSubtitle: {
+        color: COLORS.textMuted,
+        fontSize: 12,
+        letterSpacing: 3,
+        textTransform: 'uppercase',
+        marginTop: 2,
+    },
+    settingsButton: {
+        width: 48,
+        height: 48,
+        borderRadius: 24,
+        backgroundColor: COLORS.surfaceLight,
         justifyContent: 'center',
         alignItems: 'center',
+        borderWidth: 1,
+        borderColor: COLORS.border,
     },
     interactiveArea: {
-        width: '100%',
-        height: '35%',
-
+        flex: 1,
         justifyContent: 'center',
+        paddingHorizontal: 16,
+    },
+    ledDisplay: {
+        borderWidth: 2,
+        borderRadius: 16,
+        padding: 4,
+        backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    },
+    ledBorder: {
+        borderRadius: 12,
         overflow: 'hidden',
-
-        backgroundColor: '#1a1a1a',
-
-        borderTopWidth: 4,
-        borderBottomWidth: 4,
-        borderColor: '#222',
+        paddingVertical: 30,
+        shadowOffset: {width: 0, height: 0},
+        shadowOpacity: 0.8,
+        shadowRadius: 20,
+        elevation: 10,
     },
     scroller: {
         flexDirection: 'row',
-        minWidth: width * 2
+        minWidth: width * 2,
     },
     textBase: {
-        fontSize: 35,
         fontWeight: 'bold',
         fontFamily: 'LedFont',
         includeFontPadding: false,
-        textShadowRadius: 15,
-        textShadowOffset: { width: 0, height: 0 },
-        color: '#00FF41',
     },
     gridOverlay: {
         ...StyleSheet.absoluteFillObject,
@@ -44,66 +79,141 @@ export const styles = StyleSheet.create<Styles>({
         elevation: 50,
     },
     hintContainer: {
-        position: 'absolute',
-        bottom: 60,
-        width: '100%',
+        flexDirection: 'row',
+        justifyContent: 'center',
         alignItems: 'center',
+        marginTop: 24,
+        gap: 8,
         opacity: 0.6,
     },
+    hintIcon: {
+        marginRight: 4,
+    },
     hintText: {
-        color: '#fff',
-        fontSize: 10,
-        fontWeight: 'bold',
+        color: COLORS.textMuted,
+        fontSize: 11,
         textTransform: 'uppercase',
-        letterSpacing: 2
+        letterSpacing: 1.5,
+        fontWeight: '500',
+    },
+    footer: {
+        paddingBottom: 30,
+        alignItems: 'center',
+    },
+    footerText: {
+        color: COLORS.textMuted,
+        fontSize: 12,
+        letterSpacing: 1,
     },
     modalOverlay: {
         flex: 1,
-        backgroundColor: 'rgba(0,0,0,0.6)',
-        justifyContent: 'flex-end'
+        backgroundColor: 'rgba(0, 0, 0, 0.7)',
+        justifyContent: 'flex-end',
     },
     modalContent: {
-        backgroundColor: '#1E1E1E',
-        borderTopLeftRadius: 20,
-        borderTopRightRadius: 20,
-        padding: 25,
-        paddingBottom: 50
+        backgroundColor: COLORS.surface,
+        borderTopLeftRadius: 28,
+        borderTopRightRadius: 28,
+        paddingHorizontal: 24,
+        paddingTop: 12,
+        paddingBottom: 40,
+        borderWidth: 1,
+        borderColor: COLORS.border,
+        borderBottomWidth: 0,
+    },
+    modalHandle: {
+        width: 40,
+        height: 4,
+        backgroundColor: COLORS.textMuted,
+        borderRadius: 2,
+        alignSelf: 'center',
+        marginBottom: 16,
     },
     headerModal: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: 20
+        marginBottom: 24,
     },
     modalTitle: {
-        color: '#fff',
-        fontSize: 20,
-        fontWeight: 'bold'
+        color: COLORS.text,
+        fontSize: 22,
+        fontWeight: 'bold',
+        letterSpacing: 0.5,
+    },
+    closeButton: {
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+        backgroundColor: COLORS.surfaceLight,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    section: {
+        marginBottom: 24,
     },
     input: {
-        backgroundColor: '#333',
-        color: '#fff',
-        fontSize: 18,
-        padding: 15,
-        borderRadius: 10,
-        marginBottom: 20
+        backgroundColor: 'rgba(0, 0, 0, 0.3)',
+        color: COLORS.text,
+        fontSize: 16,
+        padding: 16,
+        borderRadius: 12,
+        borderWidth: 1,
+        borderColor: COLORS.border,
     },
     label: {
-        color: '#aaa',
-        fontSize: 12,
-        textTransform: 'uppercase',
-        marginBottom: 10,
-        marginTop: 10
+        color: COLORS.text,
+        fontSize: 14,
+        fontWeight: '600',
+        marginBottom: 12,
+        letterSpacing: 0.5,
     },
-    colorRow: {
+    colorGrid: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginVertical: 15
+        flexWrap: 'wrap',
+        gap: 10,
+        justifyContent: 'flex-start',
+    },
+    colorButton: {
+        width: 52,
+        height: 52,
+        borderRadius: 26,
+        backgroundColor: COLORS.surfaceLight,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderWidth: 2,
+        borderColor: 'transparent',
+    },
+    colorButtonSelected: {
+        borderWidth: 2,
     },
     colorDot: {
-        width: 45,
-        height: 45,
-        borderRadius: 25,
-        borderColor: '#fff'
+        width: 36,
+        height: 36,
+        borderRadius: 18,
+        shadowOffset: {width: 0, height: 0},
+        shadowOpacity: 0.8,
+        shadowRadius: 8,
+        elevation: 5,
+    },
+    sliderContainer: {
+        backgroundColor: 'rgba(0, 0, 0, 0.3)',
+        borderRadius: 12,
+        padding: 12,
+        paddingHorizontal: 8,
+        borderWidth: 1,
+        borderColor: COLORS.border,
+    },
+    sliderLabels: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        paddingHorizontal: 8,
+        marginTop: 4,
+    },
+    sliderLabel: {
+        color: COLORS.textMuted,
+        fontSize: 11,
+        textTransform: 'uppercase',
+        letterSpacing: 1,
     },
 });
