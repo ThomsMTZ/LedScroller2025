@@ -29,6 +29,7 @@ export const styles = StyleSheet.create<Styles>({
         minWidth: width * 2
     },
     textBase: {
+        fontSize: 35,
         fontWeight: 'bold',
         fontFamily: 'LedFont',
         includeFontPadding: false,
