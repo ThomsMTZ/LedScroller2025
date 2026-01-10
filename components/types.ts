@@ -1,6 +1,14 @@
+// components/types.ts
 import {TextStyle, ViewStyle} from 'react-native';
 
-// Interface pour les props du composant LedScroller
+// NOUVEAU : Interface pour un objet couleur complet
+export interface LedColorType {
+    hue: number;
+    saturation: number;
+    lightness: number;
+    name: string;
+}
+
 export interface LedScrollerProps {
     initialText?: string;
 }
@@ -42,7 +50,6 @@ export interface Styles {
     footerText: TextStyle;
 }
 
-// Interface pour les props du SettingsModal
 export interface SettingsModalProps {
     visible: boolean;
     onClose: () => void;
@@ -50,17 +57,15 @@ export interface SettingsModalProps {
     onTextChange: (text: string) => void;
     speed: number;
     onSpeedChange: (speed: number) => void;
-    hue: number;
-    onHueChange: (hue: number) => void;
+    selectedColor: LedColorType;
+    onColorChange: (color: LedColorType) => void;
 }
 
-// Interface pour les props du ColorSelector
 export interface ColorSelectorProps {
-    selectedHue: number;
-    onHueChange: (hue: number) => void;
+    selectedColor: LedColorType;
+    onColorChange: (color: LedColorType) => void;
 }
 
-// Interface pour les props du HintContainer
 export interface HintContainerProps {
     text?: string;
 }

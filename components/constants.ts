@@ -1,4 +1,6 @@
 // Modern 2025 color palette
+import {LedColorType} from "./types";
+
 export const COLORS = {
     background: ['#0a0a0a', '#1a1a2e', '#16213e'] as const,
     accent: '#00d4ff',
@@ -10,14 +12,15 @@ export const COLORS = {
 };
 
 // Expanded color presets for LED
-export const LED_COLORS = [
-    {hue: 0, name: 'Rouge'},      // Red
-    {hue: 30, name: 'Orange'},    // Orange
-    {hue: 60, name: 'Jaune'},     // Yellow
-    {hue: 120, name: 'Vert'},     // Green
-    {hue: 180, name: 'Cyan'},     // Cyan
-    {hue: 210, name: 'Bleu'},     // Blue
-    {hue: 270, name: 'Violet'},   // Purple
-    {hue: 300, name: 'Magenta'},  // Magenta
-    {hue: 330, name: 'Rose'},     // Pink
+export const LED_COLORS: LedColorType[] = [
+    {hue: 0, saturation: 100, lightness: 50, name: 'Rouge'},
+    {hue: 30, saturation: 100, lightness: 50, name: 'Orange'},
+    {hue: 60, saturation: 100, lightness: 50, name: 'Jaune'},
+    {hue: 120, saturation: 100, lightness: 50, name: 'Vert'},
+    {hue: 180, saturation: 100, lightness: 50, name: 'Cyan'},
+    {hue: 210, saturation: 100, lightness: 50, name: 'Bleu'},
+    {hue: 270, saturation: 100, lightness: 50, name: 'Violet'},
+    {hue: 300, saturation: 100, lightness: 50, name: 'Magenta'},
+    {hue: 330, saturation: 100, lightness: 50, name: 'Rose'},
+    {hue: 0, saturation: 0, lightness: 100, name: 'Blanc'},
 ];

@@ -1,5 +1,6 @@
+// components/LedScroller.tsx
 import React, {useEffect, useState} from 'react';
-import {StatusBar, useWindowDimensions, View, TextStyle, TouchableOpacity, Text} from 'react-native';
+import {StatusBar, Text, TextStyle, TouchableOpacity, useWindowDimensions, View} from 'react-native';
 import Animated, {
     cancelAnimation,
     Easing,
@@ -18,50 +19,49 @@ import {
 import {Ionicons} from '@expo/vector-icons';
 import {LinearGradient} from 'expo-linear-gradient';
 import {styles} from './styles';
-import {LedScrollerProps} from './types';
-import {COLORS} from './constants';
+import {LedColorType, LedScrollerProps} from './types';
+import {COLORS, LED_COLORS} from './constants'; // Import LED_COLORS pour l'init
 import GridOverlay from './GridOverlay';
 import HintContainer from './HintContainer';
 import SettingsModal from './SettingsModal';
 
 const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'}) => {
-    const { width } = useWindowDimensions();
+    const {width} = useWindowDimensions();
 
-    // 1. STATE REACT (Données logiques)
+    // 1. STATE
     const [text, setText] = useState<string>(initialText);
-    const [hue, setHue] = useState<number>(180); // Teinte HSL (180 = Cyan - Modern look)
+    const [selectedColor, setSelectedColor] = useState<LedColorType>(LED_COLORS[4]);
     const [isSettingsOpen, setSettingsOpen] = useState<boolean>(false);
     const [speed, setSpeed] = useState<number>(5000);
 
-    // 2. SHARED VALUES (Données d'animation UI)
+    // 2. SHARED VALUES
     const translateX: SharedValue<number> = useSharedValue(width);
     const fontSize: SharedValue<number> = useSharedValue(100);
     const savedFontSize: SharedValue<number> = useSharedValue(100);
+
     const hueVal: SharedValue<number> = useSharedValue(180);
+    const satVal: SharedValue<number> = useSharedValue(100);
+    const ligVal: SharedValue<number> = useSharedValue(50);
 
-    // 3. SYNCHRONISATION (React -> Reanimated)
+    // 3. SYNCHRONISATION
     useEffect(() => {
-        hueVal.value = withTiming(hue, { duration: 500 });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [hue]);
+        // On anime les 3 valeurs pour une transition fluide vers le blanc/couleur
+        hueVal.value = withTiming(selectedColor.hue, {duration: 500});
+        satVal.value = withTiming(selectedColor.saturation, {duration: 500});
+        ligVal.value = withTiming(selectedColor.lightness, {duration: 500});
+    }, [selectedColor]);
 
-    // 4. BOUCLE D'ANIMATION (Mouvement)
+    // 4. BOUCLE D'ANIMATION
     useEffect(() => {
         cancelAnimation(translateX);
         translateX.value = width;
-
         translateX.value = withRepeat(
-            withTiming(-width * 4, {
-                duration: speed,
-                easing: Easing.linear
-            }),
-            -1,
-            false
+            withTiming(-width * 4, {duration: speed, easing: Easing.linear}),
+            -1, false
         );
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [text, speed, width]);
 
-    // 5. GESTES (Pinch & Tap)
+    // 5. GESTES
     const pinchGesture = Gesture.Pinch()
         .onUpdate((e: GestureUpdateEvent<PinchGestureHandlerEventPayload>) => {
             'worklet';
@@ -81,33 +81,34 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
 
     const composedGestures = Gesture.Race(pinchGesture, doubleTapGesture);
 
-    // 6. STYLES ANIMÉS SÉPARÉS
-    // A. Style pour le CONTENEUR (position)
-    const animatedContainerStyle = useAnimatedStyle(() => {
-        return {
-            transform: [{ translateX: translateX.value }],
-        };
-    });
+    // 6. STYLES ANIMÉS
+    const animatedContainerStyle = useAnimatedStyle(() => ({
+        transform: [{translateX: translateX.value}],
+    }));
 
-    // B. Style pour le TEXTE (couleur + taille + glow)
     const animatedTextStyle = useAnimatedStyle(() => {
-        const safeHue = Math.round(hueVal.value);
+        const h = Math.round(hueVal.value);
+        const s = Math.round(satVal.value);
+        const l = Math.round(ligVal.value);
+
+        // Construction de la chaîne HSL dynamique
+        const hslColor = `hsl(${h}, ${s}%, ${l}%)`;
 
         return {
             fontSize: fontSize.value,
-            color: `hsl(${safeHue}, 100%, 50%)`,
-            textShadowColor: `hsl(${safeHue}, 100%, 50%)`,
-            textShadowRadius: 20, // Enhanced glow effect
-            textShadowOffset: { width: 0, height: 0 },
+            color: hslColor,
+            textShadowColor: hslColor,
+            textShadowRadius: 20,
+            textShadowOffset: {width: 0, height: 0},
         } as TextStyle;
     });
+
+    const currentStaticColor = `hsl(${selectedColor.hue}, ${selectedColor.saturation}%, ${selectedColor.lightness}%)`;
 
     // 7. RENDER
     return (
         <View style={styles.container}>
             <StatusBar barStyle="light-content" backgroundColor="transparent" translucent/>
-
-            {/* Modern gradient background */}
             <LinearGradient
                 colors={[...COLORS.background]}
                 style={styles.gradientBackground}
@@ -115,13 +116,12 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
                 end={{x: 1, y: 1}}
             />
 
-            {/* Modern Header */}
             <View style={styles.header}>
                 <View>
                     <Text style={styles.headerTitle}>LED Scroller</Text>
                     <Text style={styles.headerSubtitle}>2025 Edition</Text>
                 </View>
-                <TouchableOpacity 
+                <TouchableOpacity
                     style={styles.settingsButton}
                     onPress={() => setSettingsOpen(true)}
                     activeOpacity={0.7}
@@ -132,10 +132,10 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
 
             <GestureDetector gesture={composedGestures}>
                 <View style={styles.interactiveArea}>
-                    {/* LED Display Frame */}
-                    <View style={[styles.ledDisplay, {borderColor: `hsl(${hue}, 100%, 30%)`}]}>
+                    {/* Mise à jour des couleurs de bordure statiques */}
+                    <View style={[styles.ledDisplay, {borderColor: currentStaticColor}]}>
                         <View style={[styles.ledBorder, {
-                            shadowColor: `hsl(${hue}, 100%, 50%)`,
+                            shadowColor: currentStaticColor,
                             shadowOffset: {width: 0, height: 0},
                             shadowOpacity: 0.8,
                             shadowRadius: 20,
@@ -143,35 +143,27 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
                         }]}>
                             <Animated.View style={[
                                 styles.scroller,
-                                { minWidth: width * 2 },
+                                {minWidth: width * 2},
                                 animatedContainerStyle
                             ]}>
                                 <Animated.Text
-                                    style={[
-                                        styles.textBase,
-                                        animatedTextStyle
-                                    ]}
+                                    style={[styles.textBase, animatedTextStyle]}
                                     numberOfLines={1}
                                 >
                                     {text}
                                 </Animated.Text>
                             </Animated.View>
-
-                            <GridOverlay />
+                            <GridOverlay/>
                         </View>
                     </View>
-
-                    {/* Indication UX discrète */}
                     <HintContainer/>
                 </View>
             </GestureDetector>
 
-            {/* Footer */}
             <View style={styles.footer}>
                 <Text style={styles.footerText}>Made with ❤️ in 2025</Text>
             </View>
 
-            {/* MODALE DE CONFIGURATION (Modern Bottom Sheet Style) */}
             <SettingsModal
                 visible={isSettingsOpen}
                 onClose={() => setSettingsOpen(false)}
@@ -179,8 +171,9 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
                 onTextChange={setText}
                 speed={speed}
                 onSpeedChange={setSpeed}
-                hue={hue}
-                onHueChange={setHue}
+                // Props mises à jour
+                selectedColor={selectedColor}
+                onColorChange={setSelectedColor}
             />
         </View>
     );
