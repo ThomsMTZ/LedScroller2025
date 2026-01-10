@@ -1,13 +1,34 @@
-import {GestureHandlerRootView} from 'react-native-gesture-handler';
-import {LedScroller} from './components';
-
-// --- COMPOSANT PRINCIPAL ---
+import React from 'react';
+import { View, ActivityIndicator, StyleSheet } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { useFonts, Codystar_400Regular } from '@expo-google-fonts/codystar';
+import { LedScroller } from '../components';
 
 export default function App() {
-    // GestureHandlerRootView est requis à la racine pour la gestion des gestes avancés
+    let [fontsLoaded] = useFonts({
+        'LedFont': Codystar_400Regular,
+    });
+
+    if (!fontsLoaded) {
+        return (
+            <View style={styles.loadingContainer}>
+                <ActivityIndicator size="large" color="#00FF41" />
+            </View>
+        );
+    }
+
     return (
-        <GestureHandlerRootView style={{flex: 1}}>
+        <GestureHandlerRootView style={{ flex: 1, backgroundColor: '#000' }}>
             <LedScroller />
         </GestureHandlerRootView>
     );
 }
+
+const styles = StyleSheet.create({
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#000',
+    },
+});

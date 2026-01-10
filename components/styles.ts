@@ -1,42 +1,56 @@
-/* eslint-disable import/prefer-default-export */
-import {Platform, StyleSheet} from 'react-native';
-import {Styles} from './types';
+import { StyleSheet } from 'react-native';
+import { Styles } from './types';
 
 export const styles = StyleSheet.create<Styles>({
     container: {
         flex: 1,
-        backgroundColor: '#000'
+        backgroundColor: '#050505',
+
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     interactiveArea: {
-        flex: 1,
+        width: '100%',
+        height: '35%',
+
         justifyContent: 'center',
-        overflow: 'hidden'
+        overflow: 'hidden',
+
+        backgroundColor: '#1a1a1a',
+
+        borderTopWidth: 4,
+        borderBottomWidth: 4,
+        borderColor: '#222',
     },
     scroller: {
         flexDirection: 'row'
     },
     textBase: {
+        fontSize: 35,
         fontWeight: 'bold',
-        fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
+        fontFamily: 'LedFont',
         includeFontPadding: false,
+        textShadowRadius: 15,
+        textShadowOffset: { width: 0, height: 0 },
+        color: '#00FF41',
     },
     gridOverlay: {
         ...StyleSheet.absoluteFillObject,
         backgroundColor: 'transparent',
-        zIndex: 10,
-        opacity: 0.2,
-        // Astuce future: mettre une image de grille ici
+        zIndex: 50,
+        elevation: 50,
     },
     hintContainer: {
         position: 'absolute',
-        bottom: 40,
+        bottom: 60,
         width: '100%',
         alignItems: 'center',
-        opacity: 0.4,
+        opacity: 0.6,
     },
     hintText: {
         color: '#fff',
         fontSize: 10,
+        fontWeight: 'bold',
         textTransform: 'uppercase',
         letterSpacing: 2
     },
