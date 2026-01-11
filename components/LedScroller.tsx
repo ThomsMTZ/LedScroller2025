@@ -18,6 +18,7 @@ import {
 import {Ionicons} from '@expo/vector-icons';
 import {LinearGradient} from 'expo-linear-gradient';
 import * as ScreenOrientation from 'expo-screen-orientation';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {styles} from './styles';
 import {LedColorType, LedScrollerProps} from './types';
 import {COLORS, LED_COLORS} from './constants';
@@ -27,6 +28,7 @@ import SettingsModal from './SettingsModal';
 
 const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'}) => {
     const {width, height} = useWindowDimensions();
+    const STORAGE_KEY = '@led_scroller_settings_v1';
 
     // 1. STATE
     const [text, setText] = useState<string>(initialText);
@@ -137,6 +139,50 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
     });
 
     const currentStaticColor = `hsl(${selectedColor.hue}, ${selectedColor.saturation}%, ${selectedColor.lightness}%)`;
+
+    // LOAD & SAVE SETTINGS
+    useEffect(() => {
+        const loadSettings = async () => {
+            try {
+                const jsonValue = await AsyncStorage.getItem(STORAGE_KEY);
+                if (jsonValue != null) {
+                    const savedSettings = JSON.parse(jsonValue);
+
+                    if (savedSettings.text) setText(savedSettings.text);
+                    if (savedSettings.speed) setSpeed(savedSettings.speed);
+                    if (savedSettings.selectedColor) setSelectedColor(savedSettings.selectedColor);
+
+                    if (savedSettings.isLandscapeLocked) {
+                        setIsLandscapeLocked(true);
+                        await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
+                    }
+                }
+            } catch (e) {
+                console.error("Erreur lors du chargement des paramètres", e);
+            }
+        };
+
+        void loadSettings();
+    }, []);
+
+    useEffect(() => {
+        const saveTimeout = setTimeout(async () => {
+            try {
+                const settingsToSave = {
+                    text,
+                    speed,
+                    selectedColor,
+                    isLandscapeLocked
+                };
+                await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(settingsToSave));
+            } catch (e) {
+                console.error("Erreur sauvegarde", e);
+            }
+        }, 1000);
+
+        return () => clearTimeout(saveTimeout);
+
+    }, [text, speed, selectedColor, isLandscapeLocked]);
 
     // 7. RENDER
     return (
