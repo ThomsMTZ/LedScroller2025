@@ -28,7 +28,9 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                                                          selectedColor,
                                                          onColorChange,
                                                          isLandscapeLocked,
-                                                         onToggleOrientation
+                                                         onToggleOrientation,
+                                                         showBorder,
+                                                         onToggleBorder
                                                      }) => {
 
     const {height: screenHeight} = useWindowDimensions();
@@ -63,6 +65,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                         entering={FadeIn.duration(300)}
                         exiting={FadeOut.duration(200)}
                     >
+
                         {/* 3. Header */}
                         <View style={styles.modalHandle}/>
 
@@ -76,6 +79,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                                 <Ionicons name="close" size={24} color={COLORS.text}/>
                             </TouchableOpacity>
                         </View>
+
                         {/* 4. ScrollView */}
                         <ScrollView
                             showsVerticalScrollIndicator={false}
@@ -143,6 +147,38 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                                         name={isLandscapeLocked ? "lock-closed" : "phone-portrait-outline"}
                                         size={20}
                                         color={isLandscapeLocked ? currentHsl : COLORS.textMuted}
+                                    />
+                                </TouchableOpacity>
+                            </View>
+
+                            <View style={styles.section}>
+                                <Text style={styles.label}>🖼️ Cadre LED</Text>
+                                <TouchableOpacity
+                                    style={[
+                                        styles.input,
+                                        {
+                                            flexDirection: 'row',
+                                            justifyContent: 'space-between',
+                                            alignItems: 'center',
+                                            backgroundColor: showBorder ? 'rgba(0, 212, 255, 0.15)' : 'rgba(0, 0, 0, 0.3)',
+                                            borderColor: showBorder ? currentHsl : COLORS.border
+                                        }
+                                    ]}
+                                    onPress={onToggleBorder}
+                                    activeOpacity={0.7}
+                                >
+                                    <Text style={{
+                                        color: showBorder ? currentHsl : COLORS.textMuted,
+                                        fontSize: 14,
+                                        fontWeight: '600'
+                                    }}>
+                                        {showBorder ? 'Bordure affichée' : 'Bordure masquée'}
+                                    </Text>
+
+                                    <Ionicons
+                                        name={showBorder ? "square-outline" : "scan-outline"}
+                                        size={20}
+                                        color={showBorder ? currentHsl : COLORS.textMuted}
                                     />
                                 </TouchableOpacity>
                             </View>

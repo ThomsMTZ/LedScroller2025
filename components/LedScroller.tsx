@@ -37,7 +37,7 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
     const [speed, setSpeed] = useState<number>(100);
     const [textWidth, setTextWidth] = useState<number>(0);
     const [isLandscapeLocked, setIsLandscapeLocked] = useState<boolean>(false);
-
+    const [showBorder, setShowBorder] = useState<boolean>(true);
 
     // 2. SHARED VALUES
     const translateX: SharedValue<number> = useSharedValue(width);
@@ -156,6 +156,9 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
                         setIsLandscapeLocked(true);
                         await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
                     }
+                    if (savedSettings.showBorder !== undefined) {
+                        setShowBorder(savedSettings.showBorder);
+                    }
                 }
             } catch (e) {
                 console.error("Erreur lors du chargement des paramètres", e);
@@ -172,7 +175,8 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
                     text,
                     speed,
                     selectedColor,
-                    isLandscapeLocked
+                    isLandscapeLocked,
+                    showBorder
                 };
                 await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(settingsToSave));
             } catch (e) {
@@ -182,7 +186,7 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
 
         return () => clearTimeout(saveTimeout);
 
-    }, [text, speed, selectedColor, isLandscapeLocked]);
+    }, [text, speed, selectedColor, isLandscapeLocked, showBorder]);
 
     // 7. RENDER
     return (
@@ -202,7 +206,7 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
             {!isLandscape && (<View style={styles.header}>
                     <View>
                         <Text style={styles.headerTitle}>LED Scroller</Text>
-                        <Text style={styles.headerSubtitle}>2025 Edition</Text>
+                        <Text style={styles.headerSubtitle}>2026 Edition</Text>
                     </View>
                     <TouchableOpacity
                         style={styles.settingsButton}
@@ -225,12 +229,12 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
                         isLandscape && {
                             width: '100%',
                             height: '100%',
-                            borderWidth: 4,
                             borderRadius: 0,
                             padding: 0,
                             backgroundColor: 'black',
                             zIndex: 10
-                        }
+                        },
+                        {borderWidth: showBorder ? (isLandscape ? 4 : 2) : 0}
                     ]}>
                         <View style={[styles.ledBorder, {
                             shadowColor: currentStaticColor,
@@ -284,7 +288,7 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
 
             {!isLandscape && (
                 <View style={styles.footer}>
-                    <Text style={styles.footerText}>Made with ❤️ in 2025</Text>
+                    <Text style={styles.footerText}>Made with ❤️ by Thomas Martinez</Text>
                 </View>
             )}
 
@@ -299,6 +303,8 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
                 onColorChange={setSelectedColor}
                 isLandscapeLocked={isLandscapeLocked}
                 onToggleOrientation={toggleOrientation}
+                showBorder={showBorder}
+                onToggleBorder={() => setShowBorder(!showBorder)}
             />
 
             {isLandscape && (

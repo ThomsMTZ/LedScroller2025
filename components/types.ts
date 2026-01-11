@@ -58,6 +58,8 @@ export interface SettingsModalProps {
     onColorChange: (color: LedColorType) => void;
     isLandscapeLocked: boolean;
     onToggleOrientation: () => void;
+    showBorder: boolean;
+    onToggleBorder: () => void;
 }
 
 export interface ColorSelectorProps {
