@@ -192,10 +192,12 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
     return (
         <View style={styles.container}>
             <StatusBar
-                hidden={!isLandscape}
+                hidden={isLandscape}
                 barStyle="light-content"
                 backgroundColor="transparent"
-                translucent/>
+                translucent
+            />
+
             <LinearGradient
                 colors={[...COLORS.background]}
                 style={styles.gradientBackground}
@@ -203,7 +205,8 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
                 end={{x: 1, y: 1}}
             />
 
-            {!isLandscape && (<View style={styles.header}>
+            {!isLandscape && (
+                <View style={styles.header}>
                     <View>
                         <Text style={styles.headerTitle}>LED Scroller</Text>
                         <Text style={styles.headerSubtitle}>2026 Edition</Text>
@@ -221,14 +224,14 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
             <GestureDetector gesture={composedGestures}>
                 <View style={[
                     styles.interactiveArea,
-                    isLandscape && {paddingHorizontal: 0, width: '100%', height: '100%'}
+                    isLandscape && {paddingHorizontal: 0, width: '100%', flex: 1}
                 ]}>
                     <View style={[
                         styles.ledDisplay,
                         {borderColor: currentStaticColor},
                         isLandscape && {
                             width: '100%',
-                            height: '100%',
+                            flex: 1,
                             borderRadius: 0,
                             padding: 0,
                             backgroundColor: 'black',
@@ -245,8 +248,8 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
                         },
                             isLandscape && {
                                 width: '100%',
+                                flex: 1,
                                 borderRadius: 0,
-                                height: '100%',
                                 paddingVertical: 0,
                                 justifyContent: 'center'
                             }
@@ -315,11 +318,12 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
                         right: 20,
                         padding: 10,
                         backgroundColor: 'rgba(0,0,0,0.5)',
-                        borderRadius: 20
+                        borderRadius: 20,
+                        zIndex: 100
                     }}
                     onPress={() => setSettingsOpen(true)}
                 >
-                    <Ionicons name="settings-outline" size={24} color="rgba(255,255,255,0.3)"/>
+                    <Ionicons name="settings-outline" size={24} color="rgba(255,255,255,0.5)"/>
                 </TouchableOpacity>
             )}
         </View>
