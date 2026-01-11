@@ -26,22 +26,31 @@ import HintContainer from './HintContainer';
 import SettingsModal from './SettingsModal';
 
 const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'}) => {
-    const {width} = useWindowDimensions();
+    const {width, height} = useWindowDimensions();
 
     // 1. STATE
     const [text, setText] = useState<string>(initialText);
     const [selectedColor, setSelectedColor] = useState<LedColorType>(LED_COLORS[4]);
     const [isSettingsOpen, setSettingsOpen] = useState<boolean>(false);
     const [speed, setSpeed] = useState<number>(5000);
+    const [textWidth, setTextWidth] = useState<number>(0);
 
     // 2. SHARED VALUES
     const translateX: SharedValue<number> = useSharedValue(width);
     const fontSize: SharedValue<number> = useSharedValue(100);
     const savedFontSize: SharedValue<number> = useSharedValue(100);
-
     const hueVal: SharedValue<number> = useSharedValue(180);
     const satVal: SharedValue<number> = useSharedValue(100);
     const ligVal: SharedValue<number> = useSharedValue(50);
+
+    const isLandscape = width > height;
+    const LOOP_SPACING = width * 0.3;
+    const patternWidth = textWidth + LOOP_SPACING;
+    const copiesNeeded = textWidth > 0
+        ? Math.ceil(width / patternWidth) + 1
+        : 2;
+    const finalRepetitions = Math.max(2, copiesNeeded);
+    const copiesArray = Array.from({length: finalRepetitions});
 
     // 3. SYNCHRONISATION
     useEffect(() => {
@@ -53,13 +62,21 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
 
     // 4. BOUCLE D'ANIMATION
     useEffect(() => {
-        cancelAnimation(translateX);
-        translateX.value = width;
-        translateX.value = withRepeat(
-            withTiming(-width * 4, {duration: speed, easing: Easing.linear}),
-            -1, false
-        );
-    }, [text, speed, width]);
+        if (textWidth > 0) {
+            cancelAnimation(translateX);
+            translateX.value = 0;
+
+            // On déplace exactement de la taille d'un motif (Texte + Espace)
+            // Comme le motif est répété, quand le motif 1 sort, le motif 2 est EXACTEMENT à sa place.
+            translateX.value = withRepeat(
+                withTiming(-patternWidth, {
+                    duration: (patternWidth / width) * speed,
+                    easing: Easing.linear
+                }),
+                -1, false
+            );
+        }
+    }, [textWidth, speed, width, patternWidth]);
 
     // 5. GESTES
     const pinchGesture = Gesture.Pinch()
@@ -108,7 +125,11 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
     // 7. RENDER
     return (
         <View style={styles.container}>
-            <StatusBar barStyle="light-content" backgroundColor="transparent" translucent/>
+            <StatusBar
+                hidden={!isLandscape}
+                barStyle="light-content"
+                backgroundColor="transparent"
+                translucent/>
             <LinearGradient
                 colors={[...COLORS.background]}
                 style={styles.gradientBackground}
@@ -116,23 +137,26 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
                 end={{x: 1, y: 1}}
             />
 
-            <View style={styles.header}>
-                <View>
-                    <Text style={styles.headerTitle}>LED Scroller</Text>
-                    <Text style={styles.headerSubtitle}>2025 Edition</Text>
+            {!isLandscape && (<View style={styles.header}>
+                    <View>
+                        <Text style={styles.headerTitle}>LED Scroller</Text>
+                        <Text style={styles.headerSubtitle}>2025 Edition</Text>
+                    </View>
+                    <TouchableOpacity
+                        style={styles.settingsButton}
+                        onPress={() => setSettingsOpen(true)}
+                        activeOpacity={0.7}
+                    >
+                        <Ionicons name="settings-outline" size={24} color={COLORS.text}/>
+                    </TouchableOpacity>
                 </View>
-                <TouchableOpacity
-                    style={styles.settingsButton}
-                    onPress={() => setSettingsOpen(true)}
-                    activeOpacity={0.7}
-                >
-                    <Ionicons name="settings-outline" size={24} color={COLORS.text}/>
-                </TouchableOpacity>
-            </View>
+            )}
 
             <GestureDetector gesture={composedGestures}>
-                <View style={styles.interactiveArea}>
-                    {/* Mise à jour des couleurs de bordure statiques */}
+                <View style={[
+                    styles.interactiveArea,
+                    isLandscape && {paddingHorizontal: 0, width: '100%', height: '100%'}
+                ]}>
                     <View style={[styles.ledDisplay, {borderColor: currentStaticColor}]}>
                         <View style={[styles.ledBorder, {
                             shadowColor: currentStaticColor,
@@ -140,29 +164,54 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
                             shadowOpacity: 0.8,
                             shadowRadius: 20,
                             backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                        }]}>
+                        },
+                            isLandscape && {
+                                borderRadius: 0,
+                                height: '100%',
+                                paddingVertical: 0,
+                                justifyContent: 'center'
+                            }
+                        ]}>
                             <Animated.View style={[
                                 styles.scroller,
-                                {minWidth: width * 2},
-                                animatedContainerStyle
+                                {
+                                    minWidth: width * 2,
+                                    alignSelf: 'flex-start',
+                                    flexDirection: 'row',
+                                    alignItems: 'center'
+                                },
+                                animatedContainerStyle,
                             ]}>
-                                <Animated.Text
-                                    style={[styles.textBase, animatedTextStyle]}
-                                    numberOfLines={1}
-                                >
-                                    {text}
-                                </Animated.Text>
+                                {copiesArray.map((_, index) => (
+                                    <React.Fragment key={index}>
+                                        <Animated.Text
+                                            onLayout={index === 0 ? (e) => setTextWidth(e.nativeEvent.layout.width) : undefined}
+                                            style={[
+                                                styles.textBase,
+                                                animatedTextStyle,
+                                            ]}
+                                            numberOfLines={1}
+                                            ellipsizeMode="clip"
+                                        >
+                                            {text}
+                                        </Animated.Text>
+
+                                        <View style={{width: LOOP_SPACING}}/>
+                                    </React.Fragment>
+                                ))}
                             </Animated.View>
                             <GridOverlay/>
                         </View>
                     </View>
-                    <HintContainer/>
+                    {!isLandscape && <HintContainer/>}
                 </View>
             </GestureDetector>
 
-            <View style={styles.footer}>
+            {!isLandscape && (
+                <View style={styles.footer}>
                 <Text style={styles.footerText}>Made with ❤️ in 2025</Text>
             </View>
+            )}
 
             <SettingsModal
                 visible={isSettingsOpen}
@@ -171,10 +220,25 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
                 onTextChange={setText}
                 speed={speed}
                 onSpeedChange={setSpeed}
-                // Props mises à jour
                 selectedColor={selectedColor}
                 onColorChange={setSelectedColor}
             />
+
+            {isLandscape && (
+                <TouchableOpacity
+                    style={{
+                        position: 'absolute',
+                        top: 20,
+                        right: 20,
+                        padding: 10,
+                        backgroundColor: 'rgba(0,0,0,0.5)',
+                        borderRadius: 20
+                    }}
+                    onPress={() => setSettingsOpen(true)}
+                >
+                    <Ionicons name="settings-outline" size={24} color="rgba(255,255,255,0.3)"/>
+                </TouchableOpacity>
+            )}
         </View>
     );
 };

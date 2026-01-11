@@ -71,6 +71,7 @@ export const styles = StyleSheet.create<Styles>({
         fontWeight: 'bold',
         fontFamily: 'LedFont',
         includeFontPadding: false,
+        flexShrink: 0
     },
     gridOverlay: {
         ...StyleSheet.absoluteFillObject,
