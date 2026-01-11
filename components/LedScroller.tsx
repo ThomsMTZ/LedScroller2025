@@ -219,7 +219,19 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
                     styles.interactiveArea,
                     isLandscape && {paddingHorizontal: 0, width: '100%', height: '100%'}
                 ]}>
-                    <View style={[styles.ledDisplay, {borderColor: currentStaticColor}]}>
+                    <View style={[
+                        styles.ledDisplay,
+                        {borderColor: currentStaticColor},
+                        isLandscape && {
+                            width: '100%',
+                            height: '100%',
+                            borderWidth: 4,
+                            borderRadius: 0,
+                            padding: 0,
+                            backgroundColor: 'black',
+                            zIndex: 10
+                        }
+                    ]}>
                         <View style={[styles.ledBorder, {
                             shadowColor: currentStaticColor,
                             shadowOffset: {width: 0, height: 0},
@@ -228,6 +240,7 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
                             backgroundColor: 'rgba(0, 0, 0, 0.8)',
                         },
                             isLandscape && {
+                                width: '100%',
                                 borderRadius: 0,
                                 height: '100%',
                                 paddingVertical: 0,
@@ -271,8 +284,8 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
 
             {!isLandscape && (
                 <View style={styles.footer}>
-                <Text style={styles.footerText}>Made with ❤️ in 2025</Text>
-            </View>
+                    <Text style={styles.footerText}>Made with ❤️ in 2025</Text>
+                </View>
             )}
 
             <SettingsModal
