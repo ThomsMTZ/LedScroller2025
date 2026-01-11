@@ -63,23 +63,24 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                         entering={FadeIn.duration(300)}
                         exiting={FadeOut.duration(200)}
                     >
-                        {/* 3. ScrollView */}
+                        {/* 3. Header */}
+                        <View style={styles.modalHandle}/>
+
+                        <View style={styles.headerModal}>
+                            <Text style={styles.modalTitle}>⚙️ Config</Text>
+                            <TouchableOpacity
+                                style={styles.closeButton}
+                                onPress={onClose}
+                                activeOpacity={0.7}
+                            >
+                                <Ionicons name="close" size={24} color={COLORS.text}/>
+                            </TouchableOpacity>
+                        </View>
+                        {/* 4. ScrollView */}
                         <ScrollView
                             showsVerticalScrollIndicator={false}
                             contentContainerStyle={{paddingBottom: 20}}
                         >
-                            <View style={styles.modalHandle}/>
-
-                            <View style={styles.headerModal}>
-                                <Text style={styles.modalTitle}>⚙️ Config</Text>
-                                <TouchableOpacity
-                                    style={styles.closeButton}
-                                    onPress={onClose}
-                                    activeOpacity={0.7}
-                                >
-                                    <Ionicons name="close" size={24} color={COLORS.text}/>
-                                </TouchableOpacity>
-                            </View>
 
                             <View style={styles.section}>
                                 <Text style={styles.label}>💬 Message</Text>
