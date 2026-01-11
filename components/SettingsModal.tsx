@@ -26,7 +26,9 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                                                          speed,
                                                          onSpeedChange,
                                                          selectedColor,
-                                                         onColorChange
+                                                         onColorChange,
+                                                         isLandscapeLocked,
+                                                         onToggleOrientation
                                                      }) => {
 
     const {height: screenHeight} = useWindowDimensions();
@@ -110,6 +112,38 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                                         <Text style={styles.sliderLabel}>Rapide</Text>
                                     </View>
                                 </View>
+                            </View>
+
+                            <View style={styles.section}>
+                                <Text style={styles.label}>🔄 Orientation</Text>
+                                <TouchableOpacity
+                                    style={[
+                                        styles.input,
+                                        {
+                                            flexDirection: 'row',
+                                            justifyContent: 'space-between',
+                                            alignItems: 'center',
+                                            backgroundColor: isLandscapeLocked ? 'rgba(0, 212, 255, 0.15)' : 'rgba(0, 0, 0, 0.3)',
+                                            borderColor: isLandscapeLocked ? currentHsl : COLORS.border
+                                        }
+                                    ]}
+                                    onPress={onToggleOrientation}
+                                    activeOpacity={0.7}
+                                >
+                                    <Text style={{
+                                        color: isLandscapeLocked ? currentHsl : COLORS.textMuted,
+                                        fontSize: 14,
+                                        fontWeight: '600'
+                                    }}>
+                                        {isLandscapeLocked ? 'Mode Paysage Forcé' : 'Rotation Automatique'}
+                                    </Text>
+
+                                    <Ionicons
+                                        name={isLandscapeLocked ? "lock-closed" : "phone-portrait-outline"}
+                                        size={20}
+                                        color={isLandscapeLocked ? currentHsl : COLORS.textMuted}
+                                    />
+                                </TouchableOpacity>
                             </View>
 
                             <View style={styles.section}>

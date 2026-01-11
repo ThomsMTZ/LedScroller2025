@@ -1,7 +1,5 @@
-// components/types.ts
 import {TextStyle, ViewStyle} from 'react-native';
 
-// NOUVEAU : Interface pour un objet couleur complet
 export interface LedColorType {
     hue: number;
     saturation: number;
@@ -13,7 +11,6 @@ export interface LedScrollerProps {
     initialText?: string;
 }
 
-// Interface pour typer strictement les styles
 export interface Styles {
     container: ViewStyle;
     gradientBackground: ViewStyle;
@@ -59,13 +56,11 @@ export interface SettingsModalProps {
     onSpeedChange: (speed: number) => void;
     selectedColor: LedColorType;
     onColorChange: (color: LedColorType) => void;
+    isLandscapeLocked: boolean;
+    onToggleOrientation: () => void;
 }
 
 export interface ColorSelectorProps {
     selectedColor: LedColorType;
     onColorChange: (color: LedColorType) => void;
-}
-
-export interface HintContainerProps {
-    text?: string;
 }

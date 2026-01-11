@@ -1,4 +1,3 @@
-// components/LedScroller.tsx
 import React, {useEffect, useState} from 'react';
 import {StatusBar, Text, TextStyle, TouchableOpacity, useWindowDimensions, View} from 'react-native';
 import Animated, {
@@ -18,9 +17,10 @@ import {
 } from 'react-native-gesture-handler';
 import {Ionicons} from '@expo/vector-icons';
 import {LinearGradient} from 'expo-linear-gradient';
+import * as ScreenOrientation from 'expo-screen-orientation';
 import {styles} from './styles';
 import {LedColorType, LedScrollerProps} from './types';
-import {COLORS, LED_COLORS} from './constants'; // Import LED_COLORS pour l'init
+import {COLORS, LED_COLORS} from './constants';
 import GridOverlay from './GridOverlay';
 import HintContainer from './HintContainer';
 import SettingsModal from './SettingsModal';
@@ -34,6 +34,8 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
     const [isSettingsOpen, setSettingsOpen] = useState<boolean>(false);
     const [speed, setSpeed] = useState<number>(100);
     const [textWidth, setTextWidth] = useState<number>(0);
+    const [isLandscapeLocked, setIsLandscapeLocked] = useState<boolean>(false);
+
 
     // 2. SHARED VALUES
     const translateX: SharedValue<number> = useSharedValue(width);
@@ -51,6 +53,19 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
         : 2;
     const finalRepetitions = Math.max(2, copiesNeeded);
     const copiesArray = Array.from({length: finalRepetitions});
+
+    // FONCTION DE BASCULE ORIENTATION
+    const toggleOrientation = async () => {
+        if (isLandscapeLocked) {
+            // Si on était bloqué, on débloque (retour au comportement par défaut)
+            await ScreenOrientation.unlockAsync();
+            setIsLandscapeLocked(false);
+        } else {
+            // Sinon, on force le mode PAYSAGE (n'importe quel côté)
+            await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
+            setIsLandscapeLocked(true);
+        }
+    };
 
     // 3. SYNCHRONISATION
     useEffect(() => {
@@ -223,6 +238,8 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
                 onSpeedChange={setSpeed}
                 selectedColor={selectedColor}
                 onColorChange={setSelectedColor}
+                isLandscapeLocked={isLandscapeLocked}
+                onToggleOrientation={toggleOrientation}
             />
 
             {isLandscape && (
