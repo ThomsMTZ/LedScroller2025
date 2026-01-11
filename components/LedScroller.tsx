@@ -32,7 +32,7 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
     const [text, setText] = useState<string>(initialText);
     const [selectedColor, setSelectedColor] = useState<LedColorType>(LED_COLORS[4]);
     const [isSettingsOpen, setSettingsOpen] = useState<boolean>(false);
-    const [speed, setSpeed] = useState<number>(5000);
+    const [speed, setSpeed] = useState<number>(100);
     const [textWidth, setTextWidth] = useState<number>(0);
 
     // 2. SHARED VALUES
@@ -66,11 +66,12 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
             cancelAnimation(translateX);
             translateX.value = 0;
 
-            // On déplace exactement de la taille d'un motif (Texte + Espace)
-            // Comme le motif est répété, quand le motif 1 sort, le motif 2 est EXACTEMENT à sa place.
+            const safeSpeed = speed > 0 ? speed : 1;
+            const linearDuration = (patternWidth / safeSpeed) * 1000;
+
             translateX.value = withRepeat(
                 withTiming(-patternWidth, {
-                    duration: (patternWidth / width) * speed,
+                    duration: linearDuration,
                     easing: Easing.linear
                 }),
                 -1, false
