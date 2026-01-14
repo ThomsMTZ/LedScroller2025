@@ -222,21 +222,35 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
             )}
 
             <GestureDetector gesture={composedGestures}>
+
                 <View style={[
                     styles.interactiveArea,
-                    isLandscape && {paddingHorizontal: 0, width: '100%', flex: 1}
+                    isLandscape && {
+                        paddingHorizontal: 0,
+                        width: width,
+                        height: height,
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }
                 ]}>
                     <View style={[
                         styles.ledDisplay,
                         {borderColor: currentStaticColor},
+
+
                         isLandscape && {
-                            width: '100%',
-                            flex: 1,
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            width: width,
+                            height: height,
                             borderRadius: 0,
                             padding: 0,
                             backgroundColor: 'black',
-                            zIndex: 10
+                            zIndex: 999,
+                            elevation: 0
                         },
+
                         {borderWidth: showBorder ? (isLandscape ? 4 : 2) : 0}
                     ]}>
                         <View style={[styles.ledBorder, {
