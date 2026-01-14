@@ -222,36 +222,35 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
             )}
 
             <GestureDetector gesture={composedGestures}>
+                <View
+                    key={isLandscape ? 'landscape' : 'portrait'}
 
-                <View style={[
-                    styles.interactiveArea,
-                    isLandscape && {
-                        paddingHorizontal: 0,
-                        width: width,
-                        height: height,
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                    }
-                ]}>
+                    style={[
+                        styles.interactiveArea,
+                        isLandscape && {
+                            position: 'absolute',
+                            left: 0,
+                            right: 0,
+                            top: 0,
+                            bottom: 0,
+                            paddingHorizontal: 0,
+                            backgroundColor: 'black',
+                            zIndex: 999,
+                        }
+                    ]}
+                >
                     <View style={[
                         styles.ledDisplay,
                         {borderColor: currentStaticColor},
-
-
                         isLandscape && {
-                            position: 'absolute',
-                            top: 0,
-                            left: 0,
-                            width: width,
-                            height: height,
+                            flex: 1,
+                            width: '100%',
+                            height: '100%',
                             borderRadius: 0,
                             padding: 0,
+                            borderWidth: showBorder ? 4 : 0,
                             backgroundColor: 'black',
-                            zIndex: 999,
-                            elevation: 0
-                        },
-
-                        {borderWidth: showBorder ? (isLandscape ? 4 : 2) : 0}
+                        }
                     ]}>
                         <View style={[styles.ledBorder, {
                             shadowColor: currentStaticColor,
@@ -291,7 +290,6 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
                                         >
                                             {text}
                                         </Animated.Text>
-
                                         <View style={{width: LOOP_SPACING}}/>
                                     </React.Fragment>
                                 ))}
