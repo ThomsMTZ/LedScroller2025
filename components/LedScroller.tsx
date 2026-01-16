@@ -212,6 +212,7 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
                         <Text style={styles.headerSubtitle}>2026 Edition</Text>
                     </View>
                     <TouchableOpacity
+                        testID="settings-button"
                         style={styles.settingsButton}
                         onPress={() => setSettingsOpen(true)}
                         activeOpacity={0.7}
@@ -224,6 +225,7 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
             <GestureDetector gesture={composedGestures}>
                 <View
                     key={isLandscape ? 'landscape' : 'portrait'}
+                    testID="gesture-detector"
 
                     style={[
                         styles.interactiveArea,
@@ -267,19 +269,21 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
                                 justifyContent: 'center'
                             }
                         ]}>
-                            <Animated.View style={[
-                                styles.scroller,
-                                {
-                                    minWidth: width * 2,
-                                    alignSelf: 'flex-start',
-                                    flexDirection: 'row',
-                                    alignItems: 'center'
-                                },
-                                animatedContainerStyle,
-                            ]}>
+                            <Animated.View
+                                testID="scrolling-container"
+                                style={[styles.scroller,
+                                    {
+                                        minWidth: width * 2,
+                                        alignSelf: 'flex-start',
+                                        flexDirection: 'row',
+                                        alignItems: 'center'
+                                    },
+                                    animatedContainerStyle,
+                                ]}>
                                 {copiesArray.map((_, index) => (
                                     <React.Fragment key={index}>
                                         <Animated.Text
+                                            testID="scrolling-text"
                                             onLayout={index === 0 ? (e) => setTextWidth(e.nativeEvent.layout.width) : undefined}
                                             style={[
                                                 styles.textBase,
