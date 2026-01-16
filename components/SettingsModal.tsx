@@ -11,7 +11,7 @@ import {
     OrientationSection,
     BorderSection,
     ColorSection
-} from './SettingsModal';
+} from './SettingsModal/index';
 
 const SettingsModal: React.FC<SettingsModalProps> = ({
                                                          visible,
