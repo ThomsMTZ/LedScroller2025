@@ -7,6 +7,7 @@ import {styles} from './styles';
 import {SettingsModalProps} from './types';
 import {COLORS} from './constants';
 import ColorSelector from './ColorSelector';
+import i18n from '../i18n';
 
 const SettingsModal: React.FC<SettingsModalProps> = ({
                                                          visible,
@@ -57,14 +58,14 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                     <View style={styles.modalHandle}/>
 
                     <View style={styles.headerModal}>
-                        <Text style={styles.modalTitle}>⚙️ Config</Text>
+                        <Text style={styles.modalTitle}>{i18n.t('settings.title')}</Text>
                         <TouchableOpacity
                             style={styles.closeButton}
                             onPress={onClose}
                             activeOpacity={0.7}
                             testID="close-modal-button"
                             accessibilityRole="button"
-                            accessibilityLabel="Fermer"
+                            accessibilityLabel={i18n.t('settings.close')}
                         >
                             <Ionicons name="close" size={24} color={COLORS.text}/>
                         </TouchableOpacity>
@@ -77,19 +78,19 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                     >
 
                         <View style={styles.section}>
-                            <Text style={styles.label}>💬 Message</Text>
+                            <Text style={styles.label}>{i18n.t('settings.message')}</Text>
                             <TextInput
                                 style={styles.input}
                                 value={text}
                                 onChangeText={onTextChange}
-                                placeholder="Entrez votre message..."
+                                placeholder={i18n.t('settings.messagePlaceholder')}
                                 placeholderTextColor={COLORS.textMuted}
                                 selectionColor={currentHsl}
                             />
                         </View>
 
                         <View style={styles.section}>
-                            <Text style={styles.label}>✨ Effets</Text>
+                            <Text style={styles.label}>{i18n.t('settings.effects')}</Text>
 
                             <TouchableOpacity
                                 testID="blink-text-button"
@@ -112,7 +113,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                                     fontSize: 14,
                                     fontWeight: '600'
                                 }}>
-                                    {isTextBlinking ? 'Texte : Clignotant' : 'Texte : Fixe'}
+                                    {isTextBlinking ? i18n.t('settings.textBlinking') : i18n.t('settings.textFixed')}
                                 </Text>
                                 <Ionicons
                                     name={isTextBlinking ? "flash" : "flash-outline"}
@@ -141,7 +142,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                                     fontSize: 14,
                                     fontWeight: '600'
                                 }}>
-                                    {isBorderBlinking ? 'Bordure : Clignotante' : 'Bordure : Fixe'}
+                                    {isBorderBlinking ? i18n.t('settings.borderBlinking') : i18n.t('settings.borderFixed')}
                                 </Text>
                                 <Ionicons
                                     name={isBorderBlinking ? "pulse" : "pulse-outline"}
@@ -152,7 +153,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                         </View>
 
                         <View style={styles.section}>
-                            <Text style={styles.label}>⚡ Vitesse</Text>
+                            <Text style={styles.label}>{i18n.t('settings.speed')}</Text>
                             <View style={styles.sliderContainer}>
                                 <Slider
                                     testID="speed-slider"
@@ -167,14 +168,14 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                                     thumbTintColor={currentHsl}
                                 />
                                 <View style={styles.sliderLabels}>
-                                    <Text style={styles.sliderLabel}>Lent</Text>
-                                    <Text style={styles.sliderLabel}>Rapide</Text>
+                                    <Text style={styles.sliderLabel}>{i18n.t('settings.slow')}</Text>
+                                    <Text style={styles.sliderLabel}>{i18n.t('settings.fast')}</Text>
                                 </View>
                             </View>
                         </View>
 
                         <View style={styles.section}>
-                            <Text style={styles.label}>🔄 Orientation</Text>
+                            <Text style={styles.label}>{i18n.t('settings.orientation')}</Text>
                             <TouchableOpacity
                                 testID="orientation-button"
                                 style={[
@@ -195,7 +196,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                                     fontSize: 14,
                                     fontWeight: '600'
                                 }}>
-                                    {isLandscapeLocked ? 'Mode Paysage Forcé' : 'Rotation Automatique'}
+                                    {isLandscapeLocked ? i18n.t('settings.landscapeLocked') : i18n.t('settings.autoRotation')}
                                 </Text>
 
                                 <Ionicons
@@ -208,7 +209,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                         </View>
 
                         <View style={styles.section}>
-                            <Text style={styles.label}>🖼️ Cadre LED</Text>
+                            <Text style={styles.label}>{i18n.t('settings.ledFrame')}</Text>
                             <TouchableOpacity
                                 testID="border-button"
                                 style={[
@@ -229,7 +230,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                                     fontSize: 14,
                                     fontWeight: '600'
                                 }}>
-                                    {showBorder ? 'Bordure affichée' : 'Bordure masquée'}
+                                    {showBorder ? i18n.t('settings.borderShown') : i18n.t('settings.borderHidden')}
                                 </Text>
 
                                 <Ionicons
@@ -242,7 +243,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                         </View>
 
                         <View style={styles.section}>
-                            <Text style={styles.label}>🎨 Couleur</Text>
+                            <Text style={styles.label}>{i18n.t('settings.color')}</Text>
                             <ColorSelector
                                 selectedColor={selectedColor}
                                 onColorChange={onColorChange}

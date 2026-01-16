@@ -54,19 +54,19 @@ describe('<LedScroller /> Integration', () => {
     });
 
     it('utilise le texte par défaut si aucune sauvegarde n\'existe', async () => {
-        const {getAllByText} = render(<LedScroller initialText="BONJOUR"/>);
+        const {getAllByText} = render(<LedScroller initialText="HELLO"/>);
 
         await waitFor(() => {
-            const elements = getAllByText('BONJOUR');
+            const elements = getAllByText('HELLO');
             expect(elements.length).toBeGreaterThan(0);
         });
     });
 
     it('met à jour la couleur du texte avec HSL', async () => {
-        const {getAllByText} = render(<LedScroller initialText="BONJOUR 2025"/>);
+        const {getAllByText} = render(<LedScroller initialText="HELLO 2026"/>);
 
         await waitFor(() => {
-            const textElements = getAllByText('BONJOUR 2025');
+            const textElements = getAllByText('HELLO 2026');
             const firstElement = textElements[0];
             const flatStyle = StyleSheet.flatten(firstElement.props.style);
 
@@ -134,7 +134,7 @@ describe('<LedScroller /> Integration', () => {
         const {getAllByText} = render(<LedScroller/>);
 
         await waitFor(() => {
-            const elements = getAllByText('BONJOUR 2025');
+            const elements = getAllByText('HELLO 2026');
 
             expect(elements.length).toBeGreaterThan(0);
         });
@@ -146,10 +146,10 @@ describe('<LedScroller /> Integration', () => {
 
         jest.spyOn(AsyncStorage, 'getItem').mockRejectedValue(new Error('Storage error'));
 
-        const {getAllByText} = render(<LedScroller initialText="BONJOUR 2025"/>);
+        const {getAllByText} = render(<LedScroller initialText="HELLO 2026"/>);
 
         await waitFor(() => {
-            const elements = getAllByText('BONJOUR 2025');
+            const elements = getAllByText('HELLO 2026');
             expect(elements.length).toBeGreaterThan(0);
         });
 

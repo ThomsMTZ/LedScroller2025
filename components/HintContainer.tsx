@@ -4,6 +4,7 @@ import Animated, {FadeIn} from 'react-native-reanimated';
 import {Ionicons} from '@expo/vector-icons';
 import {styles} from './styles';
 import {COLORS} from './constants';
+import i18n from '../i18n';
 
 const HintContainer: React.FC = () => {
     return (
@@ -16,9 +17,9 @@ const HintContainer: React.FC = () => {
                 <View style={styles.hintIcon}>
                     <Ionicons name="hand-left-outline" size={14} color={COLORS.textMuted}/>
                 </View>
-                <Text style={styles.hintText}>Double-tap: Options</Text>
+                <Text style={styles.hintText}>{i18n.t('hints.doubleTap')}</Text>
                 <Text style={styles.hintText}>•</Text>
-                <Text style={styles.hintText}>Pinch: Zoom</Text>
+                <Text style={styles.hintText}>{i18n.t('hints.pinch')}</Text>
             </View>
         </Animated.View>
     );

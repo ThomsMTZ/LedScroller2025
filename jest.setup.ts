@@ -63,3 +63,8 @@ jest.mock('@expo-google-fonts/codystar', () => ({
 jest.mock('@expo/vector-icons', () => ({
     Ionicons: 'Ionicons',
 }));
+
+// 8. Mock de expo-localization (i18n)
+jest.mock('expo-localization', () => ({
+    getLocales: () => [{ languageCode: 'en', regionCode: 'US' }],
+}));
