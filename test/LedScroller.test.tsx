@@ -35,7 +35,9 @@ describe('<LedScroller /> Integration', () => {
             speed: 150,
             selectedColor: {hue: 120, saturation: 100, lightness: 50, name: 'Vert'},
             showBorder: false,
-            isLandscapeLocked: true
+            isLandscapeLocked: true,
+            isTextBlinking: true,
+            isBorderBlinking: true
         }));
 
         await waitFor(async () => {
@@ -43,9 +45,13 @@ describe('<LedScroller /> Integration', () => {
             const parsed = saved ? JSON.parse(saved) : null;
             expect(parsed.text).toBe('NOUVEAU');
             expect(parsed.showBorder).toBe(false);
+            expect(parsed.speed).toBe(150);
+            expect(parsed.selectedColor).toMatchObject({hue: 120, saturation: 100, lightness: 50, name: 'Vert'});
+            expect(parsed.isLandscapeLocked).toBe(true);
+            expect(parsed.isTextBlinking).toBe(true);
+            expect(parsed.isBorderBlinking).toBe(true);
         });
     });
-
 
     it('utilise le texte par défaut si aucune sauvegarde n\'existe', async () => {
         const {getAllByText} = render(<LedScroller initialText="BONJOUR"/>);
@@ -111,7 +117,6 @@ describe('<LedScroller /> Integration', () => {
         expect(modalTitle).toBeTruthy();
     });
 
-
     it('gère un texte vide sans crasher', () => {
         const {getAllByTestId} = render(<LedScroller initialText=""/>);
 
@@ -156,6 +161,28 @@ describe('<LedScroller /> Integration', () => {
         consoleSpy.mockRestore();
     });
 
+    it('applique le clignotement du texte et de la bordure', async () => {
+        const saved = {
+            text: 'BLINK',
+            isTextBlinking: true,
+            isBorderBlinking: true,
+            selectedColor: {hue: 0, saturation: 100, lightness: 50, name: 'Rouge'}
+        };
+        await AsyncStorage.setItem('@led_scroller_settings_v1', JSON.stringify(saved));
+
+        const {getByTestId, getAllByTestId} = render(<LedScroller/>);
+
+        await waitFor(() => {
+            const text = getAllByTestId('scrolling-text')[0];
+            const textStyle = StyleSheet.flatten(text.props.style);
+            expect(textStyle.opacity).toBeDefined();
+
+            const borderWrapper = getByTestId('led-display');
+            const borderStyle = StyleSheet.flatten(borderWrapper.props.style);
+
+            expect(borderStyle.opacity).toBeDefined();
+        });
+    });
 });
 
 describe('Mode Paysage (Landscape)', () => {
@@ -176,6 +203,7 @@ describe('Mode Paysage (Landscape)', () => {
         const {queryByText} = render(<LedScroller initialText="LANDSCAPE"/>);
 
         expect(queryByText('LED Scroller')).toBeNull();
+
         expect(queryByText(/Made with/)).toBeNull();
     });
 
@@ -185,5 +213,15 @@ describe('Mode Paysage (Landscape)', () => {
         const {getByText} = render(<LedScroller initialText="PORTRAIT"/>);
 
         expect(getByText('LED Scroller')).toBeTruthy();
+    });
+
+    it('met à jour header/footer selon l’orientation mocked', () => {
+        let mockDimensions = {width: 800, height: 360};
+        jest.spyOn(require('react-native'), 'useWindowDimensions').mockImplementation(() => mockDimensions);
+        const {queryByText, rerender} = render(<LedScroller initialText="LAND"/>);
+        expect(queryByText('LED Scroller')).toBeNull();
+        mockDimensions = {width: 360, height: 800};
+        rerender(<LedScroller initialText="LAND"/>);
+        expect(queryByText('LED Scroller')).not.toBeNull();
     });
 });

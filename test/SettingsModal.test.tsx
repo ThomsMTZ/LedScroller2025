@@ -20,6 +20,10 @@ describe('<SettingsModal /> UI Completeness', () => {
         onToggleOrientation: jest.fn(),
         showBorder: true,
         onToggleBorder: jest.fn(),
+        isTextBlinking: false,
+        onToggleTextBlinking: jest.fn(),
+        isBorderBlinking: false,
+        onToggleBorderBlinking: jest.fn(),
     };
 
     it('contient toutes les sections de configuration', () => {
@@ -30,6 +34,8 @@ describe('<SettingsModal /> UI Completeness', () => {
         expect(getByText('🔄 Orientation')).toBeTruthy();
         expect(getByText('🖼️ Cadre LED')).toBeTruthy();
         expect(getByText('🎨 Couleur')).toBeTruthy();
+
+        expect(getByText('✨ Effets')).toBeTruthy();
     });
 
     it('affiche les indicateurs visuels corrects', () => {
@@ -37,9 +43,12 @@ describe('<SettingsModal /> UI Completeness', () => {
 
         expect(getByText('Lent')).toBeTruthy();
         expect(getByText('Rapide')).toBeTruthy();
-
         expect(getByText('Rotation Automatique')).toBeTruthy();
         expect(getByText('Bordure affichée')).toBeTruthy();
+
+        // VÉRIFICATION : Textes par défaut des nouveaux boutons
+        expect(getByText('Texte : Fixe')).toBeTruthy();
+        expect(getByText('Bordure : Fixe')).toBeTruthy();
     });
 
     it('change le texte du bouton orientation quand verrouillé', () => {
@@ -47,6 +56,37 @@ describe('<SettingsModal /> UI Completeness', () => {
             <SettingsModal {...defaultProps} isLandscapeLocked={true}/>
         );
         expect(getByText('Mode Paysage Forcé')).toBeTruthy();
+    });
+
+    it('appelle onToggleTextBlinking au clic', () => {
+        const {getByTestId} = render(<SettingsModal {...defaultProps} />);
+
+        const blinkTextBtn = getByTestId('blink-text-button');
+        fireEvent.press(blinkTextBtn);
+
+        expect(defaultProps.onToggleTextBlinking).toHaveBeenCalled();
+    });
+
+    it('appelle onToggleBorderBlinking au clic', () => {
+        const {getByTestId} = render(<SettingsModal {...defaultProps} />);
+
+        const blinkBorderBtn = getByTestId('blink-border-button');
+        fireEvent.press(blinkBorderBtn);
+
+        expect(defaultProps.onToggleBorderBlinking).toHaveBeenCalled();
+    });
+
+    it('affiche l\'état activé pour les effets', () => {
+        const {getByText} = render(
+            <SettingsModal
+                {...defaultProps}
+                isTextBlinking={true}
+                isBorderBlinking={true}
+            />
+        );
+
+        expect(getByText('Texte : Clignotant')).toBeTruthy();
+        expect(getByText('Bordure : Clignotante')).toBeTruthy();
     });
 
     it('appelle onTextChange quand l\'utilisateur tape du texte', () => {
@@ -80,7 +120,6 @@ describe('<SettingsModal /> UI Completeness', () => {
         const {getByRole} = render(<SettingsModal {...defaultProps} />);
 
         const closeButton = getByRole('button', {name: /fermer/i});
-
         fireEvent.press(closeButton);
 
         expect(defaultProps.onClose).toHaveBeenCalled();

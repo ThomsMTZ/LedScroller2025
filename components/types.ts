@@ -60,6 +60,10 @@ export interface SettingsModalProps {
     onToggleOrientation: () => void;
     showBorder: boolean;
     onToggleBorder: () => void;
+    isTextBlinking: boolean;
+    onToggleTextBlinking: () => void;
+    isBorderBlinking: boolean;
+    onToggleBorderBlinking: () => void;
 }
 
 export interface ColorSelectorProps {
