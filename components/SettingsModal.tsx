@@ -21,14 +21,50 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                                                          onToggleOrientation,
                                                          showBorder,
                                                          onToggleBorder,
+                                                         // 👇 Nouveaux props
+                                                         isBorderChase,
+                                                         onToggleBorderChase,
+                                                         isBorderBlinking,
+                                                         onToggleBorderBlinking,
                                                          isTextBlinking,
                                                          onToggleTextBlinking,
-                                                         isBorderBlinking,
-                                                         onToggleBorderBlinking
                                                      }) => {
 
     const {height: screenHeight} = useWindowDimensions();
     const currentHsl = `hsl(${selectedColor.hue}, ${selectedColor.saturation}%, ${selectedColor.lightness}%)`;
+
+    // Helper pour créer un bouton toggle
+    const renderToggleButton = (label: string, icon: any, isActive: boolean, onPress: () => void, testID: string) => (
+        <TouchableOpacity
+            testID={testID}
+            style={[
+                styles.input,
+                {
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    backgroundColor: isActive ? 'rgba(0, 212, 255, 0.15)' : 'rgba(0, 0, 0, 0.3)',
+                    borderColor: isActive ? currentHsl : COLORS.border,
+                    marginBottom: 10
+                }
+            ]}
+            onPress={onPress}
+            activeOpacity={0.7}
+        >
+            <Text style={{
+                color: isActive ? currentHsl : COLORS.textMuted,
+                fontSize: 14,
+                fontWeight: '600'
+            }}>
+                {label}
+            </Text>
+            <Ionicons
+                name={isActive ? icon : icon + "-outline"}
+                size={20}
+                color={isActive ? currentHsl : COLORS.textMuted}
+            />
+        </TouchableOpacity>
+    );
 
     return (
         <Modal
@@ -38,7 +74,6 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
             onRequestClose={onClose}
         >
             <View style={styles.modalOverlay}>
-
                 <TouchableOpacity
                     style={{flex: 1}}
                     activeOpacity={1}
@@ -75,7 +110,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                         contentContainerStyle={{paddingBottom: 20}}
                         keyboardShouldPersistTaps="handled"
                     >
-
+                        {/* MESSAGE */}
                         <View style={styles.section}>
                             <Text style={styles.label}>💬 Message</Text>
                             <TextInput
@@ -88,69 +123,56 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                             />
                         </View>
 
+                        {/* CADRE & ANIMATION BORDURE */}
                         <View style={styles.section}>
-                            <Text style={styles.label}>✨ Effets</Text>
+                            <Text style={styles.label}>🖼️ Cadre LED</Text>
 
-                            <TouchableOpacity
-                                testID="blink-text-button"
-                                style={[
-                                    styles.input,
-                                    {
-                                        flexDirection: 'row',
-                                        justifyContent: 'space-between',
-                                        alignItems: 'center',
-                                        marginBottom: 10,
-                                        backgroundColor: isTextBlinking ? 'rgba(0, 212, 255, 0.15)' : 'rgba(0, 0, 0, 0.3)',
-                                        borderColor: isTextBlinking ? currentHsl : COLORS.border
-                                    }
-                                ]}
-                                onPress={onToggleTextBlinking}
-                                activeOpacity={0.7}
-                            >
-                                <Text style={{
-                                    color: isTextBlinking ? currentHsl : COLORS.textMuted,
-                                    fontSize: 14,
-                                    fontWeight: '600'
-                                }}>
-                                    {isTextBlinking ? 'Texte : Clignotant' : 'Texte : Fixe'}
-                                </Text>
-                                <Ionicons
-                                    name={isTextBlinking ? "flash" : "flash-outline"}
-                                    size={20}
-                                    color={isTextBlinking ? currentHsl : COLORS.textMuted}
-                                />
-                            </TouchableOpacity>
+                            {/* 1. Afficher/Masquer */}
+                            {renderToggleButton(
+                                showBorder ? 'Bordure affichée' : 'Bordure masquée',
+                                'square',
+                                showBorder,
+                                onToggleBorder,
+                                'border-button'
+                            )}
 
-                            <TouchableOpacity
-                                testID="blink-border-button"
-                                style={[
-                                    styles.input,
-                                    {
-                                        flexDirection: 'row',
-                                        justifyContent: 'space-between',
-                                        alignItems: 'center',
-                                        backgroundColor: isBorderBlinking ? 'rgba(0, 212, 255, 0.15)' : 'rgba(0, 0, 0, 0.3)',
-                                        borderColor: isBorderBlinking ? currentHsl : COLORS.border
-                                    }
-                                ]}
-                                onPress={onToggleBorderBlinking}
-                                activeOpacity={0.7}
-                            >
-                                <Text style={{
-                                    color: isBorderBlinking ? currentHsl : COLORS.textMuted,
-                                    fontSize: 14,
-                                    fontWeight: '600'
-                                }}>
-                                    {isBorderBlinking ? 'Bordure : Clignotante' : 'Bordure : Fixe'}
-                                </Text>
-                                <Ionicons
-                                    name={isBorderBlinking ? "pulse" : "pulse-outline"}
-                                    size={20}
-                                    color={isBorderBlinking ? currentHsl : COLORS.textMuted}
-                                />
-                            </TouchableOpacity>
+                            {/* OPTIONS AVANCÉES (Visibles seulement si la bordure est affichée) */}
+                            {showBorder && (
+                                <>
+                                    {/* 2. Mouvement : Fixe vs Chenillard */}
+                                    {renderToggleButton(
+                                        isBorderChase ? 'Style : Chenillard' : 'Style : Fixe',
+                                        'infinite',
+                                        isBorderChase,
+                                        onToggleBorderChase,
+                                        'chase-border-button'
+                                    )}
+
+                                    {/* 3. Opacité : Constant vs Clignotant */}
+                                    {renderToggleButton(
+                                        isBorderBlinking ? 'Effet : Clignotant' : 'Effet : Constant',
+                                        'flash',
+                                        isBorderBlinking,
+                                        onToggleBorderBlinking,
+                                        'blink-border-button'
+                                    )}
+                                </>
+                            )}
                         </View>
 
+                        {/* EFFETS TEXTE */}
+                        <View style={styles.section}>
+                            <Text style={styles.label}>✨ Effets Texte</Text>
+                            {renderToggleButton(
+                                isTextBlinking ? 'Texte : Clignotant' : 'Texte : Fixe',
+                                'flash',
+                                isTextBlinking,
+                                onToggleTextBlinking,
+                                'blink-text-button'
+                            )}
+                        </View>
+
+                        {/* VITESSE */}
                         <View style={styles.section}>
                             <Text style={styles.label}>⚡ Vitesse</Text>
                             <View style={styles.sliderContainer}>
@@ -173,74 +195,19 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                             </View>
                         </View>
 
+                        {/* ORIENTATION */}
                         <View style={styles.section}>
                             <Text style={styles.label}>🔄 Orientation</Text>
-                            <TouchableOpacity
-                                testID="orientation-button"
-                                style={[
-                                    styles.input,
-                                    {
-                                        flexDirection: 'row',
-                                        justifyContent: 'space-between',
-                                        alignItems: 'center',
-                                        backgroundColor: isLandscapeLocked ? 'rgba(0, 212, 255, 0.15)' : 'rgba(0, 0, 0, 0.3)',
-                                        borderColor: isLandscapeLocked ? currentHsl : COLORS.border
-                                    }
-                                ]}
-                                onPress={onToggleOrientation}
-                                activeOpacity={0.7}
-                            >
-                                <Text style={{
-                                    color: isLandscapeLocked ? currentHsl : COLORS.textMuted,
-                                    fontSize: 14,
-                                    fontWeight: '600'
-                                }}>
-                                    {isLandscapeLocked ? 'Mode Paysage Forcé' : 'Rotation Automatique'}
-                                </Text>
-
-                                <Ionicons
-                                    testID="orientation-icon"
-                                    name={isLandscapeLocked ? "lock-closed" : "phone-portrait-outline"}
-                                    size={20}
-                                    color={isLandscapeLocked ? currentHsl : COLORS.textMuted}
-                                />
-                            </TouchableOpacity>
+                            {renderToggleButton(
+                                isLandscapeLocked ? 'Mode Paysage Forcé' : 'Rotation Automatique',
+                                'lock-closed',
+                                isLandscapeLocked,
+                                onToggleOrientation,
+                                'orientation-button'
+                            )}
                         </View>
 
-                        <View style={styles.section}>
-                            <Text style={styles.label}>🖼️ Cadre LED</Text>
-                            <TouchableOpacity
-                                testID="border-button"
-                                style={[
-                                    styles.input,
-                                    {
-                                        flexDirection: 'row',
-                                        justifyContent: 'space-between',
-                                        alignItems: 'center',
-                                        backgroundColor: showBorder ? 'rgba(0, 212, 255, 0.15)' : 'rgba(0, 0, 0, 0.3)',
-                                        borderColor: showBorder ? currentHsl : COLORS.border
-                                    }
-                                ]}
-                                onPress={onToggleBorder}
-                                activeOpacity={0.7}
-                            >
-                                <Text style={{
-                                    color: showBorder ? currentHsl : COLORS.textMuted,
-                                    fontSize: 14,
-                                    fontWeight: '600'
-                                }}>
-                                    {showBorder ? 'Bordure affichée' : 'Bordure masquée'}
-                                </Text>
-
-                                <Ionicons
-                                    testID="border-icon"
-                                    name={showBorder ? "square-outline" : "scan-outline"}
-                                    size={20}
-                                    color={showBorder ? currentHsl : COLORS.textMuted}
-                                />
-                            </TouchableOpacity>
-                        </View>
-
+                        {/* COULEUR */}
                         <View style={styles.section}>
                             <Text style={styles.label}>🎨 Couleur</Text>
                             <ColorSelector

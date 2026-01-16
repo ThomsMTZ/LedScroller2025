@@ -51,13 +51,13 @@ export const styles = StyleSheet.create<Styles>({
     ledDisplay: {
         borderWidth: 2,
         borderRadius: 16,
-        padding: 4,
+        padding: 0, // 👈 MODIFIÉ : Retrait du padding externe (était 4)
         backgroundColor: 'rgba(0, 0, 0, 0.3)',
     },
     ledBorder: {
-        borderRadius: 12,
+        borderRadius: 16, // 👈 MODIFIÉ : Ajusté pour coller au parent (était 12)
         overflow: 'hidden',
-        paddingVertical: 30,
+        paddingVertical: 0, // 👈 MODIFIÉ : Retrait du padding interne (était 30)
         shadowOffset: {width: 0, height: 0},
         shadowOpacity: 0.8,
         shadowRadius: 20,

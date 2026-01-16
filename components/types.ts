@@ -58,12 +58,20 @@ export interface SettingsModalProps {
     onColorChange: (color: LedColorType) => void;
     isLandscapeLocked: boolean;
     onToggleOrientation: () => void;
+
+    // --- BORDURE ---
     showBorder: boolean;
     onToggleBorder: () => void;
+
+    isBorderChase: boolean;           // 👈 NOUVEAU : Mouvement Chenillard
+    onToggleBorderChase: () => void;  // 👈 NOUVEAU
+
+    isBorderBlinking: boolean;        // Clignotement (Opacité)
+    onToggleBorderBlinking: () => void;
+
+    // --- TEXTE ---
     isTextBlinking: boolean;
     onToggleTextBlinking: () => void;
-    isBorderBlinking: boolean;
-    onToggleBorderBlinking: () => void;
 }
 
 export interface ColorSelectorProps {
