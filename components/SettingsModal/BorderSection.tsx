@@ -19,6 +19,7 @@ const BorderSection: React.FC<BorderSectionProps> = ({
             <Text style={styles.label}>🖼️ Cadre LED</Text>
             <ToggleButton
                 testID="border-button"
+                iconTestID="border-icon"
                 isActive={showBorder}
                 activeLabel="Bordure affichée"
                 inactiveLabel="Bordure masquée"

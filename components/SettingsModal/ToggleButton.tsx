@@ -13,6 +13,7 @@ interface ToggleButtonProps {
     inactiveIcon: keyof typeof Ionicons.glyphMap;
     onPress: () => void;
     currentHsl: string;
+    iconTestID?: string;
 }
 
 const ToggleButton: React.FC<ToggleButtonProps> = ({
@@ -23,7 +24,8 @@ const ToggleButton: React.FC<ToggleButtonProps> = ({
     activeIcon,
     inactiveIcon,
     onPress,
-    currentHsl
+    currentHsl,
+    iconTestID
 }) => {
     return (
         <TouchableOpacity
@@ -49,7 +51,7 @@ const ToggleButton: React.FC<ToggleButtonProps> = ({
                 {isActive ? activeLabel : inactiveLabel}
             </Text>
             <Ionicons
-                testID={testID === 'orientation-button' ? 'orientation-icon' : testID === 'border-button' ? 'border-icon' : undefined}
+                testID={iconTestID}
                 name={isActive ? activeIcon : inactiveIcon}
                 size={20}
                 color={isActive ? currentHsl : COLORS.textMuted}

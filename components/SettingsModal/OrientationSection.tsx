@@ -19,6 +19,7 @@ const OrientationSection: React.FC<OrientationSectionProps> = ({
             <Text style={styles.label}>🔄 Orientation</Text>
             <ToggleButton
                 testID="orientation-button"
+                iconTestID="orientation-icon"
                 isActive={isLandscapeLocked}
                 activeLabel="Mode Paysage Forcé"
                 inactiveLabel="Rotation Automatique"
