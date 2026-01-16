@@ -1,8 +1,4 @@
-// jest.setup.ts
-
-// 1. Mock de Reanimated (CORRECTIF POUR V4)
-// Au lieu de chercher le fichier jestUtils qui a bougé,
-// on utilise le mock global fourni par la librairie.
+// 1. Mock de Reanimated
 jest.mock('react-native-reanimated', () =>
     require('react-native-reanimated/mock')
 );
@@ -46,7 +42,6 @@ jest.mock('react-native-gesture-handler', () => {
             Race: () => {
             },
         },
-        // Ajout important pour éviter certaines erreurs de rendu
         State: {},
         Directions: {},
     };
@@ -59,8 +54,9 @@ jest.mock('expo-linear-gradient', () => ({
 
 // 6. Mock des Fonts (Google Fonts)
 jest.mock('@expo-google-fonts/codystar', () => ({
-    useFonts: () => [true],
     Codystar_400Regular: 'Codystar_400Regular',
+    useFonts: () => [true],
+
 }));
 
 // 7. Mock des Icones (Ionicons)

@@ -176,7 +176,6 @@ describe('Mode Paysage (Landscape)', () => {
         const {queryByText} = render(<LedScroller initialText="LANDSCAPE"/>);
 
         expect(queryByText('LED Scroller')).toBeNull();
-
         expect(queryByText(/Made with/)).toBeNull();
     });
 

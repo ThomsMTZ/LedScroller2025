@@ -68,9 +68,9 @@ describe('<SettingsModal /> UI Completeness', () => {
     });
 
     it('appelle onToggleBorder au clic sur le bouton bordure', () => {
-        const {getByText} = render(<SettingsModal {...defaultProps} />);
+        const {getByTestId} = render(<SettingsModal {...defaultProps} />);
 
-        const borderButton = getByText('Bordure affichée').parent;
+        const borderButton = getByTestId('border-button');
         fireEvent.press(borderButton);
 
         expect(defaultProps.onToggleBorder).toHaveBeenCalled();

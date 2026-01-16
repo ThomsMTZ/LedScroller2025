@@ -144,6 +144,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                         <View style={styles.section}>
                             <Text style={styles.label}>🖼️ Cadre LED</Text>
                             <TouchableOpacity
+                                testID="border-button"
                                 style={[
                                     styles.input,
                                     {
