@@ -26,8 +26,9 @@ import {COLORS, LED_COLORS} from './constants';
 import GridOverlay from './GridOverlay';
 import HintContainer from './HintContainer';
 import SettingsModal from './SettingsModal';
+import i18n from '../i18n';
 
-const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'}) => {
+const LedScroller: React.FC<LedScrollerProps> = ({initialText = i18n.t('default.message')}) => {
     const {width, height} = useWindowDimensions();
     const STORAGE_KEY = '@led_scroller_settings_v1';
 
@@ -252,8 +253,8 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
             {!isLandscape && (
                 <View style={styles.header}>
                     <View>
-                        <Text style={styles.headerTitle}>LED Scroller</Text>
-                        <Text style={styles.headerSubtitle}>2026 Edition</Text>
+                        <Text style={styles.headerTitle}>{i18n.t('app.title')}</Text>
+                        <Text style={styles.headerSubtitle}>{i18n.t('app.subtitle')}</Text>
                     </View>
                     <TouchableOpacity
                         testID="settings-button"
@@ -354,7 +355,7 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
 
             {!isLandscape && (
                 <View style={styles.footer}>
-                    <Text style={styles.footerText}>Made with ❤️ by Thomas Martinez</Text>
+                    <Text style={styles.footerText}>{i18n.t('footer.madeWith')}</Text>
                 </View>
             )}
 

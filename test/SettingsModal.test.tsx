@@ -30,32 +30,32 @@ describe('<SettingsModal /> UI Completeness', () => {
         const {getByText} = render(<SettingsModal {...defaultProps} />);
 
         expect(getByText('💬 Message')).toBeTruthy();
-        expect(getByText('⚡ Vitesse')).toBeTruthy();
+        expect(getByText('⚡ Speed')).toBeTruthy();
         expect(getByText('🔄 Orientation')).toBeTruthy();
-        expect(getByText('🖼️ Cadre LED')).toBeTruthy();
-        expect(getByText('🎨 Couleur')).toBeTruthy();
+        expect(getByText('🖼️ LED Frame')).toBeTruthy();
+        expect(getByText('🎨 Color')).toBeTruthy();
 
-        expect(getByText('✨ Effets')).toBeTruthy();
+        expect(getByText('✨ Effects')).toBeTruthy();
     });
 
     it('affiche les indicateurs visuels corrects', () => {
         const {getByText} = render(<SettingsModal {...defaultProps} />);
 
-        expect(getByText('Lent')).toBeTruthy();
-        expect(getByText('Rapide')).toBeTruthy();
-        expect(getByText('Rotation Automatique')).toBeTruthy();
-        expect(getByText('Bordure affichée')).toBeTruthy();
+        expect(getByText('Slow')).toBeTruthy();
+        expect(getByText('Fast')).toBeTruthy();
+        expect(getByText('Automatic Rotation')).toBeTruthy();
+        expect(getByText('Border shown')).toBeTruthy();
 
         // VÉRIFICATION : Textes par défaut des nouveaux boutons
-        expect(getByText('Texte : Fixe')).toBeTruthy();
-        expect(getByText('Bordure : Fixe')).toBeTruthy();
+        expect(getByText('Text: Fixed')).toBeTruthy();
+        expect(getByText('Border: Fixed')).toBeTruthy();
     });
 
     it('change le texte du bouton orientation quand verrouillé', () => {
         const {getByText} = render(
             <SettingsModal {...defaultProps} isLandscapeLocked={true}/>
         );
-        expect(getByText('Mode Paysage Forcé')).toBeTruthy();
+        expect(getByText('Landscape Mode Forced')).toBeTruthy();
     });
 
     it('appelle onToggleTextBlinking au clic', () => {
@@ -85,14 +85,14 @@ describe('<SettingsModal /> UI Completeness', () => {
             />
         );
 
-        expect(getByText('Texte : Clignotant')).toBeTruthy();
-        expect(getByText('Bordure : Clignotante')).toBeTruthy();
+        expect(getByText('Text: Blinking')).toBeTruthy();
+        expect(getByText('Border: Blinking')).toBeTruthy();
     });
 
     it('appelle onTextChange quand l\'utilisateur tape du texte', () => {
         const {getByPlaceholderText} = render(<SettingsModal {...defaultProps} />);
 
-        const textInput = getByPlaceholderText('Entrez votre message...');
+        const textInput = getByPlaceholderText('Enter your message...');
         fireEvent.changeText(textInput, 'NOUVEAU TEXTE');
 
         expect(defaultProps.onTextChange).toHaveBeenCalledWith('NOUVEAU TEXTE');
@@ -119,7 +119,7 @@ describe('<SettingsModal /> UI Completeness', () => {
     it('appelle onClose quand on clique sur le bouton fermer', () => {
         const {getByRole} = render(<SettingsModal {...defaultProps} />);
 
-        const closeButton = getByRole('button', {name: /fermer/i});
+        const closeButton = getByRole('button', {name: /close/i});
         fireEvent.press(closeButton);
 
         expect(defaultProps.onClose).toHaveBeenCalled();

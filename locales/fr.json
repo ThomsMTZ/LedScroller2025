@@ -1,0 +1,37 @@
+{
+  "app": {
+    "title": "LED Scroller",
+    "subtitle": "Édition 2026"
+  },
+  "settings": {
+    "title": "⚙️ Config",
+    "close": "Fermer",
+    "message": "💬 Message",
+    "messagePlaceholder": "Entrez votre message...",
+    "effects": "✨ Effets",
+    "textBlinking": "Texte : Clignotant",
+    "textFixed": "Texte : Fixe",
+    "borderBlinking": "Bordure : Clignotante",
+    "borderFixed": "Bordure : Fixe",
+    "speed": "⚡ Vitesse",
+    "slow": "Lent",
+    "fast": "Rapide",
+    "orientation": "🔄 Orientation",
+    "landscapeLocked": "Mode Paysage Forcé",
+    "autoRotation": "Rotation Automatique",
+    "ledFrame": "🖼️ Cadre LED",
+    "borderShown": "Bordure affichée",
+    "borderHidden": "Bordure masquée",
+    "color": "🎨 Couleur"
+  },
+  "hints": {
+    "doubleTap": "Double-tap: Options",
+    "pinch": "Pinch: Zoom"
+  },
+  "footer": {
+    "madeWith": "Créé avec ❤️ par Thomas Martinez"
+  },
+  "default": {
+    "message": "BONJOUR 2026"
+  }
+}

@@ -44,7 +44,11 @@ module.exports = {
                 // Async storage implementation for React Native.
                 '@react-native-async-storage',
                 // Additional React Native community-maintained packages.
-                '@react-native-community'
+                '@react-native-community',
+                // i18n-js for internationalization.
+                'i18n-js',
+                // make-plural dependency for i18n-js.
+                'make-plural'
             ].join('|') +
             ')',
         ],],
