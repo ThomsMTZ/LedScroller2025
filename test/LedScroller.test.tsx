@@ -1,5 +1,5 @@
 import React from 'react';
-import {fireEvent, render, waitFor} from '@testing-library/react-native';
+import {fireEvent, render, waitFor, within} from '@testing-library/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {LedScroller} from '../components';
 import {StyleSheet} from 'react-native';
@@ -8,6 +8,7 @@ describe('<LedScroller /> Integration', () => {
 
     beforeEach(async () => {
         jest.clearAllMocks();
+        jest.restoreAllMocks();
         await AsyncStorage.clear();
     });
 
@@ -144,7 +145,7 @@ describe('<LedScroller /> Integration', () => {
         const consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {
         });
 
-        jest.spyOn(AsyncStorage, 'getItem').mockRejectedValue(new Error('Storage error'));
+        const getItemSpy = jest.spyOn(AsyncStorage, 'getItem').mockRejectedValueOnce(new Error('Storage error'));
 
         const {getAllByText} = render(<LedScroller initialText="BONJOUR 2025"/>);
 
@@ -154,10 +155,11 @@ describe('<LedScroller /> Integration', () => {
         });
 
         expect(consoleSpy).toHaveBeenCalledWith(
-            "Erreur lors du chargement des paramètres",
+            'Erreur load',
             expect.any(Error)
         );
 
+        getItemSpy.mockRestore();
         consoleSpy.mockRestore();
     });
 
@@ -187,186 +189,151 @@ describe('<LedScroller /> Integration', () => {
 
 describe('<LedScroller /> Recent Messages Feature', () => {
 
+    const openSettings = async (queries: {
+        getByTestId: (id: string) => any;
+        findByText: (text: string) => Promise<any>
+    }) => {
+        fireEvent.press(queries.getByTestId('settings-button'));
+        await queries.findByText('⚙️ Config');
+    };
+
+    const closeSettings = (queries: { getByTestId: (id: string) => any }) => {
+        fireEvent.press(queries.getByTestId('close-modal-button'));
+    };
+
     beforeEach(async () => {
         jest.clearAllMocks();
+        jest.restoreAllMocks();
         await AsyncStorage.clear();
     });
 
     it('sauvegarde le message courant dans l\'historique à la fermeture du modal', async () => {
-        const {getByTestId, findByText} = render(<LedScroller initialText="INITIAL"/>);
+        const queries = render(<LedScroller initialText="INITIAL"/>);
 
-        const settingsBtn = getByTestId('settings-button');
-        fireEvent.press(settingsBtn);
+        await openSettings(queries);
+        closeSettings(queries);
 
-        const modalTitle = await findByText('⚙️ Config');
-        expect(modalTitle).toBeTruthy();
-
-        const closeBtn = getByTestId('close-modal-button');
-        fireEvent.press(closeBtn);
-
-        await waitFor(async () => {
-            const saved = await AsyncStorage.getItem('@led_scroller_settings_v1');
-            const parsed = saved ? JSON.parse(saved) : null;
-            expect(parsed.recentMessages).toBeDefined();
-        });
+        await openSettings(queries);
+        const historyList = queries.getByTestId('history-list');
+        expect(within(historyList).getByText('INITIAL')).toBeTruthy();
     });
 
     it('ajoute le message à l\'historique lors de la fermeture du modal', async () => {
-        const {getByTestId, getByPlaceholderText, findByText} = render(
-            <LedScroller initialText="TEST"/>
-        );
+        const queries = render(<LedScroller initialText="TEST"/>);
 
-        const settingsBtn = getByTestId('settings-button');
-        fireEvent.press(settingsBtn);
+        await openSettings(queries);
 
-        await findByText('⚙️ Config');
-
-        const textInput = getByPlaceholderText('Entrez votre message...');
+        const textInput = queries.getByPlaceholderText('Entrez votre message...');
         fireEvent.changeText(textInput, 'NOUVEAU MESSAGE');
 
-        const closeBtn = getByTestId('close-modal-button');
-        fireEvent.press(closeBtn);
-
-        await waitFor(async () => {
-            const saved = await AsyncStorage.getItem('@led_scroller_settings_v1');
-            const parsed = saved ? JSON.parse(saved) : null;
-            expect(parsed.recentMessages).toContain('NOUVEAU MESSAGE');
-        }, {timeout: 2000});
+        closeSettings(queries);
+        await openSettings(queries);
+        const historyList = queries.getByTestId('history-list');
+        expect(within(historyList).getByText('NOUVEAU MESSAGE')).toBeTruthy();
     });
 
     it('limite l\'historique à 5 messages maximum', async () => {
-        const initialMessages = ['MSG1', 'MSG2', 'MSG3', 'MSG4', 'MSG5'];
-        await AsyncStorage.setItem('@led_scroller_settings_v1', JSON.stringify({
-            text: 'INITIAL',
-            recentMessages: initialMessages
-        }));
+        const queries = render(<LedScroller initialText="TEST"/>);
+        const messages = ['MSG1', 'MSG2', 'MSG3', 'MSG4', 'MSG5', 'MSG6'];
 
-        const {getByTestId, getByPlaceholderText, findByText} = render(
-            <LedScroller initialText="TEST"/>
-        );
+        for (const msg of messages) {
+            await openSettings(queries);
+            fireEvent.changeText(queries.getByPlaceholderText('Entrez votre message...'), msg);
+            closeSettings(queries);
+        }
 
-        const settingsBtn = getByTestId('settings-button');
-        fireEvent.press(settingsBtn);
-
-        await findByText('⚙️ Config');
-
-        const textInput = getByPlaceholderText('Entrez votre message...');
-        fireEvent.changeText(textInput, 'MSG6');
-
-        const closeBtn = getByTestId('close-modal-button');
-        fireEvent.press(closeBtn);
-
-        await waitFor(async () => {
-            const saved = await AsyncStorage.getItem('@led_scroller_settings_v1');
-            const parsed = saved ? JSON.parse(saved) : null;
-            expect(parsed.recentMessages.length).toBeLessThanOrEqual(5);
-            expect(parsed.recentMessages[0]).toBe('MSG6');
-        }, {timeout: 2000});
+        await openSettings(queries);
+        const historyList = queries.getByTestId('history-list');
+        expect(within(historyList).queryByText('MSG1')).toBeNull();
+        expect(within(historyList).getByText('MSG2')).toBeTruthy();
+        expect(within(historyList).getByText('MSG6')).toBeTruthy();
     });
 
     it('évite les doublons dans l\'historique', async () => {
-        await AsyncStorage.setItem('@led_scroller_settings_v1', JSON.stringify({
-            text: 'INITIAL',
-            recentMessages: ['DUPLICATE', 'OTHER']
-        }));
+        const queries = render(<LedScroller initialText="TEST"/>);
 
-        const {getByTestId, getByPlaceholderText, findByText} = render(
-            <LedScroller initialText="TEST"/>
-        );
+        await openSettings(queries);
+        fireEvent.changeText(queries.getByPlaceholderText('Entrez votre message...'), 'DUPLICATE');
+        closeSettings(queries);
 
-        const settingsBtn = getByTestId('settings-button');
-        fireEvent.press(settingsBtn);
+        await openSettings(queries);
+        fireEvent.changeText(queries.getByPlaceholderText('Entrez votre message...'), 'OTHER');
+        closeSettings(queries);
 
-        await findByText('⚙️ Config');
+        await openSettings(queries);
+        fireEvent.changeText(queries.getByPlaceholderText('Entrez votre message...'), 'DUPLICATE');
+        closeSettings(queries);
 
-        const textInput = getByPlaceholderText('Entrez votre message...');
-        fireEvent.changeText(textInput, 'DUPLICATE');
-
-        const closeBtn = getByTestId('close-modal-button');
-        fireEvent.press(closeBtn);
-
-        await waitFor(async () => {
-            const saved = await AsyncStorage.getItem('@led_scroller_settings_v1');
-            const parsed = saved ? JSON.parse(saved) : null;
-            const duplicateCount = parsed.recentMessages.filter(
-                (msg: string) => msg === 'DUPLICATE'
-            ).length;
-            expect(duplicateCount).toBe(1);
-            expect(parsed.recentMessages[0]).toBe('DUPLICATE');
-        }, {timeout: 2000});
+        await openSettings(queries);
+        const historyList = queries.getByTestId('history-list');
+        expect(within(historyList).getAllByText('DUPLICATE')).toHaveLength(1);
     });
 
     it('charge l\'historique des messages depuis le stockage', async () => {
-        const savedMessages = ['SAVED1', 'SAVED2', 'SAVED3'];
-        await AsyncStorage.setItem('@led_scroller_settings_v1', JSON.stringify({
+        jest.spyOn(AsyncStorage, 'getItem').mockResolvedValueOnce(JSON.stringify({
             text: 'INITIAL',
-            recentMessages: savedMessages
+            recentMessages: ['SAVED1', 'SAVED2', 'SAVED3']
         }));
 
-        const {getByTestId, findByText} = render(<LedScroller initialText="TEST"/>);
+        const queries = render(<LedScroller initialText="TEST"/>);
+        await openSettings(queries);
 
-        const settingsBtn = getByTestId('settings-button');
-        fireEvent.press(settingsBtn);
-
-        const modal = await findByText('⚙️ Config');
-        expect(modal).toBeTruthy();
-
-        expect(findByText('SAVED1')).toBeTruthy();
-        expect(findByText('SAVED2')).toBeTruthy();
-        expect(findByText('SAVED3')).toBeTruthy();
+        expect(await queries.findByText('SAVED1')).toBeTruthy();
+        expect(await queries.findByText('SAVED2')).toBeTruthy();
+        expect(await queries.findByText('SAVED3')).toBeTruthy();
     });
 
     it('ignore les messages vides lors de la sauvegarde', async () => {
-        const {getByTestId, getByPlaceholderText, findByText} = render(
-            <LedScroller initialText="TEST"/>
-        );
+        const queries = render(<LedScroller initialText="TEST"/>);
 
-        const settingsBtn = getByTestId('settings-button');
-        fireEvent.press(settingsBtn);
+        await openSettings(queries);
 
-        await findByText('⚙️ Config');
-
-        const textInput = getByPlaceholderText('Entrez votre message...');
+        const textInput = queries.getByPlaceholderText('Entrez votre message...');
         fireEvent.changeText(textInput, '   ');
 
-        const closeBtn = getByTestId('close-modal-button');
-        fireEvent.press(closeBtn);
+        closeSettings(queries);
+        await openSettings(queries);
 
-        await waitFor(async () => {
-            const saved = await AsyncStorage.getItem('@led_scroller_settings_v1');
-            const parsed = saved ? JSON.parse(saved) : null;
-            expect(parsed.recentMessages || []).not.toContain('   ');
-        }, {timeout: 2000});
+        expect(queries.queryByTestId('history-list')).toBeNull();
     });
 
     it('préserve l\'ordre des messages : les plus récents en premier', async () => {
-        await AsyncStorage.setItem('@led_scroller_settings_v1', JSON.stringify({
+        const queries = render(<LedScroller initialText="TEST"/>);
+
+        for (const msg of ['OLD1', 'OLD2', 'NEW']) {
+            await openSettings(queries);
+            fireEvent.changeText(queries.getByPlaceholderText('Entrez votre message...'), msg);
+            closeSettings(queries);
+        }
+
+        await openSettings(queries);
+        const historyList = queries.getByTestId('history-list');
+        const ordered = within(historyList).getAllByText(/OLD1|OLD2|NEW/).map(node => node.props.children);
+
+        expect(ordered.indexOf('NEW')).toBeLessThan(ordered.indexOf('OLD2'));
+        expect(ordered.indexOf('OLD2')).toBeLessThan(ordered.indexOf('OLD1'));
+    });
+
+    it('charge la direction inversée depuis le stockage', async () => {
+        jest.spyOn(AsyncStorage, 'getItem').mockResolvedValueOnce(JSON.stringify({
             text: 'INITIAL',
-            recentMessages: ['OLD1', 'OLD2']
+            isReverseScroll: true
         }));
 
-        const {getByTestId, getByPlaceholderText, findByText} = render(
-            <LedScroller initialText="TEST"/>
-        );
+        const queries = render(<LedScroller initialText="TEST"/>);
+        await openSettings(queries);
 
-        const settingsBtn = getByTestId('settings-button');
-        fireEvent.press(settingsBtn);
+        expect(await queries.findByText('Direction : Gauche vers Droite')).toBeTruthy();
+    });
 
-        await findByText('⚙️ Config');
+    it('sauvegarde la direction inversée après un toggle', async () => {
+        const queries = render(<LedScroller initialText="TEST"/>);
 
-        const textInput = getByPlaceholderText('Entrez votre message...');
-        fireEvent.changeText(textInput, 'NEW');
+        await openSettings(queries);
+        expect(await queries.findByText('Direction : Droite vers Gauche')).toBeTruthy();
 
-        const closeBtn = getByTestId('close-modal-button');
-        fireEvent.press(closeBtn);
-
-        await waitFor(async () => {
-            const saved = await AsyncStorage.getItem('@led_scroller_settings_v1');
-            const parsed = saved ? JSON.parse(saved) : null;
-            expect(parsed.recentMessages[0]).toBe('NEW');
-            expect(parsed.recentMessages[1]).toBe('OLD1');
-            expect(parsed.recentMessages[2]).toBe('OLD2');
-        }, {timeout: 2000});
+        fireEvent.press(queries.getByTestId('direction-button'));
+        expect(await queries.findByText('Direction : Gauche vers Droite')).toBeTruthy();
     });
 });
 

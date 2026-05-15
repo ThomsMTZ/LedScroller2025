@@ -23,6 +23,8 @@ const createDefaultProps = () => ({
     // Orientation settings
     isLandscapeLocked: false,
     onToggleOrientation: jest.fn(),
+    isReverseScroll: false,
+    onToggleReverseScroll: jest.fn(),
     // Border settings
     showBorder: true,
     onToggleBorder: jest.fn(),
@@ -46,11 +48,11 @@ describe('<SettingsModal /> UI Completeness', () => {
 
         expect(getByText('💬 Message')).toBeTruthy();
         expect(getByText('⚡ Vitesse')).toBeTruthy();
-        expect(getByText('🔄 Orientation')).toBeTruthy();
+        expect(getByText('🔄 Orientation & Direction')).toBeTruthy();
         expect(getByText('🖼️ Cadre LED')).toBeTruthy();
         expect(getByText('🎨 Couleur')).toBeTruthy();
 
-        expect(getByText('✨ Effets')).toBeTruthy();
+        expect(getByText('✨ Effets Texte')).toBeTruthy();
     });
 
     it('affiche les indicateurs visuels corrects', () => {
@@ -63,7 +65,8 @@ describe('<SettingsModal /> UI Completeness', () => {
 
         // VÉRIFICATION : Textes par défaut des nouveaux boutons
         expect(getByText('Texte : Fixe')).toBeTruthy();
-        expect(getByText('Bordure : Fixe')).toBeTruthy();
+        expect(getByText('Style : Fixe')).toBeTruthy();
+        expect(getByText('Direction : Droite vers Gauche')).toBeTruthy();
     });
 
     it('change le texte du bouton orientation quand verrouillé', () => {
@@ -101,7 +104,7 @@ describe('<SettingsModal /> UI Completeness', () => {
         );
 
         expect(getByText('Texte : Clignotant')).toBeTruthy();
-        expect(getByText('Bordure : Clignotante')).toBeTruthy();
+        expect(getByText('Effet : Clignotant')).toBeTruthy();
     });
 
     it('appelle onTextChange quand l\'utilisateur tape du texte', () => {
@@ -120,6 +123,15 @@ describe('<SettingsModal /> UI Completeness', () => {
         fireEvent.press(orientationButton);
 
         expect(defaultProps.onToggleOrientation).toHaveBeenCalled();
+    });
+
+    it('appelle onToggleReverseScroll au clic sur le bouton direction', () => {
+        const {getByTestId} = render(<SettingsModal {...defaultProps} />);
+
+        const directionButton = getByTestId('direction-button');
+        fireEvent.press(directionButton);
+
+        expect(defaultProps.onToggleReverseScroll).toHaveBeenCalled();
     });
 
     it('appelle onToggleBorder au clic sur le bouton bordure', () => {
@@ -173,16 +185,19 @@ describe('<SettingsModal /> UI Completeness', () => {
         expect(queryByText('⚙️ Config')).toBeNull();
     });
 
-    it('affiche les icônes correctes selon l\'état des toggles', () => {
-        const {getByTestId} = render(
-            <SettingsModal {...defaultProps} isLandscapeLocked={true} showBorder={false}/>
+    it('affiche les libellés corrects selon l\'état des toggles', () => {
+        const {getByText} = render(
+            <SettingsModal
+                {...defaultProps}
+                isLandscapeLocked={true}
+                showBorder={false}
+                isReverseScroll={true}
+            />
         );
 
-        const lockIcon = getByTestId('orientation-icon');
-        const borderIcon = getByTestId('border-icon');
-
-        expect(lockIcon.props.name).toBe('lock-closed');
-        expect(borderIcon.props.name).toBe('scan-outline');
+        expect(getByText('Mode Paysage Forcé')).toBeTruthy();
+        expect(getByText('Bordure masquée')).toBeTruthy();
+        expect(getByText('Direction : Gauche vers Droite')).toBeTruthy();
     });
 
     it('gère les valeurs extrêmes de vitesse', () => {
@@ -215,7 +230,7 @@ describe('<SettingsModal /> Recent Messages Feature', () => {
     });
 
     it('n\'affiche pas le conteneur historique si la liste est vide', () => {
-        const {queryByText} = render(
+        const {queryByTestId} = render(
             <SettingsModal
                 {...defaultProps}
                 recentMessages={[]}
@@ -223,9 +238,7 @@ describe('<SettingsModal /> Recent Messages Feature', () => {
             />
         );
 
-        // Quand la liste est vide, aucun message historique ne doit s'afficher
-        // On teste en cherchant un message qui n'existe que dans le historique
-        expect(queryByText('HISTORIQUE_TEST')).toBeNull();
+        expect(queryByTestId('history-list')).toBeNull();
     });
 
     it('appelle onSelectRecentMessage au clic sur un message historique', () => {

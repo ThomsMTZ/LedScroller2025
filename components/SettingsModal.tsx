@@ -123,6 +123,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
 
                             {recentMessages && recentMessages.length > 0 && (
                                 <ScrollView
+                                    testID="history-list"
                                     horizontal
                                     showsHorizontalScrollIndicator={false}
                                     style={styles.historyContainer}
@@ -130,6 +131,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                                     {recentMessages.map((msg, index) => (
                                         <TouchableOpacity
                                             key={index}
+                                            testID={`history-chip-${index}`}
                                             style={styles.historyChip}
                                             onPress={() => onSelectRecentMessage(msg)}
                                             activeOpacity={0.7}
