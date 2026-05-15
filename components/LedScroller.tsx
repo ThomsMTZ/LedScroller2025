@@ -1,5 +1,15 @@
 import React, {useEffect, useState} from 'react';
-import {StatusBar, StyleSheet, Text, TextStyle, TouchableOpacity, useWindowDimensions, View} from 'react-native';
+import {BannerAd, BannerAdSize, TestIds} from 'react-native-google-mobile-ads';
+import {
+    Platform,
+    StatusBar,
+    StyleSheet,
+    Text,
+    TextStyle,
+    TouchableOpacity,
+    useWindowDimensions,
+    View
+} from 'react-native';
 import Animated, {
     cancelAnimation,
     Easing,
@@ -128,8 +138,14 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
         };
     }, [textWidth, speed, width, patternWidth, isReverseScroll]);
 
-    const maxFontSizeValue = isLandscape ? height * 0.85 : PORTRAIT_PANEL_HEIGHT * 0.85;
+    const baseMaxFontSize = isLandscape ? height * 0.80 : PORTRAIT_PANEL_HEIGHT * 0.80;
     const minFontSizeValue = 20;
+
+    const calculatedMaxFontSize = text.length > 6
+        ? baseMaxFontSize * (6 / text.length)
+        : baseMaxFontSize;
+
+    const maxFontSizeValue = Math.max(calculatedMaxFontSize, minFontSizeValue);
 
     const pinchGesture = Gesture.Pinch()
         .onUpdate((e: GestureUpdateEvent<PinchGestureHandlerEventPayload>) => {
@@ -251,6 +267,14 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
     const isChaseActive = showBorder && isBorderChase;
     const showNativeBorder = showBorder && !isBorderChase;
 
+    const adUnitId = __DEV__
+        ? TestIds.BANNER
+        : Platform.select({
+            android: 'ca-app-pub-2790650155402757/5652248123',
+            ios: 'ca-app-pub-2790650155402757/6773987013',
+            default: TestIds.BANNER,
+        });
+
     return (
         <View style={styles.container}>
             <StatusBar hidden={isLandscape} barStyle="light-content" backgroundColor="transparent" translucent/>
@@ -371,6 +395,18 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
                     {!isLandscape && <HintContainer/>}
                 </View>
             </GestureDetector>
+
+            {!isLandscape && (
+                <View style={{alignItems: 'center', paddingVertical: 10, backgroundColor: 'transparent'}}>
+                    <BannerAd
+                        unitId={adUnitId}
+                        size={BannerAdSize.BANNER}
+                        requestOptions={{
+                            requestNonPersonalizedAdsOnly: true,
+                        }}
+                    />
+                </View>
+            )}
 
             {!isLandscape && (
                 <View style={styles.footer}>
