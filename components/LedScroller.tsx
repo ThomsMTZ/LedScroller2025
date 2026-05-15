@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {StatusBar, Text, TextStyle, TouchableOpacity, useWindowDimensions, View} from 'react-native';
+import {StatusBar, StyleSheet, Text, TextStyle, TouchableOpacity, useWindowDimensions, View} from 'react-native';
 import Animated, {
     cancelAnimation,
     Easing,
@@ -43,7 +43,7 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
 
     // États de configuration
     const [isLandscapeLocked, setIsLandscapeLocked] = useState<boolean>(false);
-    const [isReverseScroll, setIsReverseScroll] = useState<boolean>(false); // 👈 NOUVEAU
+    const [isReverseScroll, setIsReverseScroll] = useState<boolean>(false);
     const [showBorder, setShowBorder] = useState<boolean>(true);
     const [isTextBlinking, setIsTextBlinking] = useState<boolean>(false);
     const [isBorderBlinking, setIsBorderBlinking] = useState<boolean>(false);
@@ -149,6 +149,7 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
         transform: [{translateX: translateX.value}],
     }));
 
+    // Style exclusif au texte
     const animatedTextStyle = useAnimatedStyle(() => {
         const h = Math.round(hueVal.value);
         const s = Math.round(satVal.value);
@@ -164,11 +165,32 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
         } as TextStyle;
     });
 
+    // Style exclusif au wrapper du chenillard
     const animatedBorderOpacityStyle = useAnimatedStyle(() => ({
         opacity: isBorderBlinking ? blinkOpacity.value : 1
     }));
 
-    const currentStaticColor = `hsl(${selectedColor.hue}, ${selectedColor.saturation}%, ${selectedColor.lightness}%)`;
+    // Style exclusif à la couleur de la bordure native (pour la faire clignoter sans impacter les enfants)
+    const animatedBorderColorStyle = useAnimatedStyle(() => {
+        const h = Math.round(hueVal.value);
+        const s = Math.round(satVal.value);
+        const l = Math.round(ligVal.value);
+        const alpha = isBorderBlinking ? blinkOpacity.value : 1;
+        return {
+            borderColor: `hsla(${h}, ${s}%, ${l}%, ${alpha})`
+        };
+    });
+
+    // Style exclusif à la lueur (shadow) de la bordure native
+    const animatedShadowColorStyle = useAnimatedStyle(() => {
+        const h = Math.round(hueVal.value);
+        const s = Math.round(satVal.value);
+        const l = Math.round(ligVal.value);
+        const alpha = isBorderBlinking ? blinkOpacity.value : 1;
+        return {
+            shadowColor: `hsla(${h}, ${s}%, ${l}%, ${alpha})`
+        };
+    });
 
     // 4. CHARGEMENT / SAUVEGARDE
     useEffect(() => {
@@ -264,10 +286,9 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
                         testID="led-display"
                         style={[
                             styles.ledDisplay,
-                            animatedBorderOpacityStyle,
+                            animatedBorderColorStyle,
                             {
                                 borderWidth: showNativeBorder ? 4 : 0,
-                                borderColor: currentStaticColor,
                                 backgroundColor: isChaseActive ? '#050505' : 'black',
                                 height: isLandscape ? '100%' : PORTRAIT_PANEL_HEIGHT,
                                 overflow: 'hidden',
@@ -281,16 +302,18 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
                             }
                         ]}
                     >
+                        {/* EFFET CHASE : Enveloppé dans sa propre vue animée pour gérer son opacité */}
                         {isChaseActive && (
-                            <LedBorder
-                                color={currentStaticColor}
-                                isAnimating={true}
-                                speed={speed}
-                            />
+                            <Animated.View style={[StyleSheet.absoluteFill, animatedBorderOpacityStyle]}>
+                                <LedBorder
+                                    color={`hsl(${Math.round(hueVal.value)}, ${Math.round(satVal.value)}%, ${Math.round(ligVal.value)}%)`}
+                                    isAnimating={true}
+                                    speed={speed}
+                                />
+                            </Animated.View>
                         )}
 
-                        <View style={[styles.ledBorder, {
-                            shadowColor: currentStaticColor,
+                        <Animated.View style={[styles.ledBorder, animatedShadowColorStyle, {
                             shadowOffset: {width: 0, height: 0},
                             shadowOpacity: 0.8,
                             shadowRadius: 20,
@@ -340,7 +363,7 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
                                 ))}
                             </Animated.View>
                             <GridOverlay/>
-                        </View>
+                        </Animated.View>
                     </Animated.View>
                     {!isLandscape && <HintContainer/>}
                 </View>
