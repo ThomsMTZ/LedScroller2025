@@ -18,6 +18,8 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                                                          onColorChange,
                                                          isLandscapeLocked,
                                                          onToggleOrientation,
+                                                         isReverseScroll,         
+                                                         onToggleReverseScroll,   
                                                          showBorder,
                                                          onToggleBorder,
                                                          isBorderChase,
@@ -33,7 +35,6 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
     const {height: screenHeight} = useWindowDimensions();
     const currentHsl = `hsl(${selectedColor.hue}, ${selectedColor.saturation}%, ${selectedColor.lightness}%)`;
 
-    // Helper pour créer un bouton toggle
     const renderToggleButton = (label: string, icon: any, isActive: boolean, onPress: () => void, testID: string) => (
         <TouchableOpacity
             testID={testID}
@@ -120,7 +121,6 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                                 selectionColor={currentHsl}
                             />
 
-                            {/* Historique des derniers messages */}
                             {recentMessages && recentMessages.length > 0 && (
                                 <ScrollView
                                     horizontal
@@ -215,15 +215,22 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                             </View>
                         </View>
 
-                        {/* ORIENTATION */}
+                        {/* ORIENTATION & DIRECTION */}
                         <View style={styles.section}>
-                            <Text style={styles.label}>🔄 Orientation</Text>
+                            <Text style={styles.label}>🔄 Orientation & Direction</Text>
                             {renderToggleButton(
                                 isLandscapeLocked ? 'Mode Paysage Forcé' : 'Rotation Automatique',
                                 'lock-closed',
                                 isLandscapeLocked,
                                 onToggleOrientation,
                                 'orientation-button'
+                            )}
+                            {renderToggleButton(
+                                isReverseScroll ? 'Direction : Gauche vers Droite' : 'Direction : Droite vers Gauche',
+                                'swap-horizontal',
+                                isReverseScroll,
+                                onToggleReverseScroll,
+                                'direction-button'
                             )}
                         </View>
 

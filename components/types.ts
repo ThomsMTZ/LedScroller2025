@@ -59,22 +59,26 @@ export interface SettingsModalProps {
     onSpeedChange: (speed: number) => void;
     selectedColor: LedColorType;
     onColorChange: (color: LedColorType) => void;
+
+    // --- ORIENTATION & DIRECTION ---
     isLandscapeLocked: boolean;
     onToggleOrientation: () => void;
+    isReverseScroll: boolean;           
+    onToggleReverseScroll: () => void;  
 
     // --- BORDURE ---
     showBorder: boolean;
     onToggleBorder: () => void;
-
     isBorderChase: boolean;
     onToggleBorderChase: () => void;
-
     isBorderBlinking: boolean;
     onToggleBorderBlinking: () => void;
 
     // --- TEXTE ---
     isTextBlinking: boolean;
     onToggleTextBlinking: () => void;
+
+    // --- HISTORIQUE ---
     recentMessages: string[];
     onSelectRecentMessage: (msg: string) => void;
 }

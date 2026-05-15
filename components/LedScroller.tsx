@@ -40,9 +40,11 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
     const [isSettingsOpen, setSettingsOpen] = useState<boolean>(false);
     const [speed, setSpeed] = useState<number>(100);
     const [textWidth, setTextWidth] = useState<number>(0);
-    const [isLandscapeLocked, setIsLandscapeLocked] = useState<boolean>(false);
-    const [showBorder, setShowBorder] = useState<boolean>(true);
 
+    // États de configuration
+    const [isLandscapeLocked, setIsLandscapeLocked] = useState<boolean>(false);
+    const [isReverseScroll, setIsReverseScroll] = useState<boolean>(false); // 👈 NOUVEAU
+    const [showBorder, setShowBorder] = useState<boolean>(true);
     const [isTextBlinking, setIsTextBlinking] = useState<boolean>(false);
     const [isBorderBlinking, setIsBorderBlinking] = useState<boolean>(false);
     const [isBorderChase, setIsBorderChase] = useState<boolean>(false);
@@ -59,9 +61,7 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
     const ligVal: SharedValue<number> = useSharedValue(50);
 
     const isLandscape = width > height;
-
     const PORTRAIT_PANEL_HEIGHT = width * 0.6;
-
     const LOOP_SPACING = width * 0.3;
     const patternWidth = textWidth + LOOP_SPACING;
     const copiesNeeded = textWidth > 0
@@ -106,18 +106,27 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
     useEffect(() => {
         if (textWidth > 0) {
             cancelAnimation(translateX);
-            translateX.value = 0;
             const safeSpeed = speed > 0 ? speed : 1;
             const linearDuration = (patternWidth / safeSpeed) * 1000;
-            translateX.value = withRepeat(
-                withTiming(-patternWidth, {duration: linearDuration, easing: Easing.linear}),
-                -1, false
-            );
+
+            if (isReverseScroll) {
+                translateX.value = -patternWidth;
+                translateX.value = withRepeat(
+                    withTiming(0, {duration: linearDuration, easing: Easing.linear}),
+                    -1, false
+                );
+            } else {
+                translateX.value = 0;
+                translateX.value = withRepeat(
+                    withTiming(-patternWidth, {duration: linearDuration, easing: Easing.linear}),
+                    -1, false
+                );
+            }
         }
         return () => {
             cancelAnimation(translateX);
         };
-    }, [textWidth, speed, width, patternWidth]);
+    }, [textWidth, speed, width, patternWidth, isReverseScroll]);
 
     const pinchGesture = Gesture.Pinch()
         .onUpdate((e: GestureUpdateEvent<PinchGestureHandlerEventPayload>) => {
@@ -180,6 +189,7 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
                     if (savedSettings.isBorderBlinking !== undefined) setIsBorderBlinking(savedSettings.isBorderBlinking);
                     if (savedSettings.isBorderChase !== undefined) setIsBorderChase(savedSettings.isBorderChase);
                     if (savedSettings.recentMessages) setRecentMessages(savedSettings.recentMessages);
+                    if (savedSettings.isReverseScroll !== undefined) setIsReverseScroll(savedSettings.isReverseScroll);
                 }
             } catch (e) {
                 console.error("Erreur load", e);
@@ -194,7 +204,8 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
                 const settingsToSave = {
                     text, speed, selectedColor, isLandscapeLocked, showBorder,
                     isTextBlinking, isBorderBlinking, isBorderChase,
-                    recentMessages
+                    recentMessages,
+                    isReverseScroll
                 };
                 await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(settingsToSave));
             } catch (e) {
@@ -202,7 +213,7 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
             }
         }, 1000);
         return () => clearTimeout(saveTimeout);
-    }, [text, speed, selectedColor, isLandscapeLocked, showBorder, isTextBlinking, isBorderBlinking, isBorderChase, recentMessages]);
+    }, [text, speed, selectedColor, isLandscapeLocked, showBorder, isTextBlinking, isBorderBlinking, isBorderChase, recentMessages, isReverseScroll]);
 
     const handleCloseSettings = () => {
         setSettingsOpen(false);
@@ -270,16 +281,14 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
                             }
                         ]}
                     >
-                        {/* 1. EFFET CHASE (Arrière-plan rotatif lié à la vitesse) */}
                         {isChaseActive && (
                             <LedBorder
                                 color={currentStaticColor}
                                 isAnimating={true}
-                                speed={speed} // 👈 LA VITESSE EST PASSÉE ICI
+                                speed={speed}
                             />
                         )}
 
-                        {/* 2. CONTENU (Masque intérieur) */}
                         <View style={[styles.ledBorder, {
                             shadowColor: currentStaticColor,
                             shadowOffset: {width: 0, height: 0},
@@ -292,7 +301,7 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
                             justifyContent: 'center',
                             paddingVertical: 0,
                         },
-                            !isChaseActive && {width: '100%'},
+                            !isChaseActive && { width: '100%' },
                             isLandscape && {
                                 flex: 1,
                                 borderRadius: 0,
@@ -352,11 +361,14 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
                 onSpeedChange={setSpeed}
                 selectedColor={selectedColor}
                 onColorChange={setSelectedColor}
+
                 isLandscapeLocked={isLandscapeLocked}
                 onToggleOrientation={toggleOrientation}
+                isReverseScroll={isReverseScroll}
+                onToggleReverseScroll={() => setIsReverseScroll(!isReverseScroll)}
+
                 showBorder={showBorder}
                 onToggleBorder={() => setShowBorder(!showBorder)}
-
                 isBorderChase={isBorderChase}
                 onToggleBorderChase={() => setIsBorderChase(!isBorderChase)}
                 isBorderBlinking={isBorderBlinking}
