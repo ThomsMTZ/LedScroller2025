@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {View} from 'react-native';
+import {useWindowDimensions, View} from 'react-native';
 import Animated, {
     cancelAnimation,
     Easing,
@@ -18,6 +18,8 @@ interface LedBorderProps {
 
 const LedBorder: React.FC<LedBorderProps> = ({color, isAnimating, speed}) => {
     const rotation = useSharedValue(0);
+    const {width, height} = useWindowDimensions();
+    const size = Math.max(width, height) * 2.5;
 
     useEffect(() => {
         if (isAnimating) {
@@ -52,12 +54,15 @@ const LedBorder: React.FC<LedBorderProps> = ({color, isAnimating, speed}) => {
         <Animated.View style={[
             {
                 position: 'absolute',
-                width: '300%',
-                height: '300%',
-                top: '-100%',
-                left: '-100%',
+                width: size,
+                height: size,
+                top: '50%',
+                left: '50%',
+                marginTop: -size / 2,
+                marginLeft: -size / 2,
                 justifyContent: 'center',
-                alignItems: 'center'
+                alignItems: 'center',
+                zIndex: -1
             },
             animatedStyle
         ]}>

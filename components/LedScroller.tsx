@@ -128,9 +128,13 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
         };
     }, [textWidth, speed, width, patternWidth, isReverseScroll]);
 
+    const maxFontSizeValue = isLandscape ? height * 0.85 : PORTRAIT_PANEL_HEIGHT * 0.85;
+    const minFontSizeValue = 20;
+
     const pinchGesture = Gesture.Pinch()
         .onUpdate((e: GestureUpdateEvent<PinchGestureHandlerEventPayload>) => {
-            fontSize.value = savedFontSize.value * e.scale;
+            const newSize = savedFontSize.value * e.scale;
+            fontSize.value = Math.min(Math.max(newSize, minFontSizeValue), maxFontSizeValue);
         })
         .onEnd(() => {
             savedFontSize.value = fontSize.value;
@@ -149,7 +153,6 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
         transform: [{translateX: translateX.value}],
     }));
 
-    // Style exclusif au texte
     const animatedTextStyle = useAnimatedStyle(() => {
         const h = Math.round(hueVal.value);
         const s = Math.round(satVal.value);
@@ -165,12 +168,10 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
         } as TextStyle;
     });
 
-    // Style exclusif au wrapper du chenillard
     const animatedBorderOpacityStyle = useAnimatedStyle(() => ({
         opacity: isBorderBlinking ? blinkOpacity.value : 1
     }));
 
-    // Style exclusif à la couleur de la bordure native (pour la faire clignoter sans impacter les enfants)
     const animatedBorderColorStyle = useAnimatedStyle(() => {
         const h = Math.round(hueVal.value);
         const s = Math.round(satVal.value);
@@ -181,7 +182,6 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
         };
     });
 
-    // Style exclusif à la lueur (shadow) de la bordure native
     const animatedShadowColorStyle = useAnimatedStyle(() => {
         const h = Math.round(hueVal.value);
         const s = Math.round(satVal.value);
@@ -302,9 +302,12 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
                             }
                         ]}
                     >
-                        {/* EFFET CHASE : Enveloppé dans sa propre vue animée pour gérer son opacité */}
                         {isChaseActive && (
-                            <Animated.View style={[StyleSheet.absoluteFill, animatedBorderOpacityStyle]}>
+                            <Animated.View style={[
+                                StyleSheet.absoluteFill,
+                                animatedBorderOpacityStyle,
+                                {overflow: 'hidden', borderRadius: isLandscape ? 0 : 16}
+                            ]}>
                                 <LedBorder
                                     color={`hsl(${Math.round(hueVal.value)}, ${Math.round(satVal.value)}%, ${Math.round(ligVal.value)}%)`}
                                     isAnimating={true}
