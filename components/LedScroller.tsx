@@ -270,11 +270,12 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
                             }
                         ]}
                     >
-                        {/* 1. EFFET CHASE (Arrière-plan rotatif) */}
+                        {/* 1. EFFET CHASE (Arrière-plan rotatif lié à la vitesse) */}
                         {isChaseActive && (
                             <LedBorder
                                 color={currentStaticColor}
                                 isAnimating={true}
+                                speed={speed} // 👈 LA VITESSE EST PASSÉE ICI
                             />
                         )}
 
@@ -286,15 +287,12 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
                             shadowRadius: 20,
                             backgroundColor: '#0a0a0a',
                             flex: 1,
-
                             margin: isChaseActive ? 4 : 0,
                             borderRadius: isLandscape ? 0 : (isChaseActive ? 12 : 16),
-
                             justifyContent: 'center',
                             paddingVertical: 0,
                         },
                             !isChaseActive && {width: '100%'},
-
                             isLandscape && {
                                 flex: 1,
                                 borderRadius: 0,

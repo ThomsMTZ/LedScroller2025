@@ -13,16 +13,21 @@ import {LinearGradient} from 'expo-linear-gradient';
 interface LedBorderProps {
     color: string;
     isAnimating: boolean;
+    speed: number;
 }
 
-const LedBorder: React.FC<LedBorderProps> = ({color, isAnimating}) => {
+const LedBorder: React.FC<LedBorderProps> = ({color, isAnimating, speed}) => {
     const rotation = useSharedValue(0);
 
     useEffect(() => {
         if (isAnimating) {
+            const animationDuration = Math.max(300, 300000 / (speed > 0 ? speed : 1));
+            const currentRotation = rotation.value % 360;
+            rotation.value = currentRotation;
+
             rotation.value = withRepeat(
-                withTiming(360, {
-                    duration: 2500,
+                withTiming(currentRotation + 360, {
+                    duration: animationDuration,
                     easing: Easing.linear,
                 }),
                 -1,
@@ -30,10 +35,10 @@ const LedBorder: React.FC<LedBorderProps> = ({color, isAnimating}) => {
             );
         } else {
             cancelAnimation(rotation);
-            rotation.value = 0;
         }
+
         return () => cancelAnimation(rotation);
-    }, [isAnimating]);
+    }, [isAnimating, speed]);
 
     const animatedStyle = useAnimatedStyle(() => {
         return {
@@ -58,7 +63,6 @@ const LedBorder: React.FC<LedBorderProps> = ({color, isAnimating}) => {
         ]}>
             <View style={{width: '100%', height: '50%', flexDirection: 'row'}}>
                 <View style={{flex: 1, backgroundColor: 'transparent'}}/>
-
                 <LinearGradient
                     colors={[color, 'transparent']}
                     start={{x: 0, y: 1}}
