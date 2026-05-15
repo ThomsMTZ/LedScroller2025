@@ -1,8 +1,7 @@
 import React from 'react';
-import {Modal, ScrollView, Text, TextInput, TouchableOpacity, useWindowDimensions, View,} from 'react-native';
+import {Modal, ScrollView, Text, TextInput, TouchableOpacity, useWindowDimensions, View} from 'react-native';
 import Slider from '@react-native-community/slider';
 import {Ionicons} from '@expo/vector-icons';
-import Animated, {FadeIn, FadeOut} from 'react-native-reanimated';
 import {styles} from './styles';
 import {SettingsModalProps} from './types';
 import {COLORS} from './constants';
@@ -21,13 +20,14 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                                                          onToggleOrientation,
                                                          showBorder,
                                                          onToggleBorder,
-                                                         // 👇 Nouveaux props
                                                          isBorderChase,
                                                          onToggleBorderChase,
                                                          isBorderBlinking,
                                                          onToggleBorderBlinking,
                                                          isTextBlinking,
                                                          onToggleTextBlinking,
+                                                         recentMessages,
+                                                         onSelectRecentMessage
                                                      }) => {
 
     const {height: screenHeight} = useWindowDimensions();
@@ -81,13 +81,11 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                     testID="modal-overlay"
                 />
 
-                <Animated.View
+                <View
                     style={[
                         styles.modalContent,
                         {maxHeight: screenHeight * 0.85}
                     ]}
-                    entering={FadeIn.duration(300)}
-                    exiting={FadeOut.duration(200)}
                 >
                     <View style={styles.modalHandle}/>
 
@@ -110,7 +108,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                         contentContainerStyle={{paddingBottom: 20}}
                         keyboardShouldPersistTaps="handled"
                     >
-                        {/* MESSAGE */}
+                        {/* MESSAGE ET HISTORIQUE */}
                         <View style={styles.section}>
                             <Text style={styles.label}>💬 Message</Text>
                             <TextInput
@@ -121,13 +119,38 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                                 placeholderTextColor={COLORS.textMuted}
                                 selectionColor={currentHsl}
                             />
+
+                            {/* Historique des derniers messages */}
+                            {recentMessages && recentMessages.length > 0 && (
+                                <ScrollView
+                                    horizontal
+                                    showsHorizontalScrollIndicator={false}
+                                    style={styles.historyContainer}
+                                >
+                                    {recentMessages.map((msg, index) => (
+                                        <TouchableOpacity
+                                            key={index}
+                                            style={styles.historyChip}
+                                            onPress={() => onSelectRecentMessage(msg)}
+                                            activeOpacity={0.7}
+                                        >
+                                            <Text
+                                                style={styles.historyChipText}
+                                                numberOfLines={1}
+                                                ellipsizeMode="tail"
+                                            >
+                                                {msg}
+                                            </Text>
+                                        </TouchableOpacity>
+                                    ))}
+                                </ScrollView>
+                            )}
                         </View>
 
                         {/* CADRE & ANIMATION BORDURE */}
                         <View style={styles.section}>
                             <Text style={styles.label}>🖼️ Cadre LED</Text>
 
-                            {/* 1. Afficher/Masquer */}
                             {renderToggleButton(
                                 showBorder ? 'Bordure affichée' : 'Bordure masquée',
                                 'square',
@@ -136,10 +159,8 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                                 'border-button'
                             )}
 
-                            {/* OPTIONS AVANCÉES (Visibles seulement si la bordure est affichée) */}
                             {showBorder && (
                                 <>
-                                    {/* 2. Mouvement : Fixe vs Chenillard */}
                                     {renderToggleButton(
                                         isBorderChase ? 'Style : Chenillard' : 'Style : Fixe',
                                         'infinite',
@@ -148,7 +169,6 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                                         'chase-border-button'
                                     )}
 
-                                    {/* 3. Opacité : Constant vs Clignotant */}
                                     {renderToggleButton(
                                         isBorderBlinking ? 'Effet : Clignotant' : 'Effet : Constant',
                                         'flash',
@@ -217,7 +237,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                         </View>
 
                     </ScrollView>
-                </Animated.View>
+                </View>
             </View>
         </Modal>
     );

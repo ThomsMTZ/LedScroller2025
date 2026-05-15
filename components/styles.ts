@@ -51,13 +51,13 @@ export const styles = StyleSheet.create<Styles>({
     ledDisplay: {
         borderWidth: 2,
         borderRadius: 16,
-        padding: 0, // 👈 MODIFIÉ : Retrait du padding externe (était 4)
+        padding: 0,
         backgroundColor: 'rgba(0, 0, 0, 0.3)',
     },
     ledBorder: {
-        borderRadius: 16, // 👈 MODIFIÉ : Ajusté pour coller au parent (était 12)
+        borderRadius: 16,
         overflow: 'hidden',
-        paddingVertical: 0, // 👈 MODIFIÉ : Retrait du padding interne (était 30)
+        paddingVertical: 0,
         shadowOffset: {width: 0, height: 0},
         shadowOpacity: 0.8,
         shadowRadius: 20,
@@ -216,5 +216,27 @@ export const styles = StyleSheet.create<Styles>({
         fontSize: 11,
         textTransform: 'uppercase',
         letterSpacing: 1,
+    },
+    historyContainer: {
+        flexDirection: 'row',
+        marginTop: 12,
+        paddingBottom: 4,
+    },
+    historyChip: {
+        backgroundColor: 'rgba(0, 0, 0, 0.4)',
+        paddingHorizontal: 16,
+        paddingVertical: 8,
+        borderRadius: 20,
+        marginRight: 10,
+        borderWidth: 1,
+        borderColor: COLORS.border,
+        justifyContent: 'center',
+        alignItems: 'center',
+        maxWidth: 150,
+    },
+    historyChipText: {
+        color: COLORS.text,
+        fontSize: 13,
+        fontWeight: '500',
     },
 });

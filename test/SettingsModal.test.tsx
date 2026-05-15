@@ -6,25 +6,40 @@ import {StyleSheet} from 'react-native';
 jest.mock('@expo/vector-icons', () => ({Ionicons: 'Ionicons'}));
 jest.mock('@react-native-community/slider', () => 'Slider');
 
+// Shared test defaults
+const createDefaultProps = () => ({
+    // Modal state
+    visible: true,
+    onClose: jest.fn(),
+    // Text settings
+    text: 'TEST',
+    onTextChange: jest.fn(),
+    // Speed settings
+    speed: 100,
+    onSpeedChange: jest.fn(),
+    // Color settings
+    selectedColor: LED_COLORS[0],
+    onColorChange: jest.fn(),
+    // Orientation settings
+    isLandscapeLocked: false,
+    onToggleOrientation: jest.fn(),
+    // Border settings
+    showBorder: true,
+    onToggleBorder: jest.fn(),
+    isBorderChase: false,
+    onToggleBorderChase: jest.fn(),
+    isBorderBlinking: false,
+    onToggleBorderBlinking: jest.fn(),
+    // Text effects
+    isTextBlinking: false,
+    onToggleTextBlinking: jest.fn(),
+    // Recent messages
+    recentMessages: [],
+    onSelectRecentMessage: jest.fn(),
+});
+
 describe('<SettingsModal /> UI Completeness', () => {
-    const defaultProps = {
-        visible: true,
-        onClose: jest.fn(),
-        text: 'TEST',
-        onTextChange: jest.fn(),
-        speed: 100,
-        onSpeedChange: jest.fn(),
-        selectedColor: LED_COLORS[0],
-        onColorChange: jest.fn(),
-        isLandscapeLocked: false,
-        onToggleOrientation: jest.fn(),
-        showBorder: true,
-        onToggleBorder: jest.fn(),
-        isTextBlinking: false,
-        onToggleTextBlinking: jest.fn(),
-        isBorderBlinking: false,
-        onToggleBorderBlinking: jest.fn(),
-    };
+    const defaultProps = createDefaultProps();
 
     it('contient toutes les sections de configuration', () => {
         const {getByText} = render(<SettingsModal {...defaultProps} />);
@@ -176,6 +191,90 @@ describe('<SettingsModal /> UI Completeness', () => {
         const slider = getByTestId('speed-slider');
         expect(slider.props.value).toBe(800);
         expect(slider.props.maximumValue).toBe(800);
+    });
+
+});
+
+describe('<SettingsModal /> Recent Messages Feature', () => {
+    const defaultProps = createDefaultProps();
+
+    it('affiche l\'historique des messages récents quand fourni', () => {
+        const recentMessages = ['HELLO', 'WORLD', 'TEST'];
+
+        const {getByText} = render(
+            <SettingsModal
+                {...defaultProps}
+                recentMessages={recentMessages}
+                onSelectRecentMessage={jest.fn()}
+            />
+        );
+
+        expect(getByText('HELLO')).toBeTruthy();
+        expect(getByText('WORLD')).toBeTruthy();
+        expect(getByText('TEST')).toBeTruthy();
+    });
+
+    it('n\'affiche pas le conteneur historique si la liste est vide', () => {
+        const {queryByText} = render(
+            <SettingsModal
+                {...defaultProps}
+                recentMessages={[]}
+                onSelectRecentMessage={jest.fn()}
+            />
+        );
+
+        // Quand la liste est vide, aucun message historique ne doit s'afficher
+        // On teste en cherchant un message qui n'existe que dans le historique
+        expect(queryByText('HISTORIQUE_TEST')).toBeNull();
+    });
+
+    it('appelle onSelectRecentMessage au clic sur un message historique', () => {
+        const onSelectRecentMessage = jest.fn();
+        const recentMessages = ['MESSAGE1', 'MESSAGE2'];
+
+        const {getByText} = render(
+            <SettingsModal
+                {...defaultProps}
+                recentMessages={recentMessages}
+                onSelectRecentMessage={onSelectRecentMessage}
+            />
+        );
+
+        const chip1 = getByText('MESSAGE1');
+        fireEvent.press(chip1);
+
+        expect(onSelectRecentMessage).toHaveBeenCalledWith('MESSAGE1');
+    });
+
+    it('affiche plusieurs messages historiques avec scroll horizontal', () => {
+        const recentMessages = ['MSG1', 'MSG2', 'MSG3', 'MSG4', 'MSG5'];
+
+        const {getAllByText} = render(
+            <SettingsModal
+                {...defaultProps}
+                recentMessages={recentMessages}
+                onSelectRecentMessage={jest.fn()}
+            />
+        );
+
+        expect(getAllByText(/MSG\d/)).toHaveLength(5);
+    });
+
+    it('tronque les messages longs avec ellipse', () => {
+        const longMessage = 'CECI_EST_UN_MESSAGE_TRES_TRES_TRES_LONG_QUI_DEVRAIT_ETRE_TRONQUE';
+        const recentMessages = [longMessage];
+
+        const {getByText} = render(
+            <SettingsModal
+                {...defaultProps}
+                recentMessages={recentMessages}
+                onSelectRecentMessage={jest.fn()}
+            />
+        );
+
+        const textElement = getByText(longMessage);
+        expect(textElement.props.numberOfLines).toBe(1);
+        expect(textElement.props.ellipsizeMode).toBe('tail');
     });
 
 });

@@ -34,6 +34,8 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
 
     // 1. STATE
     const [text, setText] = useState<string>(initialText);
+    const [recentMessages, setRecentMessages] = useState<string[]>([]);
+
     const [selectedColor, setSelectedColor] = useState<LedColorType>(LED_COLORS[4]);
     const [isSettingsOpen, setSettingsOpen] = useState<boolean>(false);
     const [speed, setSpeed] = useState<number>(100);
@@ -41,17 +43,15 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
     const [isLandscapeLocked, setIsLandscapeLocked] = useState<boolean>(false);
     const [showBorder, setShowBorder] = useState<boolean>(true);
 
-    // États pour les effets
     const [isTextBlinking, setIsTextBlinking] = useState<boolean>(false);
-    const [isBorderBlinking, setIsBorderBlinking] = useState<boolean>(false); // Opacité
-    const [isBorderChase, setIsBorderChase] = useState<boolean>(false);       // Mouvement
+    const [isBorderBlinking, setIsBorderBlinking] = useState<boolean>(false);
+    const [isBorderChase, setIsBorderChase] = useState<boolean>(false);
 
     // 2. SHARED VALUES
     const translateX: SharedValue<number> = useSharedValue(width);
     const fontSize: SharedValue<number> = useSharedValue(100);
     const savedFontSize: SharedValue<number> = useSharedValue(100);
 
-    // Valeur d'animation pour l'opacité (partagée)
     const blinkOpacity: SharedValue<number> = useSharedValue(1);
 
     const hueVal: SharedValue<number> = useSharedValue(180);
@@ -60,7 +60,6 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
 
     const isLandscape = width > height;
 
-    // Hauteur fixe en mode portrait
     const PORTRAIT_PANEL_HEIGHT = width * 0.6;
 
     const LOOP_SPACING = width * 0.3;
@@ -71,9 +70,8 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
     const finalRepetitions = Math.max(2, copiesNeeded);
     const copiesArray = Array.from({length: finalRepetitions});
 
-    // 3. LOGIQUE EFFETS (Opacité)
+    // 3. LOGIQUE EFFETS
     useEffect(() => {
-        // Lance l'animation si texte OU bordure clignote
         if (isTextBlinking || isBorderBlinking) {
             blinkOpacity.value = withRepeat(
                 withSequence(
@@ -89,7 +87,6 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
         };
     }, [isTextBlinking, isBorderBlinking]);
 
-    // ... (Logique Orientation & Couleur inchangée) ...
     const toggleOrientation = async () => {
         if (isLandscapeLocked) {
             await ScreenOrientation.unlockAsync();
@@ -160,13 +157,13 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
         } as TextStyle;
     });
 
-    // Style pour la bordure (Opacité)
     const animatedBorderOpacityStyle = useAnimatedStyle(() => ({
         opacity: isBorderBlinking ? blinkOpacity.value : 1
     }));
 
     const currentStaticColor = `hsl(${selectedColor.hue}, ${selectedColor.saturation}%, ${selectedColor.lightness}%)`;
 
+    // 4. CHARGEMENT / SAUVEGARDE
     useEffect(() => {
         const loadSettings = async () => {
             try {
@@ -184,6 +181,7 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
                     if (savedSettings.isTextBlinking !== undefined) setIsTextBlinking(savedSettings.isTextBlinking);
                     if (savedSettings.isBorderBlinking !== undefined) setIsBorderBlinking(savedSettings.isBorderBlinking);
                     if (savedSettings.isBorderChase !== undefined) setIsBorderChase(savedSettings.isBorderChase);
+                    if (savedSettings.recentMessages) setRecentMessages(savedSettings.recentMessages);
                 }
             } catch (e) {
                 console.error("Erreur load", e);
@@ -197,7 +195,8 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
             try {
                 const settingsToSave = {
                     text, speed, selectedColor, isLandscapeLocked, showBorder,
-                    isTextBlinking, isBorderBlinking, isBorderChase
+                    isTextBlinking, isBorderBlinking, isBorderChase,
+                    recentMessages // 👈 Sauvegarde de l'historique
                 };
                 await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(settingsToSave));
             } catch (e) {
@@ -205,9 +204,19 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
             }
         }, 1000);
         return () => clearTimeout(saveTimeout);
-    }, [text, speed, selectedColor, isLandscapeLocked, showBorder, isTextBlinking, isBorderBlinking, isBorderChase]);
+    }, [text, speed, selectedColor, isLandscapeLocked, showBorder, isTextBlinking, isBorderBlinking, isBorderChase, recentMessages]);
 
-    // VARIABLES LOGIQUE D'AFFICHAGE
+    const handleCloseSettings = () => {
+        setSettingsOpen(false);
+        const currentTrimmed = text.trim();
+        if (currentTrimmed !== '') {
+            setRecentMessages(prev => {
+                const filtered = prev.filter(msg => msg !== currentTrimmed);
+                return [currentTrimmed, ...filtered].slice(0, 5);
+            });
+        }
+    };
+
     const isChaseActive = showBorder && isBorderChase;
     const showNativeBorder = showBorder && !isBorderChase;
 
@@ -246,7 +255,7 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
                         testID="led-display"
                         style={[
                             styles.ledDisplay,
-                            animatedBorderOpacityStyle, // 👈 APPLIQUE L'OPACITÉ ICI (Blinking)
+                            animatedBorderOpacityStyle,
                             {
                                 borderWidth: showNativeBorder ? 4 : 0,
                                 borderColor: currentStaticColor,
@@ -261,7 +270,6 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
                             }
                         ]}
                     >
-                        {/* 1. CONTENU */}
                         <View style={[styles.ledBorder, {
                             shadowColor: currentStaticColor,
                             shadowOffset: {width: 0, height: 0},
@@ -311,7 +319,6 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
                             <GridOverlay/>
                         </View>
 
-                        {/* 2. EFFET LED CHASE */}
                         {isChaseActive && (
                             <LedBorder
                                 color={currentStaticColor}
@@ -334,7 +341,7 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
 
             <SettingsModal
                 visible={isSettingsOpen}
-                onClose={() => setSettingsOpen(false)}
+                onClose={handleCloseSettings}
                 text={text}
                 onTextChange={setText}
                 speed={speed}
@@ -346,7 +353,6 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
                 showBorder={showBorder}
                 onToggleBorder={() => setShowBorder(!showBorder)}
 
-                // Nouveaux props
                 isBorderChase={isBorderChase}
                 onToggleBorderChase={() => setIsBorderChase(!isBorderChase)}
                 isBorderBlinking={isBorderBlinking}
@@ -354,6 +360,10 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
 
                 isTextBlinking={isTextBlinking}
                 onToggleTextBlinking={() => setIsTextBlinking(!isTextBlinking)}
+
+                // 👇 Nouveaux props injectés
+                recentMessages={recentMessages}
+                onSelectRecentMessage={setText}
             />
 
             {isLandscape && (

@@ -45,6 +45,9 @@ export interface Styles {
     sliderLabel: TextStyle;
     footer: ViewStyle;
     footerText: TextStyle;
+    historyContainer: ViewStyle;
+    historyChip: ViewStyle;
+    historyChipText: TextStyle;
 }
 
 export interface SettingsModalProps {
@@ -63,15 +66,17 @@ export interface SettingsModalProps {
     showBorder: boolean;
     onToggleBorder: () => void;
 
-    isBorderChase: boolean;           // 👈 NOUVEAU : Mouvement Chenillard
-    onToggleBorderChase: () => void;  // 👈 NOUVEAU
+    isBorderChase: boolean;
+    onToggleBorderChase: () => void;
 
-    isBorderBlinking: boolean;        // Clignotement (Opacité)
+    isBorderBlinking: boolean;
     onToggleBorderBlinking: () => void;
 
     // --- TEXTE ---
     isTextBlinking: boolean;
     onToggleTextBlinking: () => void;
+    recentMessages: string[];
+    onSelectRecentMessage: (msg: string) => void;
 }
 
 export interface ColorSelectorProps {

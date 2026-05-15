@@ -185,6 +185,191 @@ describe('<LedScroller /> Integration', () => {
     });
 });
 
+describe('<LedScroller /> Recent Messages Feature', () => {
+
+    beforeEach(async () => {
+        jest.clearAllMocks();
+        await AsyncStorage.clear();
+    });
+
+    it('sauvegarde le message courant dans l\'historique à la fermeture du modal', async () => {
+        const {getByTestId, findByText} = render(<LedScroller initialText="INITIAL"/>);
+
+        const settingsBtn = getByTestId('settings-button');
+        fireEvent.press(settingsBtn);
+
+        const modalTitle = await findByText('⚙️ Config');
+        expect(modalTitle).toBeTruthy();
+
+        const closeBtn = getByTestId('close-modal-button');
+        fireEvent.press(closeBtn);
+
+        await waitFor(async () => {
+            const saved = await AsyncStorage.getItem('@led_scroller_settings_v1');
+            const parsed = saved ? JSON.parse(saved) : null;
+            expect(parsed.recentMessages).toBeDefined();
+        });
+    });
+
+    it('ajoute le message à l\'historique lors de la fermeture du modal', async () => {
+        const {getByTestId, getByPlaceholderText, findByText} = render(
+            <LedScroller initialText="TEST"/>
+        );
+
+        const settingsBtn = getByTestId('settings-button');
+        fireEvent.press(settingsBtn);
+
+        await findByText('⚙️ Config');
+
+        const textInput = getByPlaceholderText('Entrez votre message...');
+        fireEvent.changeText(textInput, 'NOUVEAU MESSAGE');
+
+        const closeBtn = getByTestId('close-modal-button');
+        fireEvent.press(closeBtn);
+
+        await waitFor(async () => {
+            const saved = await AsyncStorage.getItem('@led_scroller_settings_v1');
+            const parsed = saved ? JSON.parse(saved) : null;
+            expect(parsed.recentMessages).toContain('NOUVEAU MESSAGE');
+        }, {timeout: 2000});
+    });
+
+    it('limite l\'historique à 5 messages maximum', async () => {
+        const initialMessages = ['MSG1', 'MSG2', 'MSG3', 'MSG4', 'MSG5'];
+        await AsyncStorage.setItem('@led_scroller_settings_v1', JSON.stringify({
+            text: 'INITIAL',
+            recentMessages: initialMessages
+        }));
+
+        const {getByTestId, getByPlaceholderText, findByText} = render(
+            <LedScroller initialText="TEST"/>
+        );
+
+        const settingsBtn = getByTestId('settings-button');
+        fireEvent.press(settingsBtn);
+
+        await findByText('⚙️ Config');
+
+        const textInput = getByPlaceholderText('Entrez votre message...');
+        fireEvent.changeText(textInput, 'MSG6');
+
+        const closeBtn = getByTestId('close-modal-button');
+        fireEvent.press(closeBtn);
+
+        await waitFor(async () => {
+            const saved = await AsyncStorage.getItem('@led_scroller_settings_v1');
+            const parsed = saved ? JSON.parse(saved) : null;
+            expect(parsed.recentMessages.length).toBeLessThanOrEqual(5);
+            expect(parsed.recentMessages[0]).toBe('MSG6');
+        }, {timeout: 2000});
+    });
+
+    it('évite les doublons dans l\'historique', async () => {
+        await AsyncStorage.setItem('@led_scroller_settings_v1', JSON.stringify({
+            text: 'INITIAL',
+            recentMessages: ['DUPLICATE', 'OTHER']
+        }));
+
+        const {getByTestId, getByPlaceholderText, findByText} = render(
+            <LedScroller initialText="TEST"/>
+        );
+
+        const settingsBtn = getByTestId('settings-button');
+        fireEvent.press(settingsBtn);
+
+        await findByText('⚙️ Config');
+
+        const textInput = getByPlaceholderText('Entrez votre message...');
+        fireEvent.changeText(textInput, 'DUPLICATE');
+
+        const closeBtn = getByTestId('close-modal-button');
+        fireEvent.press(closeBtn);
+
+        await waitFor(async () => {
+            const saved = await AsyncStorage.getItem('@led_scroller_settings_v1');
+            const parsed = saved ? JSON.parse(saved) : null;
+            const duplicateCount = parsed.recentMessages.filter(
+                (msg: string) => msg === 'DUPLICATE'
+            ).length;
+            expect(duplicateCount).toBe(1);
+            expect(parsed.recentMessages[0]).toBe('DUPLICATE');
+        }, {timeout: 2000});
+    });
+
+    it('charge l\'historique des messages depuis le stockage', async () => {
+        const savedMessages = ['SAVED1', 'SAVED2', 'SAVED3'];
+        await AsyncStorage.setItem('@led_scroller_settings_v1', JSON.stringify({
+            text: 'INITIAL',
+            recentMessages: savedMessages
+        }));
+
+        const {getByTestId, findByText} = render(<LedScroller initialText="TEST"/>);
+
+        const settingsBtn = getByTestId('settings-button');
+        fireEvent.press(settingsBtn);
+
+        const modal = await findByText('⚙️ Config');
+        expect(modal).toBeTruthy();
+
+        expect(findByText('SAVED1')).toBeTruthy();
+        expect(findByText('SAVED2')).toBeTruthy();
+        expect(findByText('SAVED3')).toBeTruthy();
+    });
+
+    it('ignore les messages vides lors de la sauvegarde', async () => {
+        const {getByTestId, getByPlaceholderText, findByText} = render(
+            <LedScroller initialText="TEST"/>
+        );
+
+        const settingsBtn = getByTestId('settings-button');
+        fireEvent.press(settingsBtn);
+
+        await findByText('⚙️ Config');
+
+        const textInput = getByPlaceholderText('Entrez votre message...');
+        fireEvent.changeText(textInput, '   ');
+
+        const closeBtn = getByTestId('close-modal-button');
+        fireEvent.press(closeBtn);
+
+        await waitFor(async () => {
+            const saved = await AsyncStorage.getItem('@led_scroller_settings_v1');
+            const parsed = saved ? JSON.parse(saved) : null;
+            expect(parsed.recentMessages || []).not.toContain('   ');
+        }, {timeout: 2000});
+    });
+
+    it('préserve l\'ordre des messages : les plus récents en premier', async () => {
+        await AsyncStorage.setItem('@led_scroller_settings_v1', JSON.stringify({
+            text: 'INITIAL',
+            recentMessages: ['OLD1', 'OLD2']
+        }));
+
+        const {getByTestId, getByPlaceholderText, findByText} = render(
+            <LedScroller initialText="TEST"/>
+        );
+
+        const settingsBtn = getByTestId('settings-button');
+        fireEvent.press(settingsBtn);
+
+        await findByText('⚙️ Config');
+
+        const textInput = getByPlaceholderText('Entrez votre message...');
+        fireEvent.changeText(textInput, 'NEW');
+
+        const closeBtn = getByTestId('close-modal-button');
+        fireEvent.press(closeBtn);
+
+        await waitFor(async () => {
+            const saved = await AsyncStorage.getItem('@led_scroller_settings_v1');
+            const parsed = saved ? JSON.parse(saved) : null;
+            expect(parsed.recentMessages[0]).toBe('NEW');
+            expect(parsed.recentMessages[1]).toBe('OLD1');
+            expect(parsed.recentMessages[2]).toBe('OLD2');
+        }, {timeout: 2000});
+    });
+});
+
 describe('Mode Paysage (Landscape)', () => {
     let mockDimensions = {width: 360, height: 800};
 
