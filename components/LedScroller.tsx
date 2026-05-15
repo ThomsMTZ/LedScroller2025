@@ -121,11 +121,9 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
 
     const pinchGesture = Gesture.Pinch()
         .onUpdate((e: GestureUpdateEvent<PinchGestureHandlerEventPayload>) => {
-            'worklet';
             fontSize.value = savedFontSize.value * e.scale;
         })
         .onEnd(() => {
-            'worklet';
             savedFontSize.value = fontSize.value;
         });
 
@@ -196,7 +194,7 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
                 const settingsToSave = {
                     text, speed, selectedColor, isLandscapeLocked, showBorder,
                     isTextBlinking, isBorderBlinking, isBorderChase,
-                    recentMessages // 👈 Sauvegarde de l'historique
+                    recentMessages
                 };
                 await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(settingsToSave));
             } catch (e) {
@@ -259,32 +257,50 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
                             {
                                 borderWidth: showNativeBorder ? 4 : 0,
                                 borderColor: currentStaticColor,
-                                backgroundColor: isChaseActive ? 'rgba(0,0,0,0.3)' : 'black',
+                                backgroundColor: isChaseActive ? '#050505' : 'black',
                                 height: isLandscape ? '100%' : PORTRAIT_PANEL_HEIGHT,
+                                overflow: 'hidden',
+                                position: 'relative'
                             },
                             isLandscape && {
                                 flex: 1, width: '100%', height: '100%',
                                 borderRadius: 0, padding: 0,
                                 borderWidth: showNativeBorder ? 4 : 0,
-                                backgroundColor: 'black',
+                                backgroundColor: isChaseActive ? '#050505' : 'black',
                             }
                         ]}
                     >
+                        {/* 1. EFFET CHASE (Arrière-plan rotatif) */}
+                        {isChaseActive && (
+                            <LedBorder
+                                color={currentStaticColor}
+                                isAnimating={true}
+                            />
+                        )}
+
+                        {/* 2. CONTENU (Masque intérieur) */}
                         <View style={[styles.ledBorder, {
                             shadowColor: currentStaticColor,
                             shadowOffset: {width: 0, height: 0},
                             shadowOpacity: 0.8,
                             shadowRadius: 20,
-                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            backgroundColor: '#0a0a0a',
                             flex: 1,
-                            width: '100%',
+
+                            margin: isChaseActive ? 4 : 0,
+                            borderRadius: isLandscape ? 0 : (isChaseActive ? 12 : 16),
+
                             justifyContent: 'center',
                             paddingVertical: 0,
                         },
+                            !isChaseActive && {width: '100%'},
+
                             isLandscape && {
-                                width: '100%', flex: 1,
-                                borderRadius: 0, paddingVertical: 0,
-                                justifyContent: 'center'
+                                flex: 1,
+                                borderRadius: 0,
+                                paddingVertical: 0,
+                                justifyContent: 'center',
+                                margin: isChaseActive ? 4 : 0,
                             }
                         ]}>
                             <Animated.View
@@ -318,16 +334,6 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
                             </Animated.View>
                             <GridOverlay/>
                         </View>
-
-                        {isChaseActive && (
-                            <LedBorder
-                                color={currentStaticColor}
-                                isAnimating={true}
-                                borderWidth={4}
-                                borderRadius={isLandscape ? 0 : 16}
-                            />
-                        )}
-
                     </Animated.View>
                     {!isLandscape && <HintContainer/>}
                 </View>
@@ -361,7 +367,6 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
                 isTextBlinking={isTextBlinking}
                 onToggleTextBlinking={() => setIsTextBlinking(!isTextBlinking)}
 
-                // 👇 Nouveaux props injectés
                 recentMessages={recentMessages}
                 onSelectRecentMessage={setText}
             />
