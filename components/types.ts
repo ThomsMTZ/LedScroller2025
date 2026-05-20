@@ -63,8 +63,8 @@ export interface SettingsModalProps {
     // --- ORIENTATION & DIRECTION ---
     isLandscapeLocked: boolean;
     onToggleOrientation: () => void;
-    isReverseScroll: boolean;           
-    onToggleReverseScroll: () => void;  
+    isReverseScroll: boolean;
+    onToggleReverseScroll: () => void;
 
     // --- BORDURE ---
     showBorder: boolean;
@@ -78,9 +78,11 @@ export interface SettingsModalProps {
     isTextBlinking: boolean;
     onToggleTextBlinking: () => void;
 
-    // --- HISTORIQUE ---
+    // --- HISTORIQUE & FAVORIS ---
     recentMessages: string[];
+    favoriteMessages: string[];
     onSelectRecentMessage: (msg: string) => void;
+    onToggleFavorite: (msg: string) => void;
 }
 
 export interface ColorSelectorProps {

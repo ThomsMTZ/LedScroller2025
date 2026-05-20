@@ -18,8 +18,8 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                                                          onColorChange,
                                                          isLandscapeLocked,
                                                          onToggleOrientation,
-                                                         isReverseScroll,         
-                                                         onToggleReverseScroll,   
+                                                         isReverseScroll,
+                                                         onToggleReverseScroll,
                                                          showBorder,
                                                          onToggleBorder,
                                                          isBorderChase,
@@ -29,11 +29,15 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                                                          isTextBlinking,
                                                          onToggleTextBlinking,
                                                          recentMessages,
-                                                         onSelectRecentMessage
+                                                         onSelectRecentMessage,
+                                                         favoriteMessages,
+                                                         onToggleFavorite,
                                                      }) => {
 
     const {height: screenHeight} = useWindowDimensions();
     const currentHsl = `hsl(${selectedColor.hue}, ${selectedColor.saturation}%, ${selectedColor.lightness}%)`;
+    const currentTrimmedText = text.trim();
+    const isCurrentTextFavorite = currentTrimmedText !== '' && favoriteMessages.includes(currentTrimmedText);
 
     const renderToggleButton = (label: string, icon: any, isActive: boolean, onPress: () => void, testID: string) => (
         <TouchableOpacity
@@ -109,31 +113,76 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
                         contentContainerStyle={{paddingBottom: 20}}
                         keyboardShouldPersistTaps="handled"
                     >
+
                         {/* MESSAGE ET HISTORIQUE */}
                         <View style={styles.section}>
                             <Text style={styles.label}>💬 Message</Text>
-                            <TextInput
-                                style={styles.input}
-                                value={text}
-                                onChangeText={onTextChange}
-                                placeholder="Entrez votre message..."
-                                placeholderTextColor={COLORS.textMuted}
-                                selectionColor={currentHsl}
-                            />
 
-                            {recentMessages && recentMessages.length > 0 && (
+                            {/* Conteneur du champ de saisie avec l'étoile intégrée */}
+                            <View style={[styles.input, {
+                                flexDirection: 'row',
+                                alignItems: 'center',
+                                paddingRight: 10,
+                                borderColor: isCurrentTextFavorite ? currentHsl : '#333'
+                            }]}>
+                                <TextInput
+                                    style={{flex: 1, color: COLORS.text, paddingVertical: 0}}
+                                    value={text}
+                                    onChangeText={onTextChange}
+                                    placeholder="Entrez votre message..."
+                                    placeholderTextColor={COLORS.textMuted}
+                                    selectionColor={currentHsl}
+                                />
+
+                                {/* Le bouton Étoile, visible uniquement si le champ n'est pas vide */}
+                                {currentTrimmedText !== '' && (
+                                    <TouchableOpacity
+                                        onPress={() => onToggleFavorite(currentTrimmedText)}
+                                        hitSlop={{top: 15, bottom: 15, left: 15, right: 15}}
+                                    >
+                                        <Ionicons
+                                            name={isCurrentTextFavorite ? "star" : "star-outline"}
+                                            size={22}
+                                            color={isCurrentTextFavorite ? currentHsl : COLORS.textMuted}
+                                        />
+                                    </TouchableOpacity>
+                                )}
+                            </View>
+
+                            {(recentMessages.length > 0 || favoriteMessages.length > 0) && (
                                 <ScrollView
                                     testID="history-list"
                                     horizontal
                                     showsHorizontalScrollIndicator={false}
                                     style={styles.historyContainer}
                                 >
-                                    {recentMessages.map((msg, index) => (
+                                    {/* 1. Affichage des FAVORIS en premier */}
+                                    {favoriteMessages.map((msg) => (
                                         <TouchableOpacity
-                                            key={index}
-                                            testID={`history-chip-${index}`}
+                                            key={`fav-${msg}`}
+                                            style={[styles.historyChip, {borderColor: currentHsl}]}
+                                            onPress={() => onSelectRecentMessage(msg)}
+                                            onLongPress={() => onToggleFavorite(msg)}
+                                            activeOpacity={0.7}
+                                        >
+                                            <Text
+                                                style={[styles.historyChipText, {color: currentHsl}]}
+                                                numberOfLines={1}
+                                                ellipsizeMode="tail"
+                                            >
+                                                ⭐ {msg}
+                                            </Text>
+                                        </TouchableOpacity>
+                                    ))}
+
+                                    {/* 2. Affichage des RÉCENTS ensuite */}
+                                    {recentMessages.map((msg) => (
+                                        <TouchableOpacity
+                                            key={`rec-${msg}`}
+                                            testID={`history-chip-${msg}`}
                                             style={styles.historyChip}
                                             onPress={() => onSelectRecentMessage(msg)}
+                                            onLongPress={() => onToggleFavorite(msg)}
                                             activeOpacity={0.7}
                                         >
                                             <Text

@@ -1,4 +1,3 @@
-// components/ColorSelector.tsx
 import React from 'react';
 import {TouchableOpacity, View} from 'react-native';
 import {styles} from './styles';
@@ -8,13 +7,13 @@ import {LED_COLORS} from './constants';
 const ColorSelector: React.FC<ColorSelectorProps> = ({selectedColor, onColorChange}) => {
     return (
         <View style={styles.colorGrid}>
-            {LED_COLORS.map((color, index) => {
+            {LED_COLORS.map((color) => {
                 const isSelected = selectedColor.name === color.name;
                 const hslString = `hsl(${color.hue}, ${color.saturation}%, ${color.lightness}%)`;
 
                 return (
                     <TouchableOpacity
-                        key={index}
+                        key={color.name}
                         style={[
                             styles.colorButton,
                             isSelected && styles.colorButtonSelected,

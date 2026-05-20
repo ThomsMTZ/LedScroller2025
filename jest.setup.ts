@@ -21,26 +21,21 @@ jest.mock('expo-screen-orientation', () => ({
 // 4. Mock de Gesture Handler (Gestes tactiles)
 jest.mock('react-native-gesture-handler', () => {
     const View = require('react-native').View;
+
+    const mockChainableGesture = {
+        onUpdate: jest.fn().mockReturnThis(),
+        onEnd: jest.fn().mockReturnThis(),
+        numberOfTaps: jest.fn().mockReturnThis(),
+        runOnJS: jest.fn().mockReturnThis(),
+    };
+
     return {
         GestureDetector: View,
         GestureHandlerRootView: View,
         Gesture: {
-            Pinch: () => ({
-                onUpdate: () => ({
-                    onEnd: () => {
-                    }
-                })
-            }),
-            Tap: () => ({
-                numberOfTaps: () => ({
-                    runOnJS: () => ({
-                        onEnd: () => {
-                        }
-                    })
-                })
-            }),
-            Race: () => {
-            },
+            Pinch: () => mockChainableGesture,
+            Tap: () => mockChainableGesture,
+            Race: jest.fn(),
         },
         State: {},
         Directions: {},
@@ -55,8 +50,6 @@ jest.mock('expo-linear-gradient', () => ({
 // 6. Mock des Fonts (Google Fonts)
 jest.mock('@expo-google-fonts/codystar', () => ({
     Codystar_400Regular: 'Codystar_400Regular',
-    useFonts: () => [true],
-
 }));
 
 // 7. Mock des Icones (Ionicons)

@@ -39,17 +39,20 @@ import SettingsModal from './SettingsModal';
 import LedBorder from './LedBorder';
 
 const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'}) => {
+    const componentId = React.useId();
     const {width, height} = useWindowDimensions();
     const STORAGE_KEY = '@led_scroller_settings_v1';
 
     // 1. STATE
     const [text, setText] = useState<string>(initialText);
     const [recentMessages, setRecentMessages] = useState<string[]>([]);
+    const [favoriteMessages, setFavoriteMessages] = useState<string[]>([]);
 
     const [selectedColor, setSelectedColor] = useState<LedColorType>(LED_COLORS[4]);
     const [isSettingsOpen, setSettingsOpen] = useState<boolean>(false);
     const [speed, setSpeed] = useState<number>(100);
     const [textWidth, setTextWidth] = useState<number>(0);
+
 
     // États de configuration
     const [isLandscapeLocked, setIsLandscapeLocked] = useState<boolean>(false);
@@ -138,7 +141,7 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
         };
     }, [textWidth, speed, width, patternWidth, isReverseScroll]);
 
-    const baseMaxFontSize = isLandscape ? height * 0.80 : PORTRAIT_PANEL_HEIGHT * 0.80;
+    const baseMaxFontSize = isLandscape ? height * 0.8 : PORTRAIT_PANEL_HEIGHT * 0.8;
     const minFontSizeValue = 20;
 
     const calculatedMaxFontSize = text.length > 6
@@ -175,6 +178,7 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
         const l = Math.round(ligVal.value);
         const hslColor = `hsl(${h}, ${s}%, ${l}%)`;
         return {
+            fontFamily: 'LedFont',
             fontSize: fontSize.value,
             color: hslColor,
             textShadowColor: hslColor,
@@ -227,6 +231,7 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
                     if (savedSettings.isBorderBlinking !== undefined) setIsBorderBlinking(savedSettings.isBorderBlinking);
                     if (savedSettings.isBorderChase !== undefined) setIsBorderChase(savedSettings.isBorderChase);
                     if (savedSettings.recentMessages) setRecentMessages(savedSettings.recentMessages);
+                    if (savedSettings.favoriteMessages) setFavoriteMessages(savedSettings.favoriteMessages);
                     if (savedSettings.isReverseScroll !== undefined) setIsReverseScroll(savedSettings.isReverseScroll);
                 }
             } catch (e) {
@@ -256,11 +261,21 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
     const handleCloseSettings = () => {
         setSettingsOpen(false);
         const currentTrimmed = text.trim();
-        if (currentTrimmed !== '') {
+        if (currentTrimmed !== '' && !favoriteMessages.includes(currentTrimmed)) {
             setRecentMessages(prev => {
                 const filtered = prev.filter(msg => msg !== currentTrimmed);
-                return [currentTrimmed, ...filtered].slice(0, 5);
+                return [currentTrimmed, ...filtered].slice(0, 5); // Garde max 5 récents
             });
+        }
+    };
+
+    const toggleFavorite = (msg: string) => {
+        if (favoriteMessages.includes(msg)) {
+            setFavoriteMessages(prev => prev.filter(f => f !== msg));
+            setRecentMessages(prev => [msg, ...prev.filter(r => r !== msg)].slice(0, 5));
+        } else {
+            setFavoriteMessages(prev => [msg, ...prev]);
+            setRecentMessages(prev => prev.filter(r => r !== msg));
         }
     };
 
@@ -274,6 +289,12 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
             ios: 'ca-app-pub-2790650155402757/6773987013',
             default: TestIds.BANNER,
         });
+
+    const getDisplayBorderRadius = (): number => {
+        if (isLandscape) return 0;
+        if (isChaseActive) return 12;
+        return 16;
+    };
 
     return (
         <View style={styles.container}>
@@ -347,7 +368,7 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
                             backgroundColor: '#0a0a0a',
                             flex: 1,
                             margin: isChaseActive ? 4 : 0,
-                            borderRadius: isLandscape ? 0 : (isChaseActive ? 12 : 16),
+                            borderRadius: getDisplayBorderRadius(),
                             justifyContent: 'center',
                             paddingVertical: 0,
                         },
@@ -372,7 +393,7 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
                                     animatedContainerStyle,
                                 ]}>
                                 {copiesArray.map((_, index) => (
-                                    <React.Fragment key={index}>
+                                    <React.Fragment key={`${componentId}-text-copy-${index}`}>
                                         <Animated.Text
                                             testID="scrolling-text"
                                             onLayout={index === 0 ? (e) => setTextWidth(e.nativeEvent.layout.width) : undefined}
@@ -440,6 +461,8 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
                 onToggleTextBlinking={() => setIsTextBlinking(!isTextBlinking)}
 
                 recentMessages={recentMessages}
+                favoriteMessages={favoriteMessages}
+                onToggleFavorite={toggleFavorite}
                 onSelectRecentMessage={setText}
             />
 

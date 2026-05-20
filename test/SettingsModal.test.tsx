@@ -8,36 +8,30 @@ jest.mock('@react-native-community/slider', () => 'Slider');
 
 // Shared test defaults
 const createDefaultProps = () => ({
-    // Modal state
     visible: true,
     onClose: jest.fn(),
-    // Text settings
     text: 'TEST',
     onTextChange: jest.fn(),
-    // Speed settings
     speed: 100,
     onSpeedChange: jest.fn(),
-    // Color settings
     selectedColor: LED_COLORS[0],
     onColorChange: jest.fn(),
-    // Orientation settings
     isLandscapeLocked: false,
     onToggleOrientation: jest.fn(),
     isReverseScroll: false,
     onToggleReverseScroll: jest.fn(),
-    // Border settings
     showBorder: true,
     onToggleBorder: jest.fn(),
     isBorderChase: false,
     onToggleBorderChase: jest.fn(),
     isBorderBlinking: false,
     onToggleBorderBlinking: jest.fn(),
-    // Text effects
     isTextBlinking: false,
     onToggleTextBlinking: jest.fn(),
-    // Recent messages
     recentMessages: [],
     onSelectRecentMessage: jest.fn(),
+    favoriteMessages: [],
+    onToggleFavorite: jest.fn(),
 });
 
 describe('<SettingsModal /> UI Completeness', () => {
