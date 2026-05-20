@@ -10,7 +10,7 @@ const HintContainer: React.FC = () => {
         <Animated.View
             pointerEvents="none"
             entering={FadeIn.delay(500).duration(1000)}
-            style={{ width: '100%' }}
+            style={{width: '100%'}}
         >
             <View style={styles.hintContainer}>
                 <View style={styles.hintIcon}>

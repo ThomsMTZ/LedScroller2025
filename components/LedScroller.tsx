@@ -35,7 +35,7 @@ import {LedColorType, LedScrollerProps} from './types';
 import {COLORS, LED_COLORS} from './constants';
 import GridOverlay from './GridOverlay';
 import HintContainer from './HintContainer';
-import SettingsModal from './SettingsModal';
+import SettingsModal from './SettingsModal/SettingsModal';
 import LedBorder from './LedBorder';
 
 const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'}) => {
@@ -372,7 +372,7 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
                             justifyContent: 'center',
                             paddingVertical: 0,
                         },
-                            !isChaseActive && { width: '100%' },
+                            !isChaseActive && {width: '100%'},
                             isLandscape && {
                                 flex: 1,
                                 borderRadius: 0,

@@ -122,7 +122,7 @@ LedScroller2025/
 ├── app/                    # App entry point
 │   └── index.tsx          # Main app component
 ├── components/            # Reusable React components
-│   ├── ColorSelector.tsx  # Color picker component
+│   ├── ColorSection.tsx  # Color picker component
 │   ├── GridOverlay.tsx    # LED grid overlay
 │   ├── HintContainer.tsx  # User hints display
 │   ├── LedScroller.tsx    # Main scroller component
