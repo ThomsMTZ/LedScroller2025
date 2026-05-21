@@ -1,8 +1,8 @@
 import React from 'react';
 import {ScrollView, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import {Ionicons} from '@expo/vector-icons';
-import {styles} from '../../styles';
-import {COLORS} from '../constants';
+import {styles} from '../styles';
+import {COLORS} from '../../constants';
 import {useSettings} from "../../../context/SettingsContext";
 
 export const MessageSection: React.FC = () => {

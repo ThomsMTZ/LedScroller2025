@@ -1,7 +1,7 @@
 import React from 'react';
 import {Modal, ScrollView, Text, TouchableOpacity, useWindowDimensions, View} from 'react-native';
 import {Ionicons} from '@expo/vector-icons';
-import {styles} from '../styles';
+import {styles} from './styles';
 import {COLORS} from '../constants';
 import {SettingsProvider} from '../../context/SettingsContext';
 
@@ -27,7 +27,8 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
                 <View style={[styles.modalContent, {maxHeight: screenHeight * 0.85}]}>
                     <View style={styles.headerModal}>
                         <Text style={styles.modalTitle}>⚙️ Config</Text>
-                        <TouchableOpacity style={styles.closeButton} onPress={onClose}>
+
+                        <TouchableOpacity testID="close-modal-button" style={styles.closeButton} onPress={onClose}>
                             <Ionicons name="close" size={24} color={COLORS.text}/>
                         </TouchableOpacity>
                     </View>

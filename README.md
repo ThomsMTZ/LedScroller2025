@@ -132,9 +132,6 @@ LedScroller2025/
 │   └── types.ts           # TypeScript type definitions
 ├── assets/                # Static assets
 │   ├── icon.png          # App icon
-│   ├── splash-icon.png   # Splash screen
-│   ├── adaptive-icon.png # Android adaptive icon
-│   └── favicon.png       # Web favicon
 ├── .github/              # GitHub configuration
 ├── app.json              # Expo configuration
 ├── package.json          # Dependencies and scripts
@@ -164,7 +161,8 @@ const LedScroller: React.FC<LedScrollerProps> = ({
   initialText = 'YOUR TEXT HERE' // Change default text
 }) => {
   const [hue, setHue] = useState<number>(120);    // Default color (0-360)
-  const [speed, setSpeed] = useState<number>(10000); // Default speed in ms
+    const [speed, setSpeed] = useState<number>(10000);
+} // Default speed in ms
   // ...
 ```
 

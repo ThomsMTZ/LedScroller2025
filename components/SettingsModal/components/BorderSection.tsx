@@ -1,5 +1,5 @@
 import React from "react";
-import {styles} from "../../styles";
+import {styles} from "../styles";
 import {Text, View} from "react-native";
 import {ToggleButton} from "./ToggleButton";
 import {useSettings} from "../../../context/SettingsContext";

@@ -1,10 +1,9 @@
 import {Dimensions, Platform, StyleSheet} from 'react-native';
-import {Styles} from './types';
 import {COLORS} from './constants';
 
 const {width} = Dimensions.get('window');
 
-export const styles = StyleSheet.create<Styles>({
+export const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#0a0a0a',
@@ -71,7 +70,7 @@ export const styles = StyleSheet.create<Styles>({
         fontWeight: 'bold',
         fontFamily: 'LedFont',
         includeFontPadding: false,
-        flexShrink: 0
+        flexShrink: 0,
     },
     gridOverlay: {
         ...StyleSheet.absoluteFillObject,
@@ -105,138 +104,5 @@ export const styles = StyleSheet.create<Styles>({
         color: COLORS.textMuted,
         fontSize: 12,
         letterSpacing: 1,
-    },
-    modalOverlay: {
-        flex: 1,
-        backgroundColor: 'rgba(0, 0, 0, 0.7)',
-        justifyContent: 'flex-end',
-    },
-    modalContent: {
-        backgroundColor: COLORS.surface,
-        borderTopLeftRadius: 28,
-        borderTopRightRadius: 28,
-        paddingHorizontal: 24,
-        paddingTop: 12,
-        paddingBottom: 40,
-        borderWidth: 1,
-        borderColor: COLORS.border,
-        borderBottomWidth: 0,
-    },
-    modalHandle: {
-        width: 40,
-        height: 4,
-        backgroundColor: COLORS.textMuted,
-        borderRadius: 2,
-        alignSelf: 'center',
-        marginBottom: 16,
-    },
-    headerModal: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: 24,
-    },
-    modalTitle: {
-        color: COLORS.text,
-        fontSize: 22,
-        fontWeight: 'bold',
-        letterSpacing: 0.5,
-    },
-    closeButton: {
-        width: 40,
-        height: 40,
-        borderRadius: 20,
-        backgroundColor: COLORS.surfaceLight,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    section: {
-        marginBottom: 24,
-    },
-    input: {
-        backgroundColor: 'rgba(0, 0, 0, 0.3)',
-        color: COLORS.text,
-        fontSize: 16,
-        padding: 16,
-        borderRadius: 12,
-        borderWidth: 1,
-        borderColor: COLORS.border,
-    },
-    label: {
-        color: COLORS.text,
-        fontSize: 14,
-        fontWeight: '600',
-        marginBottom: 12,
-        letterSpacing: 0.5,
-    },
-    colorGrid: {
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        gap: 10,
-        justifyContent: 'flex-start',
-    },
-    colorButton: {
-        width: 52,
-        height: 52,
-        borderRadius: 26,
-        backgroundColor: COLORS.surfaceLight,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderWidth: 2,
-        borderColor: 'transparent',
-    },
-    colorButtonSelected: {
-        borderWidth: 2,
-    },
-    colorDot: {
-        width: 36,
-        height: 36,
-        borderRadius: 18,
-        shadowOffset: {width: 0, height: 0},
-        shadowOpacity: 0.8,
-        shadowRadius: 8,
-        elevation: 5,
-    },
-    sliderContainer: {
-        backgroundColor: 'rgba(0, 0, 0, 0.3)',
-        borderRadius: 12,
-        padding: 12,
-        paddingHorizontal: 8,
-        borderWidth: 1,
-        borderColor: COLORS.border,
-    },
-    sliderLabels: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        paddingHorizontal: 8,
-        marginTop: 4,
-    },
-    sliderLabel: {
-        color: COLORS.textMuted,
-        fontSize: 11,
-        textTransform: 'uppercase',
-        letterSpacing: 1,
-    },
-    historyContainer: {
-        flexDirection: 'row',
-        marginTop: 12,
-        paddingBottom: 4,
-    },
-    historyChip: {
-        backgroundColor: 'rgba(0, 0, 0, 0.4)',
-        paddingHorizontal: 16,
-        paddingVertical: 8,
-        borderRadius: 20,
-        marginRight: 10,
-        borderWidth: 1,
-        borderColor: COLORS.border,
-        justifyContent: 'center',
-        alignItems: 'center',
-        maxWidth: 150,
-    },
-    historyChipText: {
-        color: COLORS.text,
-        fontSize: 13,
-        fontWeight: '500',
     },
 });

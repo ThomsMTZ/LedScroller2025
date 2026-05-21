@@ -1,3 +1,5 @@
+import 'react-native-gesture-handler/jestSetup';
+
 // 1. Mock de Reanimated
 jest.mock('react-native-reanimated', () =>
     require('react-native-reanimated/mock')
@@ -36,6 +38,7 @@ jest.mock('react-native-gesture-handler', () => {
             Pinch: () => mockChainableGesture,
             Tap: () => mockChainableGesture,
             Race: jest.fn(),
+            Simultaneous: jest.fn(),
         },
         State: {},
         Directions: {},
@@ -55,4 +58,11 @@ jest.mock('@expo-google-fonts/codystar', () => ({
 // 7. Mock des Icones (Ionicons)
 jest.mock('@expo/vector-icons', () => ({
     Ionicons: 'Ionicons',
+}));
+
+// 8. Mock des Pubs
+jest.mock('react-native-google-mobile-ads', () => ({
+    BannerAd: 'BannerAd',
+    BannerAdSize: {BANNER: 'BANNER'},
+    TestIds: {BANNER: 'test-banner'}
 }));

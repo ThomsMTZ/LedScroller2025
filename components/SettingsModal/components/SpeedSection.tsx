@@ -1,5 +1,5 @@
 import React from 'react';
-import {styles} from "../../styles";
+import {styles} from "../styles";
 import {Text, View} from "react-native";
 import Slider from "@react-native-community/slider";
 import {COLORS} from "../../constants";
