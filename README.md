@@ -16,6 +16,9 @@ A dynamic LED-style scrolling text display application built with React Native a
 - 🌈 **Smooth Animations**: Powered by React Native Reanimated for silky-smooth 60fps animations
 - 📱 **Cross-Platform**: Runs on iOS, Android, and Web
 - 🎭 **Custom LED Font**: Uses the Codystar font for an authentic LED display look
+- 🕒 **Message History & Favorites**: Easily access recently used messages and save your favorites
+- 🔄 **Scroll Direction & Orientation**: Toggle right-to-left/left-to-right scrolling and lock landscape mode
+- ✨ **Advanced LED Effects**: Enable blinking text, blinking borders, or dynamic chase border animations
 
 ## 🚀 Demo
 
@@ -86,12 +89,13 @@ Before you begin, ensure you have the following installed:
 ### Basic Usage
 
 1. **Launch the app** on your device or emulator
-2. **Default message** "BONJOUR 2025" will start scrolling automatically
+2. **Default message** "BONNE ANNÉE 2026" will start scrolling automatically
 3. **Double-tap anywhere** on the screen to open the settings modal
 4. **Customize your display**:
-   - Enter custom text in the input field
-   - Adjust the color using the hue slider
+    - Enter custom text in the input field or select from history/favorites
+    - Adjust the color using the color selector
    - Control the speed with the speed slider
+    - Configure scroll direction, landscape lock, and visual effects
 5. **Pinch gesture** on the scrolling text to zoom in/out
 6. **Close settings** by tapping the close button
 
@@ -117,29 +121,67 @@ This project is built with:
 
 ## 📁 Project Structure
 
-```
+```text
 LedScroller2025/
 ├── app/                    # App entry point
-│   └── index.tsx          # Main app component
-├── components/            # Reusable React components
-│   ├── ColorSection.tsx  # Color picker component
-│   ├── GridOverlay.tsx    # LED grid overlay
-│   ├── HintContainer.tsx  # User hints display
-│   ├── LedScroller.tsx    # Main scroller component
-│   ├── SettingsModal.tsx  # Settings configuration modal
-│   ├── index.ts           # Component exports
-│   ├── styles.ts          # Shared styles
-│   └── types.ts           # TypeScript type definitions
-├── assets/                # Static assets
-│   ├── icon.png          # App icon
-├── .github/              # GitHub configuration
-├── app.json              # Expo configuration
-├── package.json          # Dependencies and scripts
-├── tsconfig.json         # TypeScript configuration
-├── babel.config.js       # Babel configuration
-├── eslint.config.js      # ESLint configuration
-├── TROUBLESHOOTING.md    # Known issues and solutions
-└── README.md             # This file
+│   └── index.tsx           # Main app component
+├── assets/                 # Static assets
+│   ├── adaptive-icon.png
+│   ├── favicon.png
+│   ├── icon.png
+│   └── splash-icon.png
+├── components/             # Reusable React components
+│   ├── SettingsModal/      # Settings configuration modal folder
+│   │   ├── components/     # Config sections
+│   │   │   ├── BorderSection.tsx
+│   │   │   ├── ColorSection.tsx
+│   │   │   ├── DisplayTextSection.tsx
+│   │   │   ├── MessageSection.tsx
+│   │   │   ├── OrientationSection.tsx
+│   │   │   ├── SpeedSection.tsx
+│   │   │   └── ToggleButton.tsx
+│   │   ├── SettingsModal.tsx
+│   │   ├── constants.ts
+│   │   └── types.ts
+│   ├── GridOverlay.tsx     # LED grid overlay
+│   ├── HintContainer.tsx   # User hints display
+│   ├── LedBorder.tsx       # Animated LED border effects
+│   ├── LedScroller.tsx     # Main scroller component
+│   ├── constants.ts        # Shared constants and colors
+│   ├── index.ts            # Component exports
+│   ├── styles.ts           # Shared styles
+│   ├── types.ts            # TypeScript type definitions
+│   └── useLedSettings.tsx  # State management hook
+├── context/                # React Contexts
+│   └── SettingsContext.tsx # Settings global state context
+├── test/                   # Test files (Jest)
+│   ├── SettingsModal/      # Tests for SettingsModal and its sections
+│   │   ├── BorderSection.test.tsx
+│   │   ├── ColorSection.test.tsx
+│   │   ├── DisplayTextSection.test.tsx
+│   │   ├── MessageSection.test.tsx
+│   │   ├── OrientationSection.test.tsx
+│   │   ├── SettingsModal.test.tsx
+│   │   ├── SpeedSection.test.tsx
+│   │   ├── ToggleButton.test.tsx
+│   │   └── useLedSettings.test.ts
+│   ├── GridOverlay.test.tsx
+│   ├── HintContainer.test.tsx
+│   ├── LedBorder.test.tsx
+│   ├── LedScroller.test.tsx
+│   └── useLedAnimation.test.ts
+├── .github/                # GitHub configuration
+├── app.json                # Expo configuration
+├── babel.config.js         # Babel configuration
+├── eas.json                # Expo Application Services config
+├── eslint.config.js        # ESLint configuration
+├── jest.config.js          # Jest configuration
+├── jest.setup.ts           # Jest setup and mocks
+├── package.json            # Dependencies and scripts
+├── tsconfig.json           # TypeScript configuration
+├── index.ts                # App entry registry
+├── TROUBLESHOOTING.md      # Known issues and solutions
+└── README.md               # This file
 ```
 
 ## ⚙️ Configuration
@@ -154,16 +196,21 @@ The main configuration is in `app.json`:
 
 ### Customizing Default Values
 
-Edit `components/LedScroller.tsx` to change defaults:
+Edit `components/useLedSettings.tsx` to change defaults:
 
 ```typescript
-const LedScroller: React.FC<LedScrollerProps> = ({ 
-  initialText = 'YOUR TEXT HERE' // Change default text
-}) => {
-  const [hue, setHue] = useState<number>(120);    // Default color (0-360)
-    const [speed, setSpeed] = useState<number>(10000);
-} // Default speed in ms
-  // ...
+const DEFAULT_SETTINGS: SettingsState = {
+    text: 'BONNE ANNÉE 2026',
+    speed: 100,
+    selectedColor: LED_COLORS[0],
+    showBorder: true,
+    isBorderChase: true,
+    isBorderBlinking: false,
+    isLandscapeLocked: false,
+    isTextBlinking: false,
+    isReverseScroll: false,
+    // ...
+};
 ```
 
 ## 🤝 Contributing
@@ -202,17 +249,18 @@ For detailed troubleshooting information, please see [TROUBLESHOOTING.md](./TROU
 Here are planned features and enhancements for future versions:
 
 ### High Priority
-- [ ] **Text Effects**: Add animation effects like fade, blink, rainbow cycling
-- [ ] **Multiple Text Presets**: Save and quickly switch between favorite text/color combinations
+
+- [x] **Text Effects**: Add animation effects like fade, blink, rainbow cycling
+- [x] **Multiple Text Presets**: Save and quickly switch between favorite text/color combinations
 - [ ] **Background Customization**: Allow users to change background color or add gradient backgrounds
 - [ ] **Font Selection**: Support for multiple LED-style fonts
 - [ ] **Vertical Scrolling**: Add option for vertical scrolling mode
 
 ### Medium Priority
 - [ ] **Export/Share Feature**: Allow users to record and share their LED displays as videos or GIFs
-- [ ] **Rotation Support**: Enable landscape mode for wider displays
+- [x] **Rotation Support**: Enable landscape mode for wider displays
 - [ ] **Multiple Lines**: Support multi-line scrolling text
-- [ ] **Border Customization**: Adjustable LED grid size, color, and visibility
+- [x] **Border Customization**: Adjustable LED grid size, color, and visibility
 - [ ] **Haptic Feedback**: Add vibration feedback for better UX
 
 ### Low Priority
@@ -316,4 +364,4 @@ copies or substantial portions of the Software.
 
 ---
 
-Made with ❤️ by Thomas Martinez | 2025
+Made with ❤️ by Thomas Martinez | 2026
