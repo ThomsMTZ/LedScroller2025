@@ -1,8 +1,8 @@
 {
   "expo": {
     "name": "Pixel Scroller",
-    "slug": "pixelscroller",
-    "scheme": "pixelscroller",
+    "slug": "LedScroller2025",
+    "scheme": "ledscroller2025",
     "version": "1.0.0",
     "orientation": "default",
     "icon": "./assets/icon.png",
