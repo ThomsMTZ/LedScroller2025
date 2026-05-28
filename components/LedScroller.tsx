@@ -1,85 +1,39 @@
 import React from 'react';
-import {StatusBar, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View,} from 'react-native';
-import Animated from 'react-native-reanimated';
+import {StatusBar, Text, TouchableOpacity, useWindowDimensions, View,} from 'react-native';
 import {GestureDetector} from 'react-native-gesture-handler';
 import {Ionicons} from '@expo/vector-icons';
 import {LinearGradient} from 'expo-linear-gradient';
 import {styles} from './styles';
 import {LedScrollerProps} from './types';
 import {COLORS} from './constants';
-import GridOverlay from './GridOverlay';
 import HintContainer from './HintContainer';
 import SettingsModal from './SettingsModal/SettingsModal';
-import LedBorder from './LedBorder';
 import {useLedSettings} from './useLedSettings';
 import {useLedAnimation} from './useLedAnimation';
+import LedDisplayPanel from './LedDisplayPanel';
 
 const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'}) => {
     const {width, height} = useWindowDimensions();
     const isLandscape = width > height;
 
     // --- Settings ---
-    const {
-        text, setText,
-        speed, setSpeed,
-        selectedColor, setSelectedColor,
-        showBorder,
-        isBorderChase,
-        isBorderBlinking,
-        isLandscapeLocked,
-        isTextBlinking,
-        isReverseScroll,
-        recentMessages,
-        favoriteMessages,
-        isSettingsOpen,
-        onOpenSettings,
-        onCloseSettings,
-        onToggleOrientation,
-        onToggleBorder,
-        onToggleBorderChase,
-        onToggleBorderBlinking,
-        onToggleTextBlinking,
-        onToggleReverseScroll,
-        onToggleFavorite,
-        onSelectRecentMessage,
-    } = useLedSettings(initialText);
+    const settings = useLedSettings(initialText);
 
     // --- Animation ---
-    const {
-        componentId,
-        setTextWidth,
-        copiesArray,
-        LOOP_SPACING,
-        PORTRAIT_PANEL_HEIGHT,
-        hueVal,
-        satVal,
-        ligVal,
-        composedGestures,
-        animatedContainerStyle,
-        animatedTextStyle,
-        animatedBorderOpacityStyle,
-        animatedBorderColorStyle,
-        animatedShadowColorStyle,
-    } = useLedAnimation({
-        text,
-        speed,
-        isReverseScroll,
-        isTextBlinking,
-        isBorderBlinking,
-        selectedColor,
+    const animation = useLedAnimation({
+        text: settings.text,
+        speed: settings.speed,
+        isReverseScroll: settings.isReverseScroll,
+        isTextBlinking: settings.isTextBlinking,
+        isBorderBlinking: settings.isBorderBlinking,
+        selectedColor: settings.selectedColor,
         isLandscape,
-        onDoubleTap: onOpenSettings,
+        onDoubleTap: settings.onOpenSettings,
     });
 
     // --- Dérivés d'affichage ---
-    const isChaseActive = showBorder && isBorderChase;
-    const showNativeBorder = showBorder && !isBorderChase;
-
-    const getDisplayBorderRadius = (): number => {
-        if (isLandscape) return 0;
-        if (isChaseActive) return 12;
-        return 16;
-    };
+    const isChaseActive = settings.showBorder && settings.isBorderChase;
+    const showNativeBorder = settings.showBorder && !isChaseActive;
 
     return (
         <View style={styles.container}>
@@ -100,7 +54,7 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
                     <TouchableOpacity
                         testID="settings-button"
                         style={styles.settingsButton}
-                        onPress={onOpenSettings}
+                        onPress={settings.onOpenSettings}
                         activeOpacity={0.7}
                     >
                         <Ionicons name="settings-outline" size={24} color={COLORS.text}/>
@@ -108,7 +62,7 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
                 </View>
             )}
 
-            <GestureDetector gesture={composedGestures}>
+            <GestureDetector gesture={animation.composedGestures}>
                 <View
                     key={isLandscape ? 'landscape' : 'portrait'}
                     testID="gesture-detector"
@@ -120,96 +74,26 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
                         },
                     ]}
                 >
-                    <Animated.View
-                        testID="led-display"
-                        style={[
-                            styles.ledDisplay,
-                            animatedBorderColorStyle,
-                            {
-                                borderWidth: showNativeBorder ? 4 : 0,
-                                backgroundColor: isChaseActive ? '#050505' : 'black',
-                                height: isLandscape ? '100%' : PORTRAIT_PANEL_HEIGHT,
-                                overflow: 'hidden',
-                                position: 'relative',
-                            },
-                            isLandscape && {
-                                flex: 1, width: '100%', height: '100%',
-                                borderRadius: 0, padding: 0,
-                                borderWidth: showNativeBorder ? 4 : 0,
-                                backgroundColor: isChaseActive ? '#050505' : 'black',
-                            },
-                        ]}
-                    >
-                        {isChaseActive && (
-                            <Animated.View style={[
-                                StyleSheet.absoluteFill,
-                                animatedBorderOpacityStyle,
-                                {overflow: 'hidden', borderRadius: isLandscape ? 0 : 16},
-                            ]}>
-                                <LedBorder
-                                    color={`hsl(${Math.round(hueVal.value)}, ${Math.round(satVal.value)}%, ${Math.round(ligVal.value)}%)`}
-                                    isAnimating={true}
-                                    speed={speed}
-                                />
-                            </Animated.View>
-                        )}
-
-                        <Animated.View style={[
-                            styles.ledBorder,
-                            animatedShadowColorStyle,
-                            {
-                                shadowOffset: {width: 0, height: 0},
-                                shadowOpacity: 0.8,
-                                shadowRadius: 20,
-                                backgroundColor: '#0a0a0a',
-                                flex: 1,
-                                margin: isChaseActive ? 4 : 0,
-                                borderRadius: getDisplayBorderRadius(),
-                                justifyContent: 'center',
-                                paddingVertical: 0,
-                            },
-                            !isChaseActive && {width: '100%'},
-                            isLandscape && {
-                                flex: 1,
-                                borderRadius: 0,
-                                paddingVertical: 0,
-                                justifyContent: 'center',
-                                margin: isChaseActive ? 4 : 0,
-                            },
-                        ]}>
-                            <Animated.View
-                                testID="scrolling-container"
-                                style={[
-                                    styles.scroller,
-                                    {
-                                        minWidth: width * 2,
-                                        alignSelf: 'flex-start',
-                                        flexDirection: 'row',
-                                        alignItems: 'center',
-                                    },
-                                    animatedContainerStyle,
-                                ]}
-                            >
-                                {copiesArray.map((_, index) => (
-                                    <React.Fragment key={`${componentId}-text-copy-${index}`}>
-                                        <Animated.Text
-                                            testID="scrolling-text"
-                                            onLayout={index === 0
-                                                ? (e) => setTextWidth(e.nativeEvent.layout.width)
-                                                : undefined}
-                                            style={[styles.textBase, animatedTextStyle]}
-                                            numberOfLines={1}
-                                            ellipsizeMode="clip"
-                                        >
-                                            {text}
-                                        </Animated.Text>
-                                        <View style={{width: LOOP_SPACING}}/>
-                                    </React.Fragment>
-                                ))}
-                            </Animated.View>
-                            <GridOverlay/>
-                        </Animated.View>
-                    </Animated.View>
+                    <LedDisplayPanel
+                        isLandscape={isLandscape}
+                        showNativeBorder={showNativeBorder}
+                        isChaseActive={isChaseActive}
+                        PORTRAIT_PANEL_HEIGHT={animation.PORTRAIT_PANEL_HEIGHT}
+                        animatedBorderColorStyle={animation.animatedBorderColorStyle}
+                        animatedBorderOpacityStyle={animation.animatedBorderOpacityStyle}
+                        animatedShadowColorStyle={animation.animatedShadowColorStyle}
+                        animatedContainerStyle={animation.animatedContainerStyle}
+                        animatedTextStyle={animation.animatedTextStyle}
+                        hueVal={animation.hueVal}
+                        satVal={animation.satVal}
+                        ligVal={animation.ligVal}
+                        speed={settings.speed}
+                        componentId={animation.componentId}
+                        text={settings.text}
+                        setTextWidth={animation.setTextWidth}
+                        copiesArray={animation.copiesArray}
+                        LOOP_SPACING={animation.LOOP_SPACING}
+                    />
 
                     {!isLandscape && <HintContainer/>}
                 </View>
@@ -222,30 +106,30 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
             )}
 
             <SettingsModal
-                visible={isSettingsOpen}
-                onClose={onCloseSettings}
-                text={text}
-                onTextChange={setText}
-                speed={speed}
-                onSpeedChange={setSpeed}
-                selectedColor={selectedColor}
-                onColorChange={setSelectedColor}
-                isLandscapeLocked={isLandscapeLocked}
-                onToggleOrientation={onToggleOrientation}
-                isReverseScroll={isReverseScroll}
-                onToggleReverseScroll={onToggleReverseScroll}
-                showBorder={showBorder}
-                onToggleBorder={onToggleBorder}
-                isBorderChase={isBorderChase}
-                onToggleBorderChase={onToggleBorderChase}
-                isBorderBlinking={isBorderBlinking}
-                onToggleBorderBlinking={onToggleBorderBlinking}
-                isTextBlinking={isTextBlinking}
-                onToggleTextBlinking={onToggleTextBlinking}
-                recentMessages={recentMessages}
-                favoriteMessages={favoriteMessages}
-                onToggleFavorite={onToggleFavorite}
-                onSelectRecentMessage={onSelectRecentMessage}
+                visible={settings.isSettingsOpen}
+                onClose={settings.onCloseSettings}
+                text={settings.text}
+                onTextChange={settings.onTextChange}
+                speed={settings.speed}
+                onSpeedChange={settings.onSpeedChange}
+                selectedColor={settings.selectedColor}
+                onColorChange={settings.onColorChange}
+                isLandscapeLocked={settings.isLandscapeLocked}
+                onToggleOrientation={settings.onToggleOrientation}
+                isReverseScroll={settings.isReverseScroll}
+                onToggleReverseScroll={settings.onToggleReverseScroll}
+                showBorder={settings.showBorder}
+                onToggleBorder={settings.onToggleBorder}
+                isBorderChase={settings.isBorderChase}
+                onToggleBorderChase={settings.onToggleBorderChase}
+                isBorderBlinking={settings.isBorderBlinking}
+                onToggleBorderBlinking={settings.onToggleBorderBlinking}
+                isTextBlinking={settings.isTextBlinking}
+                onToggleTextBlinking={settings.onToggleTextBlinking}
+                recentMessages={settings.recentMessages}
+                favoriteMessages={settings.favoriteMessages}
+                onToggleFavorite={settings.onToggleFavorite}
+                onSelectRecentMessage={settings.onSelectRecentMessage}
             />
 
             {isLandscape && (
@@ -259,7 +143,7 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
                         borderRadius: 20,
                         zIndex: 100,
                     }}
-                    onPress={onOpenSettings}
+                    onPress={settings.onOpenSettings}
                 >
                     <Ionicons name="settings-outline" size={24} color="rgba(255,255,255,0.5)"/>
                 </TouchableOpacity>
