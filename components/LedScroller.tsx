@@ -1,98 +1,219 @@
-import React, {useState} from 'react';
-import {ActivityIndicator, Platform, Text, useWindowDimensions, View} from 'react-native';
+import React from 'react';
+import {StatusBar, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View,} from 'react-native';
 import Animated from 'react-native-reanimated';
 import {GestureDetector} from 'react-native-gesture-handler';
-import {BannerAd, BannerAdSize, TestIds} from 'react-native-google-mobile-ads'; // Ajuste l'import selon ta librairie
-import {useLedSettings} from './useLedSettings';
-import LedBorder from './LedBorder';
+import {Ionicons} from '@expo/vector-icons';
+import {LinearGradient} from 'expo-linear-gradient';
 import {styles} from './styles';
-import {SettingsModal} from "./index";
-import {useLedAnimations} from "./useLedAnimation";
+import {LedScrollerProps} from './types';
+import {COLORS} from './constants';
+import GridOverlay from './GridOverlay';
+import HintContainer from './HintContainer';
+import SettingsModal from './SettingsModal/SettingsModal';
+import LedBorder from './LedBorder';
+import {useLedSettings} from './useLedSettings';
+import {useLedAnimation} from './useLedAnimation';
 
-const COPIES_COUNT = 4;
-const copiesArray = Array.from({length: COPIES_COUNT});
-
-const adUnitId = __DEV__
-    ? TestIds.BANNER
-    : Platform.select({
-        android: 'ca-app-pub-2790650155402757/5652248123',
-        ios: 'ca-app-pub-2790650155402757/6773987013',
-        default: TestIds.BANNER,
-    });
-
-const LedScroller: React.FC = () => {
-    const [isModalVisible, setModalVisible] = useState(false);
-
+const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'}) => {
     const {width, height} = useWindowDimensions();
     const isLandscape = width > height;
 
-    const {isLoaded, ...settings} = useLedSettings();
+    // --- Settings ---
+    const {
+        text, setText,
+        speed, setSpeed,
+        selectedColor, setSelectedColor,
+        showBorder,
+        isBorderChase,
+        isBorderBlinking,
+        isLandscapeLocked,
+        isTextBlinking,
+        isReverseScroll,
+        recentMessages,
+        favoriteMessages,
+        isSettingsOpen,
+        onOpenSettings,
+        onCloseSettings,
+        onToggleOrientation,
+        onToggleBorder,
+        onToggleBorderChase,
+        onToggleBorderBlinking,
+        onToggleTextBlinking,
+        onToggleReverseScroll,
+        onToggleFavorite,
+        onSelectRecentMessage,
+    } = useLedSettings(initialText);
 
-    const currentHsl = `hsl(${settings.selectedColor.hue}, ${settings.selectedColor.saturation}%, ${settings.selectedColor.lightness}%)`;
-
+    // --- Animation ---
     const {
         componentId,
+        setTextWidth,
+        copiesArray,
+        LOOP_SPACING,
+        PORTRAIT_PANEL_HEIGHT,
+        hueVal,
+        satVal,
+        ligVal,
         composedGestures,
         animatedContainerStyle,
         animatedTextStyle,
-    } = useLedAnimations({
-        text: settings.text,
-        speed: settings.speed,
-        isReverseScroll: settings.isReverseScroll,
-        isTextBlinking: settings.isTextBlinking,
-        currentHsl,
-        onDoubleTap: () => setModalVisible(true),
+        animatedBorderOpacityStyle,
+        animatedBorderColorStyle,
+        animatedShadowColorStyle,
+    } = useLedAnimation({
+        text,
+        speed,
+        isReverseScroll,
+        isTextBlinking,
+        isBorderBlinking,
+        selectedColor,
+        isLandscape,
+        onDoubleTap: onOpenSettings,
     });
 
-    if (!isLoaded) {
-        return (
-            <View style={styles.container}>
-                <ActivityIndicator size="large" color="#00d4ff"/>
-            </View>
-        );
-    }
+    // --- Dérivés d'affichage ---
+    const isChaseActive = showBorder && isBorderChase;
+    const showNativeBorder = showBorder && !isBorderChase;
+
+    const getDisplayBorderRadius = (): number => {
+        if (isLandscape) return 0;
+        if (isChaseActive) return 12;
+        return 16;
+    };
 
     return (
         <View style={styles.container}>
+            <StatusBar hidden={isLandscape} barStyle="light-content" backgroundColor="transparent" translucent/>
+            <LinearGradient
+                colors={[...COLORS.background]}
+                style={styles.gradientBackground}
+                start={{x: 0, y: 0}}
+                end={{x: 1, y: 1}}
+            />
+
+            {!isLandscape && (
+                <View style={styles.header}>
+                    <View>
+                        <Text style={styles.headerTitle}>LED Scroller</Text>
+                        <Text style={styles.headerSubtitle}>2026 Edition</Text>
+                    </View>
+                    <TouchableOpacity
+                        testID="settings-button"
+                        style={styles.settingsButton}
+                        onPress={onOpenSettings}
+                        activeOpacity={0.7}
+                    >
+                        <Ionicons name="settings-outline" size={24} color={COLORS.text}/>
+                    </TouchableOpacity>
+                </View>
+            )}
+
             <GestureDetector gesture={composedGestures}>
-                <View style={styles.interactiveArea} testID="interactive-view">
+                <View
+                    key={isLandscape ? 'landscape' : 'portrait'}
+                    testID="gesture-detector"
+                    style={[
+                        styles.interactiveArea,
+                        isLandscape && {
+                            position: 'absolute', left: 0, right: 0, top: 0, bottom: 0,
+                            paddingHorizontal: 0, backgroundColor: 'black', zIndex: 999,
+                        },
+                    ]}
+                >
+                    <Animated.View
+                        testID="led-display"
+                        style={[
+                            styles.ledDisplay,
+                            animatedBorderColorStyle,
+                            {
+                                borderWidth: showNativeBorder ? 4 : 0,
+                                backgroundColor: isChaseActive ? '#050505' : 'black',
+                                height: isLandscape ? '100%' : PORTRAIT_PANEL_HEIGHT,
+                                overflow: 'hidden',
+                                position: 'relative',
+                            },
+                            isLandscape && {
+                                flex: 1, width: '100%', height: '100%',
+                                borderRadius: 0, padding: 0,
+                                borderWidth: showNativeBorder ? 4 : 0,
+                                backgroundColor: isChaseActive ? '#050505' : 'black',
+                            },
+                        ]}
+                    >
+                        {isChaseActive && (
+                            <Animated.View style={[
+                                StyleSheet.absoluteFill,
+                                animatedBorderOpacityStyle,
+                                {overflow: 'hidden', borderRadius: isLandscape ? 0 : 16},
+                            ]}>
+                                <LedBorder
+                                    color={`hsl(${Math.round(hueVal.value)}, ${Math.round(satVal.value)}%, ${Math.round(ligVal.value)}%)`}
+                                    isAnimating={true}
+                                    speed={speed}
+                                />
+                            </Animated.View>
+                        )}
 
-                    <View style={[styles.ledBorder, {borderColor: currentHsl}]}>
-                        <LedBorder
-                            color={currentHsl}
-                            isAnimating={settings.showBorder}
-                            speed={settings.speed}
-                        />
-
-                        <View style={styles.ledDisplay}>
-                            <View style={styles.gridOverlay} pointerEvents="none"/>
-
-                            <Animated.View style={[styles.scroller, animatedContainerStyle]}>
+                        <Animated.View style={[
+                            styles.ledBorder,
+                            animatedShadowColorStyle,
+                            {
+                                shadowOffset: {width: 0, height: 0},
+                                shadowOpacity: 0.8,
+                                shadowRadius: 20,
+                                backgroundColor: '#0a0a0a',
+                                flex: 1,
+                                margin: isChaseActive ? 4 : 0,
+                                borderRadius: getDisplayBorderRadius(),
+                                justifyContent: 'center',
+                                paddingVertical: 0,
+                            },
+                            !isChaseActive && {width: '100%'},
+                            isLandscape && {
+                                flex: 1,
+                                borderRadius: 0,
+                                paddingVertical: 0,
+                                justifyContent: 'center',
+                                margin: isChaseActive ? 4 : 0,
+                            },
+                        ]}>
+                            <Animated.View
+                                testID="scrolling-container"
+                                style={[
+                                    styles.scroller,
+                                    {
+                                        minWidth: width * 2,
+                                        alignSelf: 'flex-start',
+                                        flexDirection: 'row',
+                                        alignItems: 'center',
+                                    },
+                                    animatedContainerStyle,
+                                ]}
+                            >
                                 {copiesArray.map((_, index) => (
                                     <React.Fragment key={`${componentId}-text-copy-${index}`}>
-                                        <Animated.Text style={[styles.textBase, animatedTextStyle]}>
-                                            {settings.text ? settings.text : ' '}
+                                        <Animated.Text
+                                            testID="scrolling-text"
+                                            onLayout={index === 0
+                                                ? (e) => setTextWidth(e.nativeEvent.layout.width)
+                                                : undefined}
+                                            style={[styles.textBase, animatedTextStyle]}
+                                            numberOfLines={1}
+                                            ellipsizeMode="clip"
+                                        >
+                                            {text}
                                         </Animated.Text>
+                                        <View style={{width: LOOP_SPACING}}/>
                                     </React.Fragment>
                                 ))}
                             </Animated.View>
-                        </View>
-                    </View>
+                            <GridOverlay/>
+                        </Animated.View>
+                    </Animated.View>
 
+                    {!isLandscape && <HintContainer/>}
                 </View>
             </GestureDetector>
-
-            {!isLandscape && (
-                <View style={{alignItems: 'center', paddingVertical: 10, backgroundColor: 'transparent'}}>
-                    <BannerAd
-                        unitId={adUnitId}
-                        size={BannerAdSize.BANNER}
-                        requestOptions={{
-                            requestNonPersonalizedAdsOnly: true,
-                        }}
-                    />
-                </View>
-            )}
 
             {!isLandscape && (
                 <View style={styles.footer}>
@@ -101,31 +222,48 @@ const LedScroller: React.FC = () => {
             )}
 
             <SettingsModal
-                visible={isModalVisible}
-                onClose={() => setModalVisible(false)}
-                text={settings.text}
-                onTextChange={settings.onTextChange}
-                speed={settings.speed}
-                onSpeedChange={settings.onSpeedChange}
-                selectedColor={settings.selectedColor}
-                onColorChange={settings.onColorChange}
-                showBorder={settings.showBorder}
-                onToggleBorder={settings.onToggleBorder}
-                isBorderChase={settings.isBorderChase}
-                onToggleBorderChase={settings.onToggleBorderChase}
-                isBorderBlinking={settings.isBorderBlinking}
-                onToggleBorderBlinking={settings.onToggleBorderBlinking}
-                isLandscapeLocked={settings.isLandscapeLocked}
-                onToggleOrientation={settings.onToggleOrientation}
-                isTextBlinking={settings.isTextBlinking}
-                onToggleTextBlinking={settings.onToggleTextBlinking}
-                isReverseScroll={settings.isReverseScroll}
-                onToggleReverseScroll={settings.onToggleReverseScroll}
-                recentMessages={settings.recentMessages}
-                favoriteMessages={settings.favoriteMessages}
-                onSelectRecentMessage={settings.onSelectRecentMessage}
-                onToggleFavorite={settings.onToggleFavorite}
+                visible={isSettingsOpen}
+                onClose={onCloseSettings}
+                text={text}
+                onTextChange={setText}
+                speed={speed}
+                onSpeedChange={setSpeed}
+                selectedColor={selectedColor}
+                onColorChange={setSelectedColor}
+                isLandscapeLocked={isLandscapeLocked}
+                onToggleOrientation={onToggleOrientation}
+                isReverseScroll={isReverseScroll}
+                onToggleReverseScroll={onToggleReverseScroll}
+                showBorder={showBorder}
+                onToggleBorder={onToggleBorder}
+                isBorderChase={isBorderChase}
+                onToggleBorderChase={onToggleBorderChase}
+                isBorderBlinking={isBorderBlinking}
+                onToggleBorderBlinking={onToggleBorderBlinking}
+                isTextBlinking={isTextBlinking}
+                onToggleTextBlinking={onToggleTextBlinking}
+                recentMessages={recentMessages}
+                favoriteMessages={favoriteMessages}
+                onToggleFavorite={onToggleFavorite}
+                onSelectRecentMessage={onSelectRecentMessage}
             />
+
+            {isLandscape && (
+                <TouchableOpacity
+                    style={{
+                        position: 'absolute',
+                        top: 20,
+                        right: 20,
+                        padding: 10,
+                        backgroundColor: 'rgba(0,0,0,0.5)',
+                        borderRadius: 20,
+                        zIndex: 100,
+                    }}
+                    onPress={onOpenSettings}
+                >
+                    <Ionicons name="settings-outline" size={24} color="rgba(255,255,255,0.5)"/>
+                </TouchableOpacity>
+            )}
         </View>
     );
 };
