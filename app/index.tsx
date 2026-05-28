@@ -12,14 +12,14 @@ export default function App() {
     if (!fontsLoaded) {
         return (
             <View style={styles.loadingContainer}>
-                <ActivityIndicator size="large" color="#00d4ff" />
+                <ActivityIndicator size="large" color="#00d4ff"/>
             </View>
         );
     }
 
     return (
-        <GestureHandlerRootView style={{ flex: 1 }}>
-            <LedScroller />
+        <GestureHandlerRootView style={{flex: 1}}>
+            <LedScroller/>
         </GestureHandlerRootView>
     );
 }

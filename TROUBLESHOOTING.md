@@ -1,6 +1,7 @@
 # Troubleshooting & Known Issues - LedScroller2025
 
-This document records the technical issues encountered during the development of the **LedScroller2025** application and their specific solutions to ensure stability on Android (Expo Go).
+This document records the technical issues encountered during the development of the **LedScroller2025** application and
+their specific solutions to ensure stability on Android (Expo Go).
 
 ## 🛠 Environment Context
 
@@ -12,9 +13,9 @@ This document records the technical issues encountered during the development of
 ---
 
 ## 📋 Table of Contents
+
 1. [Worklet Version Mismatch / NullPointerException](#1-worklet-version-mismatch--nullpointerexception)
 2. ["runOnJS is deprecated" Warning](#2-runonjs-is-deprecated-warning)
-
 
 ---
 

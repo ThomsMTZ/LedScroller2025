@@ -4,7 +4,9 @@
 [![Expo SDK](https://img.shields.io/badge/Expo-SDK%2054-blue.svg)](https://expo.dev/)
 [![React Native](https://img.shields.io/badge/React%20Native-0.81.5-blue.svg)](https://reactnative.dev/)
 
-A dynamic LED-style scrolling text display application built with React Native and Expo. Create mesmerizing scrolling text animations with customizable colors, speeds, and sizes - perfect for creating digital signage, message boards, or eye-catching displays on your mobile device.
+A dynamic LED-style scrolling text display application built with React Native and Expo. Create mesmerizing scrolling
+text animations with customizable colors, speeds, and sizes - perfect for creating digital signage, message boards, or
+eye-catching displays on your mobile device.
 
 ## Features
 
@@ -168,5 +170,6 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 ## Contact
 
 **Thomas Martinez**
+
 - GitHub: [@ThomsMTZ](https://github.com/ThomsMTZ)
 - Project Link: [https://github.com/ThomsMTZ/LedScroller2025](https://github.com/ThomsMTZ/LedScroller2025)

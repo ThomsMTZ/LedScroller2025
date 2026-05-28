@@ -120,9 +120,6 @@ export const useLedSettings = (initialText: string = 'BONJOUR 2025') => {
         isSettingsOpen,
 
         // Setters
-        setText: (text: string) => setSettings(s => ({...s, text})),
-        setSpeed: (speed: number) => setSettings(s => ({...s, speed})),
-        setSelectedColor: (color: LedColorType) => setSettings(s => ({...s, selectedColor: color})),
         onTextChange: (text: string) => setSettings(s => ({...s, text})),
         onSpeedChange: (speed: number) => setSettings(s => ({...s, speed})),
         onColorChange: (color: LedColorType) => setSettings(s => ({...s, selectedColor: color})),
