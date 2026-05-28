@@ -1,5 +1,6 @@
 import React from 'react';
-import {StatusBar, Text, TouchableOpacity, useWindowDimensions, View,} from 'react-native';
+import {BannerAd, BannerAdSize, TestIds} from 'react-native-google-mobile-ads';
+import {Platform, StatusBar, Text, TouchableOpacity, useWindowDimensions, View,} from 'react-native';
 import {GestureDetector} from 'react-native-gesture-handler';
 import {Ionicons} from '@expo/vector-icons';
 import {LinearGradient} from 'expo-linear-gradient';
@@ -15,6 +16,15 @@ import LedDisplayPanel from './LedDisplayPanel';
 const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'}) => {
     const {width, height} = useWindowDimensions();
     const isLandscape = width > height;
+
+    const adUnitId = __DEV__
+        ? TestIds.BANNER
+        : Platform.select({
+            android: 'ca-app-pub-2790650155402757/5652248123',
+            ios: 'ca-app-pub-2790650155402757/6773987013',
+            default: TestIds.BANNER,
+        });
+
 
     // --- Settings ---
     const settings = useLedSettings(initialText);
@@ -98,6 +108,19 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
                     {!isLandscape && <HintContainer/>}
                 </View>
             </GestureDetector>
+
+            {!isLandscape && (
+                <View style={{alignItems: 'center', paddingVertical: 10, backgroundColor: 'transparent'}}>
+                    <BannerAd
+                        unitId={adUnitId}
+                        size={BannerAdSize.BANNER}
+                        requestOptions={{
+                            requestNonPersonalizedAdsOnly: true,
+                        }}
+                    />
+                </View>
+            )}
+
 
             {!isLandscape && (
                 <View style={styles.footer}>

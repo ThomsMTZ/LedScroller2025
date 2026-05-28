@@ -6,7 +6,7 @@
 
 A dynamic LED-style scrolling text display application built with React Native and Expo. Create mesmerizing scrolling text animations with customizable colors, speeds, and sizes - perfect for creating digital signage, message boards, or eye-catching displays on your mobile device.
 
-## ✨ Features
+## Features
 
 - 🎨 **Customizable Text Color**: Choose from a full spectrum of colors using an intuitive hue slider.
 - ⚡ **Adjustable Speed Control**: Fine-tune the scrolling speed to your preference.
@@ -20,7 +20,7 @@ A dynamic LED-style scrolling text display application built with React Native a
 - 🔄 **Scroll Direction & Orientation**: Toggle right-to-left/left-to-right scrolling and lock landscape mode.
 - ✨ **Advanced LED Effects**: Enable blinking text, blinking borders, or dynamic chase border animations.
 
-## 🚀 Demo
+## Demo
 
 The app displays scrolling text in a neon LED style with a grid overlay. Users can:
 
@@ -28,7 +28,7 @@ The app displays scrolling text in a neon LED style with a grid overlay. Users c
 - Pinch to zoom in/out on the text.
 - Customize text content, color, and animation speed in real-time.
 
-## 📋 Table of Contents
+## Table of Contents
 
 - [Installation](#installation)
 - [Usage](#usage)
@@ -39,7 +39,7 @@ The app displays scrolling text in a neon LED style with a grid overlay. Users c
 - [License](#license)
 - [Contact](#contact)
 
-## 💾 Installation
+## Installation
 
 ### Prerequisites
 
@@ -68,7 +68,7 @@ The app displays scrolling text in a neon LED style with a grid overlay. Users c
     - Press `i` for iOS, `a` for Android, or `w` for Web.
     - Or scan the QR code with the Expo Go app.
 
-## 📖 Usage
+## Usage
 
 1. **Launch the app**.
 2. **Double-tap anywhere** to open the settings modal.
@@ -76,7 +76,7 @@ The app displays scrolling text in a neon LED style with a grid overlay. Users c
 4. **Pinch gesture** on the scrolling text to zoom.
 5. **Close settings** by tapping the close button.
 
-## 🛠 Technologies
+## Technologies
 
 - **[Expo](https://expo.dev/)** (~54.0)
 - **[React Native](https://reactnative.dev/)** (0.81.5)
@@ -87,7 +87,7 @@ The app displays scrolling text in a neon LED style with a grid overlay. Users c
   interactions.
 - **[Expo Router](https://expo.github.io/router/)** (~6.0.21) - For routing.
 
-## 📁 Project Structure
+## Project Structure
 
 The project follows a component-based architecture, with a clear separation between state management, animation logic,
 and UI rendering.
@@ -147,7 +147,7 @@ LedScroller2025/
 
 This architecture promotes a clean separation of concerns, making the project easier to maintain and debug.
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Please fork the repository and open a pull request with your changes.
 
@@ -157,15 +157,15 @@ Contributions are welcome! Please fork the repository and open a pull request wi
 4. Push to the branch (`git push origin feature/AmazingFeature`).
 5. Open a Pull Request.
 
-## 🔧 Troubleshooting
+## Troubleshooting
 
 Please see [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) for common issues and solutions.
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
-## 📧 Contact
+## Contact
 
 **Thomas Martinez**
 - GitHub: [@ThomsMTZ](https://github.com/ThomsMTZ)
