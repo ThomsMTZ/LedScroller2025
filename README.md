@@ -8,24 +8,25 @@ A dynamic LED-style scrolling text display application built with React Native a
 
 ## ✨ Features
 
-- 🎨 **Customizable Text Color**: Choose from a full spectrum of colors using an intuitive hue slider
-- ⚡ **Adjustable Speed Control**: Fine-tune the scrolling speed to your preference (1-20 seconds per cycle)
-- 📏 **Pinch-to-Zoom**: Dynamically resize text using intuitive pinch gestures
-- 🎯 **LED Grid Overlay**: Authentic retro LED display aesthetic with customizable grid
-- ⚙️ **Settings Modal**: Easy-to-access configuration via double-tap gesture
-- 🌈 **Smooth Animations**: Powered by React Native Reanimated for silky-smooth 60fps animations
-- 📱 **Cross-Platform**: Runs on iOS, Android, and Web
-- 🎭 **Custom LED Font**: Uses the Codystar font for an authentic LED display look
-- 🕒 **Message History & Favorites**: Easily access recently used messages and save your favorites
-- 🔄 **Scroll Direction & Orientation**: Toggle right-to-left/left-to-right scrolling and lock landscape mode
-- ✨ **Advanced LED Effects**: Enable blinking text, blinking borders, or dynamic chase border animations
+- 🎨 **Customizable Text Color**: Choose from a full spectrum of colors using an intuitive hue slider.
+- ⚡ **Adjustable Speed Control**: Fine-tune the scrolling speed to your preference.
+- 📏 **Pinch-to-Zoom**: Dynamically resize text using intuitive pinch gestures.
+- 🎯 **LED Grid Overlay**: Authentic retro LED display aesthetic.
+- ⚙️ **Settings Modal**: Easy-to-access configuration via double-tap gesture.
+- 🌈 **Smooth Animations**: Powered by React Native Reanimated for silky-smooth 60fps animations.
+- 📱 **Cross-Platform**: Runs on iOS, Android, and Web.
+- 🎭 **Custom LED Font**: Uses the Codystar font for an authentic LED display look.
+- 🕒 **Message History & Favorites**: Easily access recently used messages and save your favorites.
+- 🔄 **Scroll Direction & Orientation**: Toggle right-to-left/left-to-right scrolling and lock landscape mode.
+- ✨ **Advanced LED Effects**: Enable blinking text, blinking borders, or dynamic chase border animations.
 
 ## 🚀 Demo
 
-The app displays scrolling text in a neon LED style with a grid overlay, creating a nostalgic digital display effect. Users can:
-- Double-tap to open settings
-- Pinch to zoom in/out on the text
-- Customize text content, color, and animation speed in real-time
+The app displays scrolling text in a neon LED style with a grid overlay. Users can:
+
+- Double-tap to open settings.
+- Pinch to zoom in/out on the text.
+- Customize text content, color, and animation speed in real-time.
 
 ## 📋 Table of Contents
 
@@ -33,11 +34,8 @@ The app displays scrolling text in a neon LED style with a grid overlay, creatin
 - [Usage](#usage)
 - [Technologies](#technologies)
 - [Project Structure](#project-structure)
-- [Configuration](#configuration)
 - [Contributing](#contributing)
 - [Troubleshooting](#troubleshooting)
-- [Future Improvements](#future-improvements)
-- [Issues History](#issues-history)
 - [License](#license)
 - [Contact](#contact)
 
@@ -45,12 +43,11 @@ The app displays scrolling text in a neon LED style with a grid overlay, creatin
 
 ### Prerequisites
 
-Before you begin, ensure you have the following installed:
-- **Node.js** (v18 or later recommended)
+- **Node.js** (v18 or later)
 - **npm** or **yarn**
 - **Expo CLI** (optional, but recommended)
 - For iOS: **Xcode** (on macOS)
-- For Android: **Android Studio** and Android SDK
+- For Android: **Android Studio**
 
 ### Steps
 
@@ -59,309 +56,117 @@ Before you begin, ensure you have the following installed:
    git clone https://github.com/ThomsMTZ/LedScroller2025.git
    cd LedScroller2025
    ```
-
 2. **Install dependencies**
    ```bash
    npm install
    ```
-   or
-   ```bash
-   yarn install
-   ```
-
 3. **Start the development server**
    ```bash
    npm start
    ```
-   or
-   ```bash
-   npx expo start
-   ```
-
 4. **Run on your preferred platform**
-   - For iOS: Press `i` in the terminal or run `npm run ios`
-   - For Android: Press `a` in the terminal or run `npm run android`
-   - For Web: Press `w` in the terminal or run `npm run web`
-   - Or scan the QR code with the Expo Go app on your mobile device
+    - Press `i` for iOS, `a` for Android, or `w` for Web.
+    - Or scan the QR code with the Expo Go app.
 
 ## 📖 Usage
 
-### Basic Usage
-
-1. **Launch the app** on your device or emulator
-2. **Default message** "BONNE ANNÉE 2026" will start scrolling automatically
-3. **Double-tap anywhere** on the screen to open the settings modal
-4. **Customize your display**:
-    - Enter custom text in the input field or select from history/favorites
-    - Adjust the color using the color selector
-   - Control the speed with the speed slider
-    - Configure scroll direction, landscape lock, and visual effects
-5. **Pinch gesture** on the scrolling text to zoom in/out
-6. **Close settings** by tapping the close button
-
-### Advanced Features
-
-- **Gesture Controls**: The app uses React Native Gesture Handler for smooth, responsive interactions
-- **Real-time Updates**: All changes are applied instantly without needing to restart the animation
-- **Thread-safe Animations**: Powered by Reanimated's worklet architecture for optimal performance
+1. **Launch the app**.
+2. **Double-tap anywhere** to open the settings modal.
+3. **Customize your display**: text, color, speed, and visual effects.
+4. **Pinch gesture** on the scrolling text to zoom.
+5. **Close settings** by tapping the close button.
 
 ## 🛠 Technologies
 
-This project is built with:
-
-- **[Expo](https://expo.dev/)** (~54.0.31) - Development platform and framework
-- **[React Native](https://reactnative.dev/)** (0.81.5) - Mobile app framework
-- **[React](https://react.dev/)** (19.1.0) - UI library
-- **[TypeScript](https://www.typescriptlang.org/)** (~5.9.2) - Type-safe JavaScript
-- **[React Native Reanimated](https://docs.swmansion.com/react-native-reanimated/)** (~4.1.1) - Advanced animations
-- **[React Native Gesture Handler](https://docs.swmansion.com/react-native-gesture-handler/)** (~2.28.0) - Touch and gesture system
-- **[Expo Router](https://expo.github.io/router/)** (~6.0.21) - File-based routing
-- **[@expo-google-fonts/codystar](https://github.com/expo/google-fonts)** - LED-style font
-- **[Expo Linear Gradient](https://docs.expo.dev/versions/latest/sdk/linear-gradient/)** (~15.0.8) - Gradient effects
+- **[Expo](https://expo.dev/)** (~54.0)
+- **[React Native](https://reactnative.dev/)** (0.81.5)
+- **[React](https://react.dev/)** (19.1.0)
+- **[TypeScript](https://www.typescriptlang.org/)** (~5.9.2)
+- **[React Native Reanimated](https://docs.swmansion.com/react-native-reanimated/)** (~4.1.1) - For animations.
+- **[React Native Gesture Handler](https://docs.swmansion.com/react-native-gesture-handler/)** (~2.28.0) - For touch
+  interactions.
+- **[Expo Router](https://expo.github.io/router/)** (~6.0.21) - For routing.
 
 ## 📁 Project Structure
 
+The project follows a component-based architecture, with a clear separation between state management, animation logic,
+and UI rendering.
+
 ```text
 LedScroller2025/
-├── app/                    # App entry point
-│   └── index.tsx           # Main app component
-├── assets/                 # Static assets
-│   ├── adaptive-icon.png
-│   ├── favicon.png
-│   ├── icon.png
-│   └── splash-icon.png
-├── components/             # Reusable React components
-│   ├── SettingsModal/      # Settings configuration modal folder
-│   │   ├── components/     # Config sections
-│   │   │   ├── BorderSection.tsx
-│   │   │   ├── ColorSection.tsx
-│   │   │   ├── DisplayTextSection.tsx
-│   │   │   ├── MessageSection.tsx
-│   │   │   ├── OrientationSection.tsx
-│   │   │   ├── SpeedSection.tsx
-│   │   │   └── ToggleButton.tsx
-│   │   ├── SettingsModal.tsx
-│   │   ├── constants.ts
-│   │   └── types.ts
-│   ├── GridOverlay.tsx     # LED grid overlay
-│   ├── HintContainer.tsx   # User hints display
-│   ├── LedBorder.tsx       # Animated LED border effects
-│   ├── LedScroller.tsx     # Main scroller component
-│   ├── constants.ts        # Shared constants and colors
-│   ├── index.ts            # Component exports
-│   ├── styles.ts           # Shared styles
-│   ├── types.ts            # TypeScript type definitions
-│   └── useLedSettings.tsx  # State management hook
-├── context/                # React Contexts
-│   └── SettingsContext.tsx # Settings global state context
-├── test/                   # Test files (Jest)
-│   ├── SettingsModal/      # Tests for SettingsModal and its sections
-│   │   ├── BorderSection.test.tsx
-│   │   ├── ColorSection.test.tsx
-│   │   ├── DisplayTextSection.test.tsx
-│   │   ├── MessageSection.test.tsx
-│   │   ├── OrientationSection.test.tsx
-│   │   ├── SettingsModal.test.tsx
-│   │   ├── SpeedSection.test.tsx
-│   │   ├── ToggleButton.test.tsx
-│   │   └── useLedSettings.test.ts
-│   ├── GridOverlay.test.tsx
-│   ├── HintContainer.test.tsx
-│   ├── LedBorder.test.tsx
+├── app/
+│   └── index.tsx           # App entry point, renders LedScroller
+├── components/
+│   ├── SettingsModal/      # The settings modal and its sub-components
+│   ├── LedDisplayPanel.tsx # Renders the entire LED panel, text, and effects
+│   ├── LedScroller.tsx     # Main component: orchestrates hooks and UI
+│   ├── useLedSettings.tsx  # Hook for managing all user settings and state
+│   ├── useLedAnimation.tsx # Hook for managing all Reanimated animations
+│   ├── LedBorder.tsx       # Animated "chase" border effect
+│   ├── GridOverlay.tsx     # Static grid overlay for LED effect
+│   └── ...                 # Other shared components
+├── test/
+│   ├── LedDisplayPanel.test.tsx
 │   ├── LedScroller.test.tsx
+│   ├── useLedSettings.test.ts
 │   └── useLedAnimation.test.ts
-├── .github/                # GitHub configuration
-├── app.json                # Expo configuration
-├── babel.config.js         # Babel configuration
-├── eas.json                # Expo Application Services config
-├── eslint.config.js        # ESLint configuration
-├── jest.config.js          # Jest configuration
-├── jest.setup.ts           # Jest setup and mocks
-├── package.json            # Dependencies and scripts
-├── tsconfig.json           # TypeScript configuration
-├── index.ts                # App entry registry
-├── TROUBLESHOOTING.md      # Known issues and solutions
-└── README.md               # This file
+│   └── ...                 # Other test files
+├── assets/
+├── ...                     # Other configuration files
+└── README.md
 ```
 
-## ⚙️ Configuration
+### Core Components & Hooks
 
-### App Configuration
+- **`LedScroller.tsx`**: The main screen component. It acts as an orchestrator. It doesn't contain much JSX, but
+  instead:
+    - Initializes the `useLedSettings` and `useLedAnimation` hooks.
+    - Passes state and animation values down to child components.
+    - Renders the main layout, `LedDisplayPanel`, and `SettingsModal`.
 
-The main configuration is in `app.json`:
-- App name, slug, and version
-- Orientation settings (portrait mode)
-- Platform-specific settings (iOS, Android, Web)
-- Icon and splash screen configuration
+- **`LedDisplayPanel.tsx`**: A purely presentational component that is responsible for rendering the entire visual part
+  of the LED display. It receives all necessary props from `LedScroller` and contains the logic for:
+    - Displaying the scrolling text (`Animated.Text`).
+    - Rendering the `LedBorder` or a native border.
+    - Applying all animated styles.
 
-### Customizing Default Values
+- **`useLedSettings.tsx`**: A custom hook that centralizes all application state and business logic.
+    - Manages settings like text, speed, color, etc.
+    - Handles loading and saving settings to `AsyncStorage`.
+    - Provides functions to update the state.
+    - This hook makes the components cleaner by abstracting away the state management logic.
 
-Edit `components/useLedSettings.tsx` to change defaults:
+- **`useLedAnimation.tsx`**: A custom hook dedicated to handling all `react-native-reanimated` logic.
+    - Creates and manages all shared values (e.g., `translateX`, `fontSize`).
+    - Defines the animations for scrolling, blinking, and color transitions.
+    - Sets up gesture handlers (`pinch`, `double-tap`).
+    - Returns animated styles to be applied to the components.
 
-```typescript
-const DEFAULT_SETTINGS: SettingsState = {
-    text: 'BONNE ANNÉE 2026',
-    speed: 100,
-    selectedColor: LED_COLORS[0],
-    showBorder: true,
-    isBorderChase: true,
-    isBorderBlinking: false,
-    isLandscapeLocked: false,
-    isTextBlinking: false,
-    isReverseScroll: false,
-    // ...
-};
-```
+- **`SettingsModal/`**: The modal view for all user-configurable settings. It is self-contained and communicates with
+  the rest of the app via props passed from `LedScroller`.
+
+This architecture promotes a clean separation of concerns, making the project easier to maintain and debug.
 
 ## 🤝 Contributing
 
-Contributions are welcome! Here's how you can help:
+Contributions are welcome! Please fork the repository and open a pull request with your changes.
 
-1. **Fork the repository**
-2. **Create a feature branch** (`git checkout -b feature/AmazingFeature`)
-3. **Commit your changes** (`git commit -m 'Add some AmazingFeature'`)
-4. **Push to the branch** (`git push origin feature/AmazingFeature`)
-5. **Open a Pull Request**
-
-Please ensure your code:
-- Follows the existing code style
-- Passes all linting checks (`npm run lint`)
-- Includes appropriate TypeScript types
-- Is well-documented with comments where necessary
+1. Fork the repository.
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`).
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`).
+4. Push to the branch (`git push origin feature/AmazingFeature`).
+5. Open a Pull Request.
 
 ## 🔧 Troubleshooting
 
-For detailed troubleshooting information, please see [TROUBLESHOOTING.md](./TROUBLESHOOTING.md).
-
-### Common Issues
-
-**Issue**: App crashes on Android with "Worklet version mismatch"
-- **Solution**: Ensure you're using the exact dependency versions specified in `package.json`. Run `npm install` to sync.
-
-**Issue**: "runOnJS is deprecated" warning
-- **Solution**: The project correctly uses `.runOnJS(true)` on gestures instead of importing `runOnJS` from Reanimated. This warning can be safely ignored if using the latest code.
-
-**Issue**: Fonts not loading
-- **Solution**: Ensure you have a stable internet connection on first run. The Codystar font is downloaded from Google Fonts.
-
-## 🔮 Future Improvements
-
-Here are planned features and enhancements for future versions:
-
-### High Priority
-
-- [x] **Text Effects**: Add animation effects like fade, blink, rainbow cycling
-- [x] **Multiple Text Presets**: Save and quickly switch between favorite text/color combinations
-- [ ] **Background Customization**: Allow users to change background color or add gradient backgrounds
-- [ ] **Font Selection**: Support for multiple LED-style fonts
-- [ ] **Vertical Scrolling**: Add option for vertical scrolling mode
-
-### Medium Priority
-- [ ] **Export/Share Feature**: Allow users to record and share their LED displays as videos or GIFs
-- [x] **Rotation Support**: Enable landscape mode for wider displays
-- [ ] **Multiple Lines**: Support multi-line scrolling text
-- [x] **Border Customization**: Adjustable LED grid size, color, and visibility
-- [ ] **Haptic Feedback**: Add vibration feedback for better UX
-
-### Low Priority
-- [ ] **Theme System**: Light/dark mode support
-- [ ] **Accessibility**: VoiceOver/TalkBack support, larger touch targets
-- [ ] **Internationalization**: Multi-language support for UI
-- [ ] **Performance Metrics**: FPS counter and performance monitoring in dev mode
-- [ ] **Advanced Animations**: Ease-in/ease-out, bounce effects, custom timing curves
-
-### Research & Exploration
-- [ ] **Bluetooth Integration**: Control multiple devices simultaneously
-- [ ] **Web Socket Support**: Remote control from web interface
-- [ ] **AR Mode**: Display scrolling text in augmented reality
-- [ ] **Battery Optimization**: Reduce power consumption for longer display sessions
-
-## 📜 Issues History
-
-This section documents significant bugs, issues, and their resolutions throughout the project's development.
-
-### Resolved Issues
-
-#### Issue #1: Worklet Version Mismatch / NullPointerException (Resolved)
-- **Date**: During initial Expo SDK 54 migration
-- **Severity**: Critical - App crash on Android
-- **Description**: Mismatch between JavaScript and native Worklets versions (0.6.1 vs 0.5.1) causing `NullPointerException` on app launch
-- **Root Cause**: Dependency conflict between Reanimated 4.x and Gesture Handler versions during Expo SDK 54 beta
-- **Solution**: Aligned to Expo SDK 54 recommended versions:
-  - `react-native-reanimated`: ~4.1.1
-  - `react-native-gesture-handler`: ~2.28.0
-  - Removed manual `overrides` in package.json
-- **Status**: ✅ Resolved
-- **Reference**: See [TROUBLESHOOTING.md](./TROUBLESHOOTING.md#1-worklet-version-mismatch--nullpointerexception)
-
-#### Issue #2: runOnJS Deprecation Warning (Resolved)
-- **Date**: During Reanimated 4.x upgrade
-- **Severity**: Low - Warning only, non-breaking
-- **Description**: Deprecation warning for importing `runOnJS` from `react-native-reanimated`
-- **Root Cause**: Reanimated 4 architecture moved `runOnJS` to separate package, but direct import from `react-native-worklets` is unstable in Expo
-- **Solution**: Refactored to use native Gesture Handler v2 thread switching:
-  ```typescript
-  // Changed from: runOnJS(setOpen)(true)
-  // To: .runOnJS(true) on the gesture definition
-  ```
-- **Status**: ✅ Resolved
-- **Reference**: See [TROUBLESHOOTING.md](./TROUBLESHOOTING.md#2-runonjs-is-deprecated-warning)
-
-### Known Issues
-
-Currently, there are no known unresolved issues. If you encounter a problem, please:
-1. Check the [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) file
-2. Search existing [GitHub Issues](https://github.com/ThomsMTZ/LedScroller2025/issues)
-3. Create a new issue with detailed reproduction steps if needed
-
-### How to Report Issues
-
-When reporting an issue, please include:
-- Device/Platform (iOS/Android/Web)
-- OS version
-- App version
-- Steps to reproduce
-- Expected vs actual behavior
-- Screenshots or video if applicable
-- Error messages or logs
+Please see [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) for common issues and solutions.
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-```
-MIT License
-
-Copyright (c) 2025 Thomas Martinez
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-```
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
 ## 📧 Contact
 
 **Thomas Martinez**
-
 - GitHub: [@ThomsMTZ](https://github.com/ThomsMTZ)
 - Project Link: [https://github.com/ThomsMTZ/LedScroller2025](https://github.com/ThomsMTZ/LedScroller2025)
-
----
-
-## 🙏 Acknowledgments
-
-- [FreeCodeCamp](https://www.freecodecamp.org/) for README best practices guide
-- [Expo Team](https://expo.dev/) for the excellent development platform
-- [Software Mansion](https://swmansion.com/) for Reanimated and Gesture Handler libraries
-- [Google Fonts](https://fonts.google.com/) for the Codystar font
-- The React Native community for continuous support and inspiration
-
----
-
-Made with ❤️ by Thomas Martinez | 2026
