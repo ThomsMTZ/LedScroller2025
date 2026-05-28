@@ -40,7 +40,7 @@ const LedBorder: React.FC<LedBorderProps> = ({color, isAnimating, speed}) => {
         }
 
         return () => cancelAnimation(rotation);
-    }, [isAnimating, speed]);
+    }, [isAnimating, speed, rotation]);
 
     const animatedStyle = useAnimatedStyle(() => {
         return {

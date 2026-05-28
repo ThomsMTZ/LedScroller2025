@@ -4,7 +4,6 @@ import {LedScroller} from "../components";
 
 jest.mock('../components/useLedSettings', () => ({
     useLedSettings: jest.fn(() => ({
-        isLoaded: true,
         text: 'Alivio Test',
         speed: 150,
         selectedColor: {hue: 0, saturation: 100, lightness: 50, name: 'Rouge'},
@@ -16,9 +15,12 @@ jest.mock('../components/useLedSettings', () => ({
         isReverseScroll: false,
         recentMessages: [],
         favoriteMessages: [],
-        onTextChange: jest.fn(),
-        onSpeedChange: jest.fn(),
-        onColorChange: jest.fn(),
+        isSettingsOpen: false,
+        setText: jest.fn(),
+        setSpeed: jest.fn(),
+        setSelectedColor: jest.fn(),
+        onOpenSettings: jest.fn(),
+        onCloseSettings: jest.fn(),
         onToggleBorder: jest.fn(),
         onToggleBorderChase: jest.fn(),
         onToggleBorderBlinking: jest.fn(),
@@ -31,11 +33,21 @@ jest.mock('../components/useLedSettings', () => ({
 }));
 
 jest.mock('../components/useLedAnimation', () => ({
-    useLedAnimations: jest.fn(() => ({
+    useLedAnimation: jest.fn(() => ({
         componentId: 'mock-id',
+        setTextWidth: jest.fn(),
+        copiesArray: [undefined, undefined],
+        LOOP_SPACING: 100,
+        PORTRAIT_PANEL_HEIGHT: 200,
+        hueVal: {value: 0},
+        satVal: {value: 100},
+        ligVal: {value: 50},
         composedGestures: {},
         animatedContainerStyle: {transform: []},
         animatedTextStyle: {fontSize: 120},
+        animatedBorderOpacityStyle: {opacity: 1},
+        animatedBorderColorStyle: {borderColor: 'red'},
+        animatedShadowColorStyle: {shadowColor: 'red'},
     }))
 }));
 
@@ -43,6 +55,11 @@ jest.mock('../components/LedBorder', () => 'LedBorder');
 jest.mock('../index', () => ({SettingsModal: 'SettingsModal'}));
 jest.mock('react-native-gesture-handler', () => ({
     GestureDetector: ({children}: any) => children,
+    Gesture: {
+        Tap: () => ({numberOfTaps: () => ({runOnJS: () => ({onEnd: () => ({})})})}),
+        Pinch: () => ({onUpdate: () => ({onEnd: () => ({})})}),
+        Race: () => ({}),
+    },
 }));
 
 describe('LedScroller Orchestrator', () => {
@@ -50,28 +67,17 @@ describe('LedScroller Orchestrator', () => {
         jest.clearAllMocks();
     });
 
-    it('devrait afficher l’écran de chargement si isLoaded est false', () => {
-        const {useLedSettings} = require('../components/useLedSettings');
-
-        const defaultMockSettings = useLedSettings();
-
-        useLedSettings.mockReturnValueOnce({
-            ...defaultMockSettings,
-            isLoaded: false
-        });
-
-        const {UNSAFE_getByType} = render(<LedScroller/>);
-        const {ActivityIndicator} = require('react-native');
-
-        expect(UNSAFE_getByType(ActivityIndicator)).toBeTruthy();
-    });
-
-    it('devrait rendre l’interface principale et distribuer le texte animé une fois chargé', () => {
+    it('devrait rendre l\'interface principale et distribuer le texte animé', () => {
         const {getByTestId, getAllByText} = render(<LedScroller/>);
 
-        expect(getByTestId('interactive-view')).toBeTruthy();
+        expect(getByTestId('gesture-detector')).toBeTruthy();
 
         const textCopies = getAllByText('Alivio Test');
         expect(textCopies.length).toBeGreaterThan(0);
+    });
+
+    it('devrait afficher le led-display', () => {
+        const {getByTestId} = render(<LedScroller/>);
+        expect(getByTestId('led-display')).toBeTruthy();
     });
 });

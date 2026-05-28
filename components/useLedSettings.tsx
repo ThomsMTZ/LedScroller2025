@@ -21,19 +21,20 @@ export interface SettingsState {
 }
 
 export const useLedSettings = (initialText: string = 'BONJOUR 2025') => {
-    // --- États plats (même structure que l'original) ---
-    const [text, setText] = useState<string>(initialText);
-    const [speed, setSpeed] = useState<number>(100);
-    const [selectedColor, setSelectedColor] = useState<LedColorType>(LED_COLORS[4]);
-    const [showBorder, setShowBorder] = useState<boolean>(true);
-    const [isBorderChase, setIsBorderChase] = useState<boolean>(false);
-    const [isBorderBlinking, setIsBorderBlinking] = useState<boolean>(false);
-    const [isLandscapeLocked, setIsLandscapeLocked] = useState<boolean>(false);
-    const [isTextBlinking, setIsTextBlinking] = useState<boolean>(false);
-    const [isReverseScroll, setIsReverseScroll] = useState<boolean>(false);
-    const [recentMessages, setRecentMessages] = useState<string[]>([]);
-    const [favoriteMessages, setFavoriteMessages] = useState<string[]>([]);
     const [isSettingsOpen, setSettingsOpen] = useState<boolean>(false);
+    const [settings, setSettings] = useState<SettingsState>({
+        text: initialText,
+        speed: 100,
+        selectedColor: LED_COLORS[4],
+        showBorder: true,
+        isBorderChase: false,
+        isBorderBlinking: false,
+        isLandscapeLocked: false,
+        isTextBlinking: false,
+        isReverseScroll: false,
+        recentMessages: [],
+        favoriteMessages: [],
+    });
 
     // --- Chargement au démarrage ---
     useEffect(() => {
@@ -41,21 +42,11 @@ export const useLedSettings = (initialText: string = 'BONJOUR 2025') => {
             try {
                 const jsonValue = await AsyncStorage.getItem(STORAGE_KEY);
                 if (jsonValue != null) {
-                    const saved = JSON.parse(jsonValue);
-                    if (saved.text) setText(saved.text);
-                    if (saved.speed) setSpeed(saved.speed);
-                    if (saved.selectedColor) setSelectedColor(saved.selectedColor);
+                    const saved = JSON.parse(jsonValue) as Partial<SettingsState>;
+                    setSettings(prev => ({...prev, ...saved}));
                     if (saved.isLandscapeLocked) {
-                        setIsLandscapeLocked(true);
                         await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
                     }
-                    if (saved.showBorder !== undefined) setShowBorder(saved.showBorder);
-                    if (saved.isTextBlinking !== undefined) setIsTextBlinking(saved.isTextBlinking);
-                    if (saved.isBorderBlinking !== undefined) setIsBorderBlinking(saved.isBorderBlinking);
-                    if (saved.isBorderChase !== undefined) setIsBorderChase(saved.isBorderChase);
-                    if (saved.recentMessages) setRecentMessages(saved.recentMessages);
-                    if (saved.favoriteMessages) setFavoriteMessages(saved.favoriteMessages);
-                    if (saved.isReverseScroll !== undefined) setIsReverseScroll(saved.isReverseScroll);
                 }
             } catch (e) {
                 console.error('Erreur load settings', e);
@@ -68,86 +59,84 @@ export const useLedSettings = (initialText: string = 'BONJOUR 2025') => {
     useEffect(() => {
         const saveTimeout = setTimeout(async () => {
             try {
-                const settingsToSave: SettingsState = {
-                    text, speed, selectedColor, isLandscapeLocked, showBorder,
-                    isTextBlinking, isBorderBlinking, isBorderChase,
-                    recentMessages, favoriteMessages, isReverseScroll,
-                };
-                await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(settingsToSave));
+                await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
             } catch (e) {
                 console.error('Erreur save settings', e);
             }
         }, 1000);
         return () => clearTimeout(saveTimeout);
-    }, [text, speed, selectedColor, isLandscapeLocked, showBorder,
-        isTextBlinking, isBorderBlinking, isBorderChase, recentMessages, favoriteMessages, isReverseScroll]);
+    }, [settings]);
 
     // --- Actions ---
     const toggleOrientation = useCallback(async () => {
-        if (isLandscapeLocked) {
+        if (settings.isLandscapeLocked) {
             await ScreenOrientation.unlockAsync();
-            setIsLandscapeLocked(false);
+            setSettings(s => ({...s, isLandscapeLocked: false}));
         } else {
             await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.LANDSCAPE);
-            setIsLandscapeLocked(true);
+            setSettings(s => ({...s, isLandscapeLocked: true}));
         }
-    }, [isLandscapeLocked]);
+    }, [settings.isLandscapeLocked]);
 
-    const handleOpenSettings = useCallback(() => {
-        setSettingsOpen(true);
-    }, []);
+    const handleOpenSettings = useCallback(() => setSettingsOpen(true), []);
 
     const handleCloseSettings = useCallback(() => {
         setSettingsOpen(false);
-        const currentTrimmed = text.trim();
-        if (currentTrimmed !== '' && !favoriteMessages.includes(currentTrimmed)) {
-            setRecentMessages(prev => {
-                const filtered = prev.filter(msg => msg !== currentTrimmed);
-                return [currentTrimmed, ...filtered].slice(0, 5);
-            });
-        }
-    }, [text, favoriteMessages]);
+        setSettings(s => {
+            const trimmed = s.text.trim();
+            if (trimmed && !s.favoriteMessages.includes(trimmed)) {
+                const filteredRecents = s.recentMessages.filter(msg => msg !== trimmed);
+                return {...s, recentMessages: [trimmed, ...filteredRecents].slice(0, 5)};
+            }
+            return s;
+        });
+    }, []);
 
     const toggleFavorite = useCallback((msg: string) => {
-        if (favoriteMessages.includes(msg)) {
-            setFavoriteMessages(prev => prev.filter(f => f !== msg));
-            setRecentMessages(prev => [msg, ...prev.filter(r => r !== msg)].slice(0, 5));
-        } else {
-            setFavoriteMessages(prev => [msg, ...prev]);
-            setRecentMessages(prev => prev.filter(r => r !== msg));
-        }
-    }, [favoriteMessages]);
+        setSettings(s => {
+            const isFavorite = s.favoriteMessages.includes(msg);
+            if (isFavorite) {
+                return {
+                    ...s,
+                    favoriteMessages: s.favoriteMessages.filter(f => f !== msg),
+                    recentMessages: [msg, ...s.recentMessages.filter(r => r !== msg)].slice(0, 5),
+                };
+            } else {
+                return {
+                    ...s,
+                    favoriteMessages: [msg, ...s.favoriteMessages],
+                    recentMessages: s.recentMessages.filter(r => r !== msg),
+                };
+            }
+        });
+    }, []);
+
+    const createToggle = (key: keyof SettingsState) => () => {
+        setSettings(s => ({...s, [key]: !s[key]}));
+    };
 
     return {
-        // États
-        text,
-        speed,
-        selectedColor,
-        showBorder,
-        isBorderChase,
-        isBorderBlinking,
-        isLandscapeLocked,
-        isTextBlinking,
-        isReverseScroll,
-        recentMessages,
-        favoriteMessages,
+        ...settings,
         isSettingsOpen,
 
-        // Setters directs
-        setText,
-        setSpeed,
-        setSelectedColor,
+        // Setters
+        setText: (text: string) => setSettings(s => ({...s, text})),
+        setSpeed: (speed: number) => setSettings(s => ({...s, speed})),
+        setSelectedColor: (color: LedColorType) => setSettings(s => ({...s, selectedColor: color})),
+        onTextChange: (text: string) => setSettings(s => ({...s, text})),
+        onSpeedChange: (speed: number) => setSettings(s => ({...s, speed})),
+        onColorChange: (color: LedColorType) => setSettings(s => ({...s, selectedColor: color})),
 
         // Actions
         onToggleOrientation: toggleOrientation,
         onOpenSettings: handleOpenSettings,
         onCloseSettings: handleCloseSettings,
-        onToggleBorder: () => setShowBorder(prev => !prev),
-        onToggleBorderChase: () => setIsBorderChase(prev => !prev),
-        onToggleBorderBlinking: () => setIsBorderBlinking(prev => !prev),
-        onToggleTextBlinking: () => setIsTextBlinking(prev => !prev),
-        onToggleReverseScroll: () => setIsReverseScroll(prev => !prev),
+        onToggleBorder: createToggle('showBorder'),
+        onToggleBorderChase: createToggle('isBorderChase'),
+        onToggleBorderBlinking: createToggle('isBorderBlinking'),
+        onToggleTextBlinking: createToggle('isTextBlinking'),
+        onToggleReverseScroll: createToggle('isReverseScroll'),
         onToggleFavorite: toggleFavorite,
-        onSelectRecentMessage: setText,
+        onSelectRecentMessage: (text: string) => setSettings(s => ({...s, text})),
     };
 };

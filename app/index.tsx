@@ -1,11 +1,11 @@
 import React from 'react';
-import { View, ActivityIndicator, StyleSheet } from 'react-native';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { useFonts, Codystar_400Regular } from '@expo-google-fonts/codystar';
-import { LedScroller } from '../components';
+import {ActivityIndicator, StyleSheet, View} from 'react-native';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import {Codystar_400Regular, useFonts} from '@expo-google-fonts/codystar';
+import {LedScroller} from '../components';
 
 export default function App() {
-    let [fontsLoaded] = useFonts({
+    const [fontsLoaded] = useFonts({
         'LedFont': Codystar_400Regular,
     });
 

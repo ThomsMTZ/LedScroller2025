@@ -63,7 +63,7 @@ export const useLedAnimation = ({
         hueVal.value = withTiming(selectedColor.hue, {duration: 500});
         satVal.value = withTiming(selectedColor.saturation, {duration: 500});
         ligVal.value = withTiming(selectedColor.lightness, {duration: 500});
-    }, [selectedColor]);
+    }, [selectedColor, hueVal, satVal, ligVal]);
 
     // --- Clignotement (texte ET bordure) ---
     useEffect(() => {
@@ -80,7 +80,7 @@ export const useLedAnimation = ({
             blinkOpacity.value = withTiming(1, {duration: 300});
         }
         return () => cancelAnimation(blinkOpacity);
-    }, [isTextBlinking, isBorderBlinking]);
+    }, [isTextBlinking, isBorderBlinking, blinkOpacity]);
 
     // --- Animation de scroll ---
     useEffect(() => {
@@ -106,7 +106,7 @@ export const useLedAnimation = ({
             }
         }
         return () => cancelAnimation(translateX);
-    }, [textWidth, speed, width, patternWidth, isReverseScroll]);
+    }, [textWidth, speed, width, patternWidth, isReverseScroll, translateX]);
 
     // --- Calcul taille de police max ---
     const baseMaxFontSize = isLandscape ? height * 0.8 : PORTRAIT_PANEL_HEIGHT * 0.8;
@@ -180,15 +180,9 @@ export const useLedAnimation = ({
         };
     });
 
-    // Couleur HSL courante pour LedBorder (non-animée, lue depuis shared values via worklet)
-    const getLedBorderColor = () => {
-        return `hsl(${Math.round(hueVal.value)}, ${Math.round(satVal.value)}%, ${Math.round(ligVal.value)}%)`;
-    };
-
     return {
         // Données de layout
         componentId,
-        textWidth,
         setTextWidth,
         copiesArray,
         LOOP_SPACING,
@@ -209,7 +203,5 @@ export const useLedAnimation = ({
         animatedBorderColorStyle,
         animatedShadowColorStyle,
 
-        // Helper
-        getLedBorderColor,
     };
 };

@@ -2,6 +2,7 @@ import React from 'react';
 import {render} from '@testing-library/react-native';
 import {LedBorder} from "../components";
 
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 jest.mock('react-native-reanimated', () => require('react-native-reanimated/mock'));
 
 describe('LedBorder Component', () => {
