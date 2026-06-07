@@ -124,7 +124,7 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
 
             {!isLandscape && (
                 <View style={styles.footer}>
-                    <Text style={styles.footerText}>Made with ❤️ by Thomas Martinez</Text>
+                    <Text style={styles.footerText}>Made with ❤️ by ThomsMtz</Text>
                 </View>
             )}
 

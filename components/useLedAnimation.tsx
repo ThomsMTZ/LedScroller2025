@@ -116,6 +116,14 @@ export const useLedAnimation = ({
         : baseMaxFontSize;
     const maxFontSizeValue = Math.max(calculatedMaxFontSize, minFontSizeValue);
 
+    // --- Ajustement de la taille de la police au changement d'orientation ---
+    useEffect(() => {
+        if (fontSize.value > maxFontSizeValue) {
+            fontSize.value = withTiming(maxFontSizeValue, {duration: 300});
+            savedFontSize.value = maxFontSizeValue;
+        }
+    }, [isLandscape, maxFontSizeValue, fontSize, savedFontSize]);
+
     // --- Gestures ---
     const pinchGesture = Gesture.Pinch()
         .onUpdate((e) => {
