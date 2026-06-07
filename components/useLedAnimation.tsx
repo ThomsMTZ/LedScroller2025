@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {TextStyle, useWindowDimensions} from 'react-native';
+import {useWindowDimensions} from 'react-native';
 import {
     cancelAnimation,
     Easing,
@@ -10,7 +10,7 @@ import {
     withSequence,
     withTiming,
 } from 'react-native-reanimated';
-import {Gesture, GestureUpdateEvent, PinchGestureHandlerEventPayload,} from 'react-native-gesture-handler';
+import {Gesture} from 'react-native-gesture-handler';
 import {LedColorType} from './types';
 
 interface LedAnimationProps {
@@ -118,7 +118,7 @@ export const useLedAnimation = ({
 
     // --- Gestures ---
     const pinchGesture = Gesture.Pinch()
-        .onUpdate((e: GestureUpdateEvent<PinchGestureHandlerEventPayload>) => {
+        .onUpdate((e) => {
             const newSize = savedFontSize.value * e.scale;
             fontSize.value = Math.min(Math.max(newSize, minFontSizeValue), maxFontSizeValue);
         })
@@ -153,7 +153,7 @@ export const useLedAnimation = ({
             textShadowRadius: 20,
             textShadowOffset: {width: 0, height: 0},
             opacity: isTextBlinking ? blinkOpacity.value : 1,
-        } as TextStyle;
+        };
     });
 
     const animatedBorderOpacityStyle = useAnimatedStyle(() => ({
