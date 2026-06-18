@@ -1,8 +1,6 @@
 import React from 'react';
-import {BannerAd, BannerAdSize, TestIds} from 'react-native-google-mobile-ads';
-import {Platform, StatusBar, Text, TouchableOpacity, useWindowDimensions, View,} from 'react-native';
+import {StatusBar, Text, useWindowDimensions, View,} from 'react-native';
 import {GestureDetector} from 'react-native-gesture-handler';
-import {Ionicons} from '@expo/vector-icons';
 import {LinearGradient} from 'expo-linear-gradient';
 import {styles} from './styles';
 import {LedScrollerProps} from './types';
@@ -12,18 +10,12 @@ import SettingsModal from './SettingsModal/SettingsModal';
 import {useLedSettings} from './useLedSettings';
 import {useLedAnimation} from './useLedAnimation';
 import LedDisplayPanel from './LedDisplayPanel';
+import SettingsButton from './SettingsButton';
+import AdBanner from './AdBanner';
 
 const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'}) => {
     const {width, height} = useWindowDimensions();
     const isLandscape = width > height;
-
-    const adUnitId = __DEV__
-        ? TestIds.BANNER
-        : Platform.select({
-            android: 'ca-app-pub-2790650155402757/5652248123',
-            ios: 'ca-app-pub-2790650155402757/6773987013',
-            default: TestIds.BANNER,
-        });
 
 
     // --- Settings ---
@@ -61,14 +53,7 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
                         <Text style={styles.headerTitle}>LED Scroller</Text>
                         <Text style={styles.headerSubtitle}>2026 Edition</Text>
                     </View>
-                    <TouchableOpacity
-                        testID="settings-button"
-                        style={styles.settingsButton}
-                        onPress={settings.onOpenSettings}
-                        activeOpacity={0.7}
-                    >
-                        <Ionicons name="settings-outline" size={24} color={COLORS.text}/>
-                    </TouchableOpacity>
+                    <SettingsButton variant="portrait" onPress={settings.onOpenSettings} />
                 </View>
             )}
 
@@ -85,41 +70,16 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
                     ]}
                 >
                     <LedDisplayPanel
-                        isLandscape={isLandscape}
-                        showNativeBorder={showNativeBorder}
-                        isChaseActive={isChaseActive}
-                        PORTRAIT_PANEL_HEIGHT={animation.PORTRAIT_PANEL_HEIGHT}
-                        animatedBorderColorStyle={animation.animatedBorderColorStyle}
-                        animatedBorderOpacityStyle={animation.animatedBorderOpacityStyle}
-                        animatedShadowColorStyle={animation.animatedShadowColorStyle}
-                        animatedContainerStyle={animation.animatedContainerStyle}
-                        animatedTextStyle={animation.animatedTextStyle}
-                        hueVal={animation.hueVal}
-                        satVal={animation.satVal}
-                        ligVal={animation.ligVal}
-                        speed={settings.speed}
-                        componentId={animation.componentId}
-                        text={settings.text}
-                        setTextWidth={animation.setTextWidth}
-                        copiesArray={animation.copiesArray}
-                        LOOP_SPACING={animation.LOOP_SPACING}
+                        layout={{isLandscape, showNativeBorder, isChaseActive}}
+                        animation={animation}
+                        display={{text: settings.text, speed: settings.speed}}
                     />
 
                     {!isLandscape && <HintContainer/>}
                 </View>
             </GestureDetector>
 
-            {!isLandscape && (
-                <View style={{alignItems: 'center', paddingVertical: 10, backgroundColor: 'transparent'}}>
-                    <BannerAd
-                        unitId={adUnitId}
-                        size={BannerAdSize.BANNER}
-                        requestOptions={{
-                            requestNonPersonalizedAdsOnly: true,
-                        }}
-                    />
-                </View>
-            )}
+            {!isLandscape && <AdBanner />}
 
 
             {!isLandscape && (
@@ -155,22 +115,7 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
                 onSelectRecentMessage={settings.onSelectRecentMessage}
             />
 
-            {isLandscape && (
-                <TouchableOpacity
-                    style={{
-                        position: 'absolute',
-                        top: 20,
-                        right: 20,
-                        padding: 10,
-                        backgroundColor: 'rgba(0,0,0,0.5)',
-                        borderRadius: 20,
-                        zIndex: 100,
-                    }}
-                    onPress={settings.onOpenSettings}
-                >
-                    <Ionicons name="settings-outline" size={24} color="rgba(255,255,255,0.5)"/>
-                </TouchableOpacity>
-            )}
+            {isLandscape && <SettingsButton variant="landscape" onPress={settings.onOpenSettings} />}
         </View>
     );
 };

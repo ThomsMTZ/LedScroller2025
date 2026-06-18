@@ -63,9 +63,9 @@ describe('LedScroller Component', () => {
         const {getByTestId} = render(<LedScroller/>);
         const panel = getByTestId('mock-led-display-panel');
 
-        expect(panel.props.text).toBe('Default Text');
-        expect(panel.props.isChaseActive).toBe(true);
-        expect(panel.props.PORTRAIT_PANEL_HEIGHT).toBe(200);
+        expect(panel.props.display.text).toBe('Default Text');
+        expect(panel.props.layout.isChaseActive).toBe(true);
+        expect(panel.props.animation.PORTRAIT_PANEL_HEIGHT).toBe(200);
     });
 
     it('devrait rendre le SettingsModal quand isSettingsOpen est true', () => {

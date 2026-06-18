@@ -6,10 +6,15 @@ import GridOverlay from './GridOverlay';
 import LedBorder from './LedBorder';
 import {buildHslString} from '../utils/colorUtils';
 
-interface LedDisplayPanelProps {
+// --- Sous-interfaces groupées ---
+
+interface LedLayoutProps {
     isLandscape: boolean;
     showNativeBorder: boolean;
     isChaseActive: boolean;
+}
+
+interface LedAnimationStyles {
     PORTRAIT_PANEL_HEIGHT: number;
     animatedBorderColorStyle: AnimatedStyle<ViewStyle>;
     animatedBorderOpacityStyle: AnimatedStyle<ViewStyle>;
@@ -19,34 +24,42 @@ interface LedDisplayPanelProps {
     hueVal: SharedValue<number>;
     satVal: SharedValue<number>;
     ligVal: SharedValue<number>;
-    speed: number;
     componentId: string;
-    text: string;
     setTextWidth: (width: number) => void;
     copiesArray: unknown[];
     LOOP_SPACING: number;
 }
 
-const LedDisplayPanel: React.FC<LedDisplayPanelProps> = ({
-                                                             isLandscape,
-                                                             showNativeBorder,
-                                                             isChaseActive,
-                                                             PORTRAIT_PANEL_HEIGHT,
-                                                             animatedBorderColorStyle,
-                                                             animatedBorderOpacityStyle,
-                                                             animatedShadowColorStyle,
-                                                             animatedContainerStyle,
-                                                             animatedTextStyle,
-                                                             hueVal,
-                                                             satVal,
-                                                             ligVal,
-                                                             speed,
-                                                             componentId,
-                                                             text,
-                                                             setTextWidth,
-                                                             copiesArray,
-                                                             LOOP_SPACING,
-                                                         }) => {
+interface LedDisplayProps {
+    text: string;
+    speed: number;
+}
+
+interface LedDisplayPanelProps {
+    layout: LedLayoutProps;
+    animation: LedAnimationStyles;
+    display: LedDisplayProps;
+}
+
+const LedDisplayPanel: React.FC<LedDisplayPanelProps> = ({layout, animation, display}) => {
+    const {isLandscape, showNativeBorder, isChaseActive} = layout;
+    const {
+        PORTRAIT_PANEL_HEIGHT,
+        animatedBorderColorStyle,
+        animatedBorderOpacityStyle,
+        animatedShadowColorStyle,
+        animatedContainerStyle,
+        animatedTextStyle,
+        hueVal,
+        satVal,
+        ligVal,
+        componentId,
+        setTextWidth,
+        copiesArray,
+        LOOP_SPACING,
+    } = animation;
+    const {text, speed} = display;
+
     const {width} = useWindowDimensions();
 
     const getDisplayBorderRadius = (): number => {

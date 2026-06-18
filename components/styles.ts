@@ -42,6 +42,15 @@ export const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: COLORS.border,
     },
+    settingsButtonLandscape: {
+        position: 'absolute',
+        top: 20,
+        right: 20,
+        padding: 10,
+        backgroundColor: 'rgba(0,0,0,0.5)',
+        borderRadius: 20,
+        zIndex: 100,
+    },
     interactiveArea: {
         flex: 1,
         justifyContent: 'center',

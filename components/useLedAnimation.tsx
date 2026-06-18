@@ -43,7 +43,8 @@ export const useLedAnimation = ({
     const translateX: SharedValue<number> = useSharedValue(width);
     const fontSize: SharedValue<number> = useSharedValue(100);
     const savedFontSize: SharedValue<number> = useSharedValue(100);
-    const blinkOpacity: SharedValue<number> = useSharedValue(1);
+    const textBlinkOpacity: SharedValue<number> = useSharedValue(1);
+    const borderBlinkOpacity: SharedValue<number> = useSharedValue(1);
     const hueVal: SharedValue<number> = useSharedValue(selectedColor.hue);
     const satVal: SharedValue<number> = useSharedValue(selectedColor.saturation);
     const ligVal: SharedValue<number> = useSharedValue(selectedColor.lightness);
@@ -67,10 +68,10 @@ export const useLedAnimation = ({
         ligVal.value = withTiming(selectedColor.lightness, {duration: ANIMATION_DURATIONS.colorTransition});
     }, [selectedColor, hueVal, satVal, ligVal]);
 
-    // --- Clignotement (texte ET bordure) ---
-    useEffect(() => {
-        if (isTextBlinking || isBorderBlinking) {
-            blinkOpacity.value = withRepeat(
+    // --- Helper : applique ou stoppe l'animation de clignotement sur une SharedValue ---
+    const applyBlink = (enabled: boolean, sv: SharedValue<number>) => {
+        if (enabled) {
+            sv.value = withRepeat(
                 withSequence(
                     withTiming(0.4, {duration: ANIMATION_DURATIONS.blinkStep}),
                     withTiming(1, {duration: ANIMATION_DURATIONS.blinkStep})
@@ -79,10 +80,23 @@ export const useLedAnimation = ({
                 true
             );
         } else {
-            blinkOpacity.value = withTiming(1, {duration: ANIMATION_DURATIONS.blinkStop});
+            sv.value = withTiming(1, {duration: ANIMATION_DURATIONS.blinkStop});
         }
-        return () => cancelAnimation(blinkOpacity);
-    }, [isTextBlinking, isBorderBlinking, blinkOpacity]);
+    };
+
+    // --- Clignotement texte ---
+    useEffect(() => {
+        applyBlink(isTextBlinking, textBlinkOpacity);
+        return () => cancelAnimation(textBlinkOpacity);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isTextBlinking, textBlinkOpacity]);
+
+    // --- Clignotement bordure ---
+    useEffect(() => {
+        applyBlink(isBorderBlinking, borderBlinkOpacity);
+        return () => cancelAnimation(borderBlinkOpacity);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isBorderBlinking, borderBlinkOpacity]);
 
     // --- Animation de scroll ---
     useEffect(() => {
@@ -159,23 +173,23 @@ export const useLedAnimation = ({
             textShadowColor: hslColor,
             textShadowRadius: 20,
             textShadowOffset: {width: 0, height: 0},
-            opacity: isTextBlinking ? blinkOpacity.value : 1,
+            opacity: isTextBlinking ? textBlinkOpacity.value : 1,
         };
     });
 
     const animatedBorderOpacityStyle = useAnimatedStyle(() => ({
-        opacity: isBorderBlinking ? blinkOpacity.value : 1,
+        opacity: isBorderBlinking ? borderBlinkOpacity.value : 1,
     }));
 
     const animatedBorderColorStyle = useAnimatedStyle(() => {
-        const alpha = isBorderBlinking ? blinkOpacity.value : 1;
+        const alpha = isBorderBlinking ? borderBlinkOpacity.value : 1;
         return {
             borderColor: buildHslaString(hueVal.value, satVal.value, ligVal.value, alpha),
         };
     });
 
     const animatedShadowColorStyle = useAnimatedStyle(() => {
-        const alpha = isBorderBlinking ? blinkOpacity.value : 1;
+        const alpha = isBorderBlinking ? borderBlinkOpacity.value : 1;
         return {
             shadowColor: buildHslaString(hueVal.value, satVal.value, ligVal.value, alpha),
         };
