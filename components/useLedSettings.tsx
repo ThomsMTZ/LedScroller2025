@@ -2,7 +2,7 @@ import {useCallback, useEffect, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as ScreenOrientation from 'expo-screen-orientation';
 import {LedColorType} from './types';
-import {LED_COLORS} from './constants';
+import {LED_COLORS, ANIMATION_DURATIONS} from './constants';
 
 const STORAGE_KEY = '@led_scroller_settings_v1';
 
@@ -63,7 +63,7 @@ export const useLedSettings = (initialText: string = 'BONJOUR 2025') => {
             } catch (e) {
                 console.error('Erreur save settings', e);
             }
-        }, 1000);
+        }, ANIMATION_DURATIONS.settingsSaveDebounce);
         return () => clearTimeout(saveTimeout);
     }, [settings]);
 

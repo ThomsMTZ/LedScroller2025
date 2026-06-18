@@ -23,3 +23,20 @@ export const COLORS = {
     border: 'rgba(255, 255, 255, 0.1)',
 };
 
+export const ANIMATION_DURATIONS = {
+    /** Transition douce lors d'un changement de couleur LED */
+    colorTransition: 500,
+    /** Durée d'un demi-cycle de clignotement (fade-out ou fade-in) */
+    blinkStep: 500,
+    /** Transition pour stopper le clignotement (retour à opacité 1) */
+    blinkStop: 300,
+    /** Ajustement de la taille de police lors d'un changement d'orientation */
+    fontSizeAdjust: 300,
+    /** Durée minimale de l'animation chase border en ms */
+    chaseMin: 300,
+    /** Multiplicateur pour calculer la durée de l'animation chase depuis la vitesse */
+    chaseSpeedMultiplier: 300_000,
+    /** Délai de debounce avant sauvegarde des settings en AsyncStorage */
+    settingsSaveDebounce: 1_000,
+} as const;
+

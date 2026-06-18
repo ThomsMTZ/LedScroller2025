@@ -1,20 +1,21 @@
 import React from 'react';
-import {StyleSheet, useWindowDimensions, View} from 'react-native';
-import Animated, {SharedValue} from 'react-native-reanimated';
+import Animated, {AnimatedStyle, SharedValue} from 'react-native-reanimated';
+import {StyleSheet, TextStyle, useWindowDimensions, View, ViewStyle} from 'react-native';
 import {styles} from './styles';
 import GridOverlay from './GridOverlay';
 import LedBorder from './LedBorder';
+import {buildHslString} from '../utils/colorUtils';
 
 interface LedDisplayPanelProps {
     isLandscape: boolean;
     showNativeBorder: boolean;
     isChaseActive: boolean;
     PORTRAIT_PANEL_HEIGHT: number;
-    animatedBorderColorStyle: any;
-    animatedBorderOpacityStyle: any;
-    animatedShadowColorStyle: any;
-    animatedContainerStyle: any;
-    animatedTextStyle: any;
+    animatedBorderColorStyle: AnimatedStyle<ViewStyle>;
+    animatedBorderOpacityStyle: AnimatedStyle<ViewStyle>;
+    animatedShadowColorStyle: AnimatedStyle<ViewStyle>;
+    animatedContainerStyle: AnimatedStyle<ViewStyle>;
+    animatedTextStyle: AnimatedStyle<TextStyle>;
     hueVal: SharedValue<number>;
     satVal: SharedValue<number>;
     ligVal: SharedValue<number>;
@@ -22,7 +23,7 @@ interface LedDisplayPanelProps {
     componentId: string;
     text: string;
     setTextWidth: (width: number) => void;
-    copiesArray: any[];
+    copiesArray: unknown[];
     LOOP_SPACING: number;
 }
 
@@ -82,7 +83,7 @@ const LedDisplayPanel: React.FC<LedDisplayPanelProps> = ({
                     {overflow: 'hidden', borderRadius: isLandscape ? 0 : 16},
                 ]}>
                     <LedBorder
-                        color={`hsl(${Math.round(hueVal.value)}, ${Math.round(satVal.value)}%, ${Math.round(ligVal.value)}%)`}
+                        color={buildHslString(hueVal.value, satVal.value, ligVal.value)}
                         isAnimating={true}
                         speed={speed}
                     />

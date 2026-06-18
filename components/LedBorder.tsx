@@ -9,6 +9,7 @@ import Animated, {
     withTiming
 } from 'react-native-reanimated';
 import {LinearGradient} from 'expo-linear-gradient';
+import {ANIMATION_DURATIONS} from './constants';
 
 interface LedBorderProps {
     color: string;
@@ -23,7 +24,10 @@ const LedBorder: React.FC<LedBorderProps> = ({color, isAnimating, speed}) => {
 
     useEffect(() => {
         if (isAnimating) {
-            const animationDuration = Math.max(300, 300000 / (speed > 0 ? speed : 1));
+            const animationDuration = Math.max(
+                ANIMATION_DURATIONS.chaseMin,
+                ANIMATION_DURATIONS.chaseSpeedMultiplier / (speed > 0 ? speed : 1)
+            );
             const currentRotation = rotation.value % 360;
             rotation.value = currentRotation;
 

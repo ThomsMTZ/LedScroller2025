@@ -12,6 +12,8 @@ import {
 } from 'react-native-reanimated';
 import {Gesture} from 'react-native-gesture-handler';
 import {LedColorType} from './types';
+import {ANIMATION_DURATIONS} from './constants';
+import {buildHslString, buildHslaString} from '../utils/colorUtils';
 
 interface LedAnimationProps {
     text: string;
@@ -60,9 +62,9 @@ export const useLedAnimation = ({
 
     // --- Transition couleur ---
     useEffect(() => {
-        hueVal.value = withTiming(selectedColor.hue, {duration: 500});
-        satVal.value = withTiming(selectedColor.saturation, {duration: 500});
-        ligVal.value = withTiming(selectedColor.lightness, {duration: 500});
+        hueVal.value = withTiming(selectedColor.hue, {duration: ANIMATION_DURATIONS.colorTransition});
+        satVal.value = withTiming(selectedColor.saturation, {duration: ANIMATION_DURATIONS.colorTransition});
+        ligVal.value = withTiming(selectedColor.lightness, {duration: ANIMATION_DURATIONS.colorTransition});
     }, [selectedColor, hueVal, satVal, ligVal]);
 
     // --- Clignotement (texte ET bordure) ---
@@ -70,14 +72,14 @@ export const useLedAnimation = ({
         if (isTextBlinking || isBorderBlinking) {
             blinkOpacity.value = withRepeat(
                 withSequence(
-                    withTiming(0.4, {duration: 500}),
-                    withTiming(1, {duration: 500})
+                    withTiming(0.4, {duration: ANIMATION_DURATIONS.blinkStep}),
+                    withTiming(1, {duration: ANIMATION_DURATIONS.blinkStep})
                 ),
                 -1,
                 true
             );
         } else {
-            blinkOpacity.value = withTiming(1, {duration: 300});
+            blinkOpacity.value = withTiming(1, {duration: ANIMATION_DURATIONS.blinkStop});
         }
         return () => cancelAnimation(blinkOpacity);
     }, [isTextBlinking, isBorderBlinking, blinkOpacity]);
@@ -119,7 +121,7 @@ export const useLedAnimation = ({
     // --- Ajustement de la taille de la police au changement d'orientation ---
     useEffect(() => {
         if (fontSize.value > maxFontSizeValue) {
-            fontSize.value = withTiming(maxFontSizeValue, {duration: 300});
+            fontSize.value = withTiming(maxFontSizeValue, {duration: ANIMATION_DURATIONS.fontSizeAdjust});
             savedFontSize.value = maxFontSizeValue;
         }
     }, [isLandscape, maxFontSizeValue, fontSize, savedFontSize]);
@@ -149,10 +151,7 @@ export const useLedAnimation = ({
     }));
 
     const animatedTextStyle = useAnimatedStyle(() => {
-        const h = Math.round(hueVal.value);
-        const s = Math.round(satVal.value);
-        const l = Math.round(ligVal.value);
-        const hslColor = `hsl(${h}, ${s}%, ${l}%)`;
+        const hslColor = buildHslString(hueVal.value, satVal.value, ligVal.value);
         return {
             fontFamily: 'LedFont',
             fontSize: fontSize.value,
@@ -169,22 +168,16 @@ export const useLedAnimation = ({
     }));
 
     const animatedBorderColorStyle = useAnimatedStyle(() => {
-        const h = Math.round(hueVal.value);
-        const s = Math.round(satVal.value);
-        const l = Math.round(ligVal.value);
         const alpha = isBorderBlinking ? blinkOpacity.value : 1;
         return {
-            borderColor: `hsla(${h}, ${s}%, ${l}%, ${alpha})`,
+            borderColor: buildHslaString(hueVal.value, satVal.value, ligVal.value, alpha),
         };
     });
 
     const animatedShadowColorStyle = useAnimatedStyle(() => {
-        const h = Math.round(hueVal.value);
-        const s = Math.round(satVal.value);
-        const l = Math.round(ligVal.value);
         const alpha = isBorderBlinking ? blinkOpacity.value : 1;
         return {
-            shadowColor: `hsla(${h}, ${s}%, ${l}%, ${alpha})`,
+            shadowColor: buildHslaString(hueVal.value, satVal.value, ligVal.value, alpha),
         };
     });
 
