@@ -11,7 +11,7 @@ const AD_UNIT_ID = __DEV__
     });
 
 const AdBanner: React.FC = () => (
-    <View style={{alignItems: 'center', paddingVertical: 10, backgroundColor: 'transparent'}}>
+    <View style={{width: '100%', alignItems: 'center', paddingVertical: 10, backgroundColor: 'transparent'}}>
         <BannerAd
             unitId={AD_UNIT_ID as string}
             size={BannerAdSize.BANNER}
