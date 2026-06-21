@@ -1,5 +1,4 @@
-import React, {useEffect, useState} from 'react';
-import {useWindowDimensions} from 'react-native';
+import React, {useEffect} from 'react';
 import {
     cancelAnimation,
     Easing,
@@ -14,6 +13,7 @@ import {Gesture} from 'react-native-gesture-handler';
 import {LedColorType} from './types';
 import {ANIMATION_DURATIONS} from './constants';
 import {buildHslString, buildHslaString} from '../utils/colorUtils';
+import {useLedLayout} from './useLedLayout';
 
 interface LedAnimationProps {
     text: string;
@@ -27,20 +27,23 @@ interface LedAnimationProps {
 }
 
 export const useLedAnimation = ({
-                                    text,
-                                    speed,
-                                    isReverseScroll,
-                                    isTextBlinking,
-                                    isBorderBlinking,
-                                    selectedColor,
-                                    isLandscape,
-                                    onDoubleTap,
-                                }: LedAnimationProps) => {
+    text,
+    speed,
+    isReverseScroll,
+    isTextBlinking,
+    isBorderBlinking,
+    selectedColor,
+    isLandscape,
+    onDoubleTap,
+}: LedAnimationProps) => {
     const componentId = React.useId();
-    const {width, height} = useWindowDimensions();
+
+    // --- Délégation des calculs de layout ---
+    const layout = useLedLayout({text, isLandscape});
+    const {patternWidth, maxFontSize, MIN_FONT_SIZE, textWidth} = layout;
 
     // --- Shared values ---
-    const translateX: SharedValue<number> = useSharedValue(width);
+    const translateX: SharedValue<number> = useSharedValue(layout.width);
     const fontSize: SharedValue<number> = useSharedValue(100);
     const savedFontSize: SharedValue<number> = useSharedValue(100);
     const textBlinkOpacity: SharedValue<number> = useSharedValue(1);
@@ -48,18 +51,6 @@ export const useLedAnimation = ({
     const hueVal: SharedValue<number> = useSharedValue(selectedColor.hue);
     const satVal: SharedValue<number> = useSharedValue(selectedColor.saturation);
     const ligVal: SharedValue<number> = useSharedValue(selectedColor.lightness);
-
-    // --- textWidth géré en state React (comme l'original) ---
-    const [textWidth, setTextWidth] = useState<number>(0);
-
-    const PORTRAIT_PANEL_HEIGHT = width * 0.6;
-    const LOOP_SPACING = width * 0.3;
-    const patternWidth = textWidth + LOOP_SPACING;
-    const copiesNeeded = textWidth > 0
-        ? Math.ceil(width / patternWidth) + 1
-        : 2;
-    const finalRepetitions = Math.max(2, copiesNeeded);
-    const copiesArray = Array.from({length: finalRepetitions});
 
     // --- Transition couleur ---
     useEffect(() => {
@@ -69,7 +60,7 @@ export const useLedAnimation = ({
     }, [selectedColor, hueVal, satVal, ligVal]);
 
     // --- Helper : applique ou stoppe l'animation de clignotement sur une SharedValue ---
-    const applyBlink = (enabled: boolean, sv: SharedValue<number>) => {
+    const applyBlink = (enabled: boolean, sv: SharedValue<number>): void => {
         if (enabled) {
             sv.value = withRepeat(
                 withSequence(
@@ -122,29 +113,21 @@ export const useLedAnimation = ({
             }
         }
         return () => cancelAnimation(translateX);
-    }, [textWidth, speed, width, patternWidth, isReverseScroll, translateX]);
-
-    // --- Calcul taille de police max ---
-    const baseMaxFontSize = isLandscape ? height * 0.8 : PORTRAIT_PANEL_HEIGHT * 0.8;
-    const minFontSizeValue = 20;
-    const calculatedMaxFontSize = text.length > 6
-        ? baseMaxFontSize * (6 / text.length)
-        : baseMaxFontSize;
-    const maxFontSizeValue = Math.max(calculatedMaxFontSize, minFontSizeValue);
+    }, [textWidth, layout.width, speed, patternWidth, isReverseScroll, translateX]);
 
     // --- Ajustement de la taille de la police au changement d'orientation ---
     useEffect(() => {
-        if (fontSize.value > maxFontSizeValue) {
-            fontSize.value = withTiming(maxFontSizeValue, {duration: ANIMATION_DURATIONS.fontSizeAdjust});
-            savedFontSize.value = maxFontSizeValue;
+        if (fontSize.value > maxFontSize) {
+            fontSize.value = withTiming(maxFontSize, {duration: ANIMATION_DURATIONS.fontSizeAdjust});
+            savedFontSize.value = maxFontSize;
         }
-    }, [isLandscape, maxFontSizeValue, fontSize, savedFontSize]);
+    }, [isLandscape, maxFontSize, fontSize, savedFontSize]);
 
     // --- Gestures ---
     const pinchGesture = Gesture.Pinch()
         .onUpdate((e) => {
             const newSize = savedFontSize.value * e.scale;
-            fontSize.value = Math.min(Math.max(newSize, minFontSizeValue), maxFontSizeValue);
+            fontSize.value = Math.min(Math.max(newSize, MIN_FONT_SIZE), maxFontSize);
         })
         .onEnd(() => {
             savedFontSize.value = fontSize.value;
@@ -196,12 +179,12 @@ export const useLedAnimation = ({
     });
 
     return {
-        // Données de layout
+        // Layout (délégué à useLedLayout)
         componentId,
-        setTextWidth,
-        copiesArray,
-        LOOP_SPACING,
-        PORTRAIT_PANEL_HEIGHT,
+        setTextWidth: layout.setTextWidth,
+        copiesArray: layout.copiesArray,
+        LOOP_SPACING: layout.LOOP_SPACING,
+        PORTRAIT_PANEL_HEIGHT: layout.PORTRAIT_PANEL_HEIGHT,
 
         // Shared values exposées pour LedBorder
         hueVal,
@@ -217,6 +200,5 @@ export const useLedAnimation = ({
         animatedBorderOpacityStyle,
         animatedBorderColorStyle,
         animatedShadowColorStyle,
-
     };
 };

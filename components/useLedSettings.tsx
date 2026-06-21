@@ -1,72 +1,44 @@
 import {useCallback, useEffect, useState} from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {LedColorType} from './types';
+import {LedColorType, SettingsState} from './types';
 import {LED_COLORS, ANIMATION_DURATIONS} from './constants';
 import {useMessageHistory} from './useMessageHistory';
 import {useOrientation} from './useOrientation';
+import {useSettingsPersistence} from './useSettingsPersistence';
 
-const STORAGE_KEY = '@led_scroller_settings_v1';
-
-export interface SettingsState {
-    text: string;
-    speed: number;
-    selectedColor: LedColorType;
-    showBorder: boolean;
-    isBorderChase: boolean;
-    isBorderBlinking: boolean;
-    isTextBlinking: boolean;
-    isReverseScroll: boolean;
-}
+const DEFAULT_SETTINGS: SettingsState = {
+    text: 'BONJOUR 2025',
+    speed: 100,
+    selectedColor: LED_COLORS[4],
+    showBorder: true,
+    isBorderChase: false,
+    isBorderBlinking: false,
+    isTextBlinking: false,
+    isReverseScroll: false,
+};
 
 export const useLedSettings = (initialText: string = 'BONJOUR 2025') => {
     const [isSettingsOpen, setSettingsOpen] = useState<boolean>(false);
     const [settings, setSettings] = useState<SettingsState>({
+        ...DEFAULT_SETTINGS,
         text: initialText,
-        speed: 100,
-        selectedColor: LED_COLORS[4],
-        showBorder: true,
-        isBorderChase: false,
-        isBorderBlinking: false,
-        isTextBlinking: false,
-        isReverseScroll: false,
     });
 
-    const {
-        recentMessages,
-        favoriteMessages,
-        addToRecents,
-        toggleFavorite,
-        loadHistory,
-    } = useMessageHistory();
-
-    const {
-        isLandscapeLocked,
-        setIsLandscapeLocked,
-        toggleOrientation,
-        lockLandscape,
-    } = useOrientation();
+    const {recentMessages, favoriteMessages, addToRecents, toggleFavorite, loadHistory} = useMessageHistory();
+    const {isLandscapeLocked, setIsLandscapeLocked, toggleOrientation, lockLandscape} = useOrientation();
+    const persistence = useSettingsPersistence();
 
     // --- Chargement au démarrage ---
     useEffect(() => {
         const loadSettings = async () => {
-            try {
-                const jsonValue = await AsyncStorage.getItem(STORAGE_KEY);
-                if (jsonValue != null) {
-                    const saved = JSON.parse(jsonValue) as Partial<SettingsState & {
-                        isLandscapeLocked: boolean;
-                        recentMessages: string[];
-                        favoriteMessages: string[];
-                    }>;
-                    const {isLandscapeLocked: savedLocked, recentMessages: savedRecents, favoriteMessages: savedFavs, ...coreSettings} = saved;
-                    setSettings(prev => ({...prev, ...coreSettings}));
-                    loadHistory({recentMessages: savedRecents, favoriteMessages: savedFavs});
-                    if (savedLocked) {
-                        await lockLandscape();
-                        setIsLandscapeLocked(true);
-                    }
-                }
-            } catch (e) {
-                console.error('Erreur load settings', e);
+            const result = await persistence.load();
+            if (result == null) return;
+
+            setSettings(prev => ({...prev, ...result.coreSettings}));
+            loadHistory(result.history);
+
+            if (result.isLandscapeLocked) {
+                await lockLandscape();
+                setIsLandscapeLocked(true);
             }
         };
         void loadSettings();
@@ -75,16 +47,16 @@ export const useLedSettings = (initialText: string = 'BONJOUR 2025') => {
 
     // --- Sauvegarde avec debounce ---
     useEffect(() => {
-        const saveTimeout = setTimeout(async () => {
-            try {
-                const toSave = {...settings, isLandscapeLocked, recentMessages, favoriteMessages};
-                await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
-            } catch (e) {
-                console.error('Erreur save settings', e);
-            }
+        const saveTimeout = setTimeout(() => {
+            persistence.save({
+                settings,
+                isLandscapeLocked,
+                history: {recentMessages, favoriteMessages},
+            });
         }, ANIMATION_DURATIONS.settingsSaveDebounce);
+
         return () => clearTimeout(saveTimeout);
-    }, [settings, isLandscapeLocked, recentMessages, favoriteMessages]);
+    }, [settings, isLandscapeLocked, recentMessages, favoriteMessages, persistence]);
 
     // --- Actions ---
     const handleOpenSettings = useCallback(() => setSettingsOpen(true), []);
@@ -94,9 +66,10 @@ export const useLedSettings = (initialText: string = 'BONJOUR 2025') => {
         addToRecents(settings.text);
     }, [settings.text, addToRecents]);
 
-    const createToggle = (key: keyof SettingsState) => () => {
+    // Mémorisée avec useCallback pour éviter la re-création à chaque render
+    const createToggle = useCallback((key: keyof SettingsState) => () => {
         setSettings(s => ({...s, [key]: !s[key]}));
-    };
+    }, []);
 
     return {
         ...settings,
@@ -104,9 +77,9 @@ export const useLedSettings = (initialText: string = 'BONJOUR 2025') => {
         isLandscapeLocked,
 
         // Setters
-        onTextChange: (text: string) => setSettings(s => ({...s, text})),
-        onSpeedChange: (speed: number) => setSettings(s => ({...s, speed})),
-        onColorChange: (color: LedColorType) => setSettings(s => ({...s, selectedColor: color})),
+        onTextChange: useCallback((text: string) => setSettings(s => ({...s, text})), []),
+        onSpeedChange: useCallback((speed: number) => setSettings(s => ({...s, speed})), []),
+        onColorChange: useCallback((color: LedColorType) => setSettings(s => ({...s, selectedColor: color})), []),
 
         // Actions
         onToggleOrientation: toggleOrientation,
@@ -122,6 +95,6 @@ export const useLedSettings = (initialText: string = 'BONJOUR 2025') => {
         recentMessages,
         favoriteMessages,
         onToggleFavorite: toggleFavorite,
-        onSelectRecentMessage: (text: string) => setSettings(s => ({...s, text})),
+        onSelectRecentMessage: useCallback((text: string) => setSettings(s => ({...s, text})), []),
     };
 };

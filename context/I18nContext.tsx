@@ -1,23 +1,22 @@
 import React, {createContext, useContext, useEffect, useState} from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Localization from 'expo-localization';
 import {Locale, Translations} from '../i18n/types';
 import {fr} from '../i18n/translations/fr';
 import {en} from '../i18n/translations/en';
 import {es} from '../i18n/translations/es';
+import {StorageService} from '../utils/storageService';
 
 const TRANSLATIONS: Record<Locale, Translations> = { fr, en, es };
-const STORAGE_KEY = '@led_scroller_locale';
 
 interface I18nContextProps {
     locale: Locale;
-    setLocale: (locale: Locale) => void;
+    setLocale: (locale: Locale) => Promise<void>;
     t: Translations;
 }
 
 const I18nContext = createContext<I18nContextProps>({
     locale: 'fr',
-    setLocale: () => {},
+    setLocale: () => Promise.resolve(),
     t: fr,
 });
 
@@ -38,14 +37,10 @@ export const I18nProvider: React.FC<{children: React.ReactNode}> = ({children}) 
     useEffect(() => {
         const loadLocale = async () => {
             try {
-                const storedLocale = await AsyncStorage.getItem(STORAGE_KEY);
-                if (storedLocale && (storedLocale === 'fr' || storedLocale === 'en' || storedLocale === 'es')) {
-                    setLocaleState(storedLocale as Locale);
-                } else {
-                    setLocaleState(getDeviceLocale());
-                }
+                const storedLocale = await StorageService.getLocale();
+                setLocaleState(storedLocale ?? getDeviceLocale());
             } catch (error) {
-                console.error("Failed to load locale", error);
+                console.error('Failed to load locale', error);
                 setLocaleState(getDeviceLocale());
             } finally {
                 setIsLoaded(true);
@@ -54,13 +49,9 @@ export const I18nProvider: React.FC<{children: React.ReactNode}> = ({children}) 
         void loadLocale();
     }, []);
 
-    const setLocale = async (newLocale: Locale) => {
+    const setLocale = async (newLocale: Locale): Promise<void> => {
         setLocaleState(newLocale);
-        try {
-            await AsyncStorage.setItem(STORAGE_KEY, newLocale);
-        } catch (error) {
-            console.error("Failed to save locale", error);
-        }
+        await StorageService.saveLocale(newLocale);
     };
 
     if (!isLoaded) return null;
