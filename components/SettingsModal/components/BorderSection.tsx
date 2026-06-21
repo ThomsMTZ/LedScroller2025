@@ -3,6 +3,7 @@ import {styles} from "../styles";
 import {Text, View} from "react-native";
 import {ToggleButton} from "./ToggleButton";
 import {useSettings} from "../../../context/SettingsContext";
+import {useTranslation} from "../../../context/I18nContext";
 
 export const BorderSection: React.FC = () => {
 
@@ -15,12 +16,13 @@ export const BorderSection: React.FC = () => {
         onToggleBorderBlinking,
         currentHsl
     } = useSettings();
+    const {t} = useTranslation();
 
     return (
         <View style={styles.section}>
-            <Text style={styles.label}>🖼️ Cadre LED</Text>
+            <Text style={styles.label}>{t.borderLabel}</Text>
             <ToggleButton
-                label={showBorder ? 'Bordure affichée' : 'Bordure masquée'}
+                label={showBorder ? t.borderShown : t.borderHidden}
                 icon={'square'}
                 isActive={showBorder}
                 onPress={onToggleBorder}
@@ -30,7 +32,7 @@ export const BorderSection: React.FC = () => {
             {showBorder && (
                 <>
                     <ToggleButton
-                        label={isBorderChase ? 'Style : Chenillard' : 'Style : Fixe'}
+                        label={isBorderChase ? t.borderStyleChase : t.borderStyleFixed}
                         icon={'infinite'}
                         isActive={isBorderChase}
                         onPress={onToggleBorderChase}
@@ -39,7 +41,7 @@ export const BorderSection: React.FC = () => {
                     />
 
                     <ToggleButton
-                        label={isBorderBlinking ? 'Effet : Clignotant' : 'Effet : Constant'}
+                        label={isBorderBlinking ? t.borderEffectBlink : t.borderEffectConstant}
                         icon={'flash'}
                         isActive={isBorderBlinking}
                         onPress={onToggleBorderBlinking}

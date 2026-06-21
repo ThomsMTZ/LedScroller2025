@@ -3,12 +3,14 @@ import {Text, TouchableOpacity, View} from 'react-native';
 import {styles} from '../styles';
 import {LED_COLORS} from '../../constants';
 import {useSettings} from "../../../context/SettingsContext";
+import {useTranslation} from "../../../context/I18nContext";
 
 const ColorSection: React.FC = () => {
     const {selectedColor, onColorChange} = useSettings();
+    const {t} = useTranslation();
     return (
         <View style={styles.section}>
-            <Text style={styles.label}>🎨 Couleur</Text>
+            <Text style={styles.label}>{t.colorLabel}</Text>
 
             <View style={styles.colorGrid}>
                 {LED_COLORS.map((color) => {

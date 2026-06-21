@@ -3,16 +3,18 @@ import {styles} from "../styles";
 import React from "react";
 import {ToggleButton} from "./ToggleButton";
 import {useSettings} from "../../../context/SettingsContext";
+import {useTranslation} from "../../../context/I18nContext";
 
 export const DisplayTextSection: React.FC = () => {
 
     const {currentHsl, isTextBlinking, onToggleTextBlinking, isReverseScroll, onToggleReverseScroll} = useSettings();
+    const {t} = useTranslation();
 
     return (
         <View style={styles.section}>
-            <Text style={styles.label}>✨ Effets Texte</Text>
+            <Text style={styles.label}>{t.textEffectsLabel}</Text>
             <ToggleButton
-                label={isTextBlinking ? 'Texte : Clignotant' : 'Texte : Fixe'}
+                label={isTextBlinking ? t.textBlink : t.textFixed}
                 icon={'flash'}
                 isActive={isTextBlinking}
                 onPress={onToggleTextBlinking}
@@ -20,7 +22,7 @@ export const DisplayTextSection: React.FC = () => {
                 currentHsl={currentHsl}
             />
             <ToggleButton
-                label={isReverseScroll ? 'Direction : Gauche vers Droite' : 'Direction : Droite vers Gauche'}
+                label={isReverseScroll ? t.directionLTR : t.directionRTL}
                 icon={'swap-horizontal'}
                 isActive={isReverseScroll}
                 onPress={onToggleReverseScroll}

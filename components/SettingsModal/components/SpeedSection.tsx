@@ -4,13 +4,15 @@ import {Text, View} from "react-native";
 import Slider from "@react-native-community/slider";
 import {COLORS} from "../../constants";
 import {useSettings} from "../../../context/SettingsContext";
+import {useTranslation} from "../../../context/I18nContext";
 
 export const SpeedSection: React.FC = () => {
     const {speed, onSpeedChange, currentHsl} = useSettings();
+    const {t} = useTranslation();
 
     return (
         <View style={styles.section}>
-            <Text style={styles.label}>⚡ Vitesse</Text>
+            <Text style={styles.label}>{t.speedLabel}</Text>
             <View style={styles.sliderContainer}>
                 <Slider
                     testID="speed-slider"
@@ -25,8 +27,8 @@ export const SpeedSection: React.FC = () => {
                     thumbTintColor={currentHsl}
                 />
                 <View style={styles.sliderLabels}>
-                    <Text style={styles.sliderLabel}>Lent</Text>
-                    <Text style={styles.sliderLabel}>Rapide</Text>
+                    <Text style={styles.sliderLabel}>{t.speedSlow}</Text>
+                    <Text style={styles.sliderLabel}>{t.speedFast}</Text>
                 </View>
             </View>
         </View>

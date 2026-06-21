@@ -12,12 +12,14 @@ import {BorderSection} from "./components/BorderSection";
 import {DisplayTextSection} from "./components/DisplayTextSection";
 import {OrientationSection} from "./components/OrientationSection";
 import {SettingsModalProps} from './types';
+import {useTranslation} from '../../context/I18nContext';
 
 const SettingsModal: React.FC<SettingsModalProps> = (props) => {
     const {visible, onClose, ...settingsValues} = props;
     const {height: screenHeight} = useWindowDimensions();
 
     const currentHsl = `hsl(${settingsValues.selectedColor.hue}, ${settingsValues.selectedColor.saturation}%, ${settingsValues.selectedColor.lightness}%)`;
+    const {t} = useTranslation();
 
     return (
         <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
@@ -26,7 +28,7 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
 
                 <View style={[styles.modalContent, {maxHeight: screenHeight * 0.85}]}>
                     <View style={styles.headerModal}>
-                        <Text style={styles.modalTitle}>⚙️ Config</Text>
+                        <Text style={styles.modalTitle}>{t.settingsTitle}</Text>
 
                         <TouchableOpacity testID="close-modal-button" style={styles.closeButton} onPress={onClose}>
                             <Ionicons name="close" size={24} color={COLORS.text}/>

@@ -1,0 +1,32 @@
+import {Translations} from '../types';
+
+export const en: Translations = {
+    appTitle: 'Pixel Scroller',
+    appSubtitle: '2026 Edition',
+    hintDoubleTap: 'Double-tap: Options',
+    hintPinch: 'Pinch: Zoom',
+    settingsTitle: '⚙️ Config',
+    messageLabel: '💬 Message',
+    messagePlaceholder: 'Enter your message...',
+    borderLabel: '🖼️ LED Frame',
+    borderShown: 'Border shown',
+    borderHidden: 'Border hidden',
+    borderStyleChase: 'Style: Chase',
+    borderStyleFixed: 'Style: Fixed',
+    borderEffectBlink: 'Effect: Blinking',
+    borderEffectConstant: 'Effect: Constant',
+    textEffectsLabel: '✨ Text Effects',
+    textBlink: 'Text: Blinking',
+    textFixed: 'Text: Fixed',
+    directionLTR: 'Direction: Left to Right',
+    directionRTL: 'Direction: Right to Left',
+    speedLabel: '⚡ Speed',
+    speedSlow: 'Slow',
+    speedFast: 'Fast',
+    orientationLabel: '🔄 Orientation & Direction',
+    orientationLocked: 'Landscape Forced',
+    orientationAuto: 'Auto Rotation',
+    colorLabel: '🎨 Color',
+    footerText: 'Made with ❤️ by ThomsMtz',
+    langSelect: 'Language'
+};

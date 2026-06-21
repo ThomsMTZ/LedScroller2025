@@ -4,6 +4,7 @@ import {Ionicons} from '@expo/vector-icons';
 import {styles} from '../styles';
 import {COLORS} from '../../constants';
 import {useSettings} from "../../../context/SettingsContext";
+import {useTranslation} from "../../../context/I18nContext";
 
 export const MessageSection: React.FC = () => {
     const {
@@ -17,10 +18,11 @@ export const MessageSection: React.FC = () => {
     } = useSettings();
     const currentTrimmedText = text.trim();
     const isCurrentTextFavorite = currentTrimmedText !== '' && favoriteMessages.includes(currentTrimmedText);
+    const {t} = useTranslation();
 
     return (
         <View style={styles.section}>
-            <Text style={styles.label}>💬 Message</Text>
+            <Text style={styles.label}>{t.messageLabel}</Text>
 
             <View style={[styles.input, {
                 flexDirection: 'row',
@@ -32,7 +34,7 @@ export const MessageSection: React.FC = () => {
                     style={{flex: 1, color: COLORS.text, paddingVertical: 0}}
                     value={text}
                     onChangeText={onTextChange}
-                    placeholder="Entrez votre message..."
+                    placeholder={t.messagePlaceholder}
                     placeholderTextColor={COLORS.textMuted}
                     selectionColor={currentHsl}
                 />

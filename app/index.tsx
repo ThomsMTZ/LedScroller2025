@@ -4,6 +4,8 @@ import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {Codystar_400Regular, useFonts} from '@expo-google-fonts/codystar';
 import {LedScroller} from '../components';
 
+import {I18nProvider} from '../context/I18nContext';
+
 export default function App() {
     const [fontsLoaded] = useFonts({
         'LedFont': Codystar_400Regular,
@@ -19,7 +21,9 @@ export default function App() {
 
     return (
         <GestureHandlerRootView style={{flex: 1}}>
-            <LedScroller/>
+            <I18nProvider>
+                <LedScroller/>
+            </I18nProvider>
         </GestureHandlerRootView>
     );
 }

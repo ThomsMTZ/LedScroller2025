@@ -12,10 +12,13 @@ import {useLedAnimation} from './useLedAnimation';
 import LedDisplayPanel from './LedDisplayPanel';
 import SettingsButton from './SettingsButton';
 import AdBanner from './AdBanner';
+import {LanguageButton} from './LanguageButton';
+import {useTranslation} from '../context/I18nContext';
 
 const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'}) => {
     const {width, height} = useWindowDimensions();
     const isLandscape = width > height;
+    const {t} = useTranslation();
 
 
     // --- Settings ---
@@ -49,10 +52,12 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
 
             {!isLandscape && (
                 <View style={styles.header}>
-                    <View>
-                        <Text style={styles.headerTitle}>LED Scroller</Text>
-                        <Text style={styles.headerSubtitle}>2026 Edition</Text>
+                    <View style={{flex: 1}}>
+                        <Text style={styles.headerTitle}>{t.appTitle}</Text>
+                        <Text style={styles.headerSubtitle}>{t.appSubtitle}</Text>
                     </View>
+                    <LanguageButton />
+                    <View style={{width: 8}} />
                     <SettingsButton variant="portrait" onPress={settings.onOpenSettings} />
                 </View>
             )}
@@ -84,7 +89,7 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'})
 
             {!isLandscape && (
                 <View style={styles.footer}>
-                    <Text style={styles.footerText}>Made with ❤️ by ThomsMtz</Text>
+                    <Text style={styles.footerText}>{t.footerText}</Text>
                 </View>
             )}
 

@@ -4,8 +4,10 @@ import Animated, {FadeIn} from 'react-native-reanimated';
 import {Ionicons} from '@expo/vector-icons';
 import {styles} from './styles';
 import {COLORS} from './constants';
+import {useTranslation} from '../context/I18nContext';
 
 const HintContainer: React.FC = () => {
+    const {t} = useTranslation();
     return (
         <Animated.View
             pointerEvents="none"
@@ -16,9 +18,9 @@ const HintContainer: React.FC = () => {
                 <View style={styles.hintIcon}>
                     <Ionicons name="hand-left-outline" size={14} color={COLORS.textMuted}/>
                 </View>
-                <Text style={styles.hintText}>Double-tap: Options</Text>
+                <Text style={styles.hintText}>{t.hintDoubleTap}</Text>
                 <Text style={styles.hintText}>•</Text>
-                <Text style={styles.hintText}>Pinch: Zoom</Text>
+                <Text style={styles.hintText}>{t.hintPinch}</Text>
             </View>
         </Animated.View>
     );
