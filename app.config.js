@@ -1,0 +1,59 @@
+/** @type {import('expo/config').ExpoConfig} */
+const config = {
+  name: "Pixel Scroller",
+  slug: "LedScroller2025",
+  scheme: "ledscroller2025",
+  version: "1.0.0",
+  orientation: "default",
+  icon: "./assets/icon.png",
+  userInterfaceStyle: "light",
+  newArchEnabled: true,
+  splash: {
+    image: "./assets/splash.png",
+    resizeMode: "contain",
+    backgroundColor: "#0a0a0e",
+  },
+  ios: {
+    supportsTablet: true,
+    bundleIdentifier: "com.thomasmartinez.ledscroller",
+    // process.env.GOOGLE_SERVICE_INFO_PLIST est défini par EAS Build (variable de type "file")
+    // Il contient le chemin vers le fichier temporaire écrit par EAS
+    googleServicesFile: process.env.GOOGLE_SERVICE_INFO_PLIST,
+  },
+  android: {
+    adaptiveIcon: {
+      foregroundImage: "./assets/adaptive-icon.png",
+      backgroundColor: "#0a0a0e",
+    },
+    edgeToEdgeEnabled: true,
+    package: "com.thomasmartinez.ledscroller",
+    // process.env.GOOGLE_SERVICES_JSON est défini par EAS Build (variable de type "file")
+    // Il contient le chemin vers le fichier temporaire écrit par EAS
+    googleServicesFile: process.env.GOOGLE_SERVICES_JSON,
+  },
+  web: {
+    favicon: "./assets/icon.png",
+  },
+  plugins: [
+    "@react-native-firebase/app",
+    "expo-font",
+    "expo-router",
+    "expo-web-browser",
+    [
+      "react-native-google-mobile-ads",
+      {
+        androidAppId: "ca-app-pub-2790650155402757~1798809194",
+        iosAppId: "ca-app-pub-2790650155402757~9344310031",
+      },
+    ],
+    "expo-localization",
+  ],
+  extra: {
+    router: {},
+    eas: {
+      projectId: "4582d26b-c1f1-4339-b467-c3ee35e80986",
+    },
+  },
+};
+
+export default { expo: config };

@@ -15,8 +15,7 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.thomasmartinez.ledscroller",
-      "googleServicesFile": "$GOOGLE_SERVICE_INFO_PLIST"
+      "bundleIdentifier": "com.thomasmartinez.ledscroller"
     },
     "android": {
       "adaptiveIcon": {
@@ -24,8 +23,7 @@
         "backgroundColor": "#0a0a0e"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.thomasmartinez.ledscroller",
-      "googleServicesFile": "$GOOGLE_SERVICES_JSON"
+      "package": "com.thomasmartinez.ledscroller"
     },
     "web": {
       "favicon": "./assets/icon.png"
