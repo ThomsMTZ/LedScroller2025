@@ -7,7 +7,7 @@ import {useSettingsPersistence} from './useSettingsPersistence';
 import {useAnalytics} from '../utils/useAnalytics';
 
 const DEFAULT_SETTINGS: SettingsState = {
-    text: 'BONJOUR 2025',
+    text: 'Hello World',
     speed: 100,
     selectedColor: LED_COLORS[4],
     showBorder: true,
@@ -17,7 +17,7 @@ const DEFAULT_SETTINGS: SettingsState = {
     isReverseScroll: false,
 };
 
-export const useLedSettings = (initialText: string = 'BONJOUR 2025') => {
+export const useLedSettings = (initialText: string = 'Hello World') => {
     const [isSettingsOpen, setSettingsOpen] = useState<boolean>(false);
     const [settings, setSettings] = useState<SettingsState>({
         ...DEFAULT_SETTINGS,

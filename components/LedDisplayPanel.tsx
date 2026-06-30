@@ -4,7 +4,6 @@ import {StyleSheet, TextStyle, useWindowDimensions, View, ViewStyle} from 'react
 import {styles} from './styles';
 import GridOverlay from './GridOverlay';
 import LedBorder from './LedBorder';
-import {buildHslString} from '../utils/colorUtils';
 
 // --- Sous-interfaces groupées ---
 
@@ -21,13 +20,13 @@ interface LedAnimationStyles {
     animatedShadowColorStyle: AnimatedStyle<ViewStyle>;
     animatedContainerStyle: AnimatedStyle<ViewStyle>;
     animatedTextStyle: AnimatedStyle<TextStyle>;
-    hueVal: SharedValue<number>;
-    satVal: SharedValue<number>;
-    ligVal: SharedValue<number>;
     componentId: string;
     setTextWidth: (width: number) => void;
     copiesArray: unknown[];
     LOOP_SPACING: number;
+    textWidth: number;
+    /** Couleur HSL dérivée dans un worklet — jamais lue pendant le render React. */
+    ledColorShared: SharedValue<string>;
 }
 
 interface LedDisplayProps {
@@ -50,13 +49,12 @@ const LedDisplayPanel: React.FC<LedDisplayPanelProps> = ({layout, animation, dis
         animatedShadowColorStyle,
         animatedContainerStyle,
         animatedTextStyle,
-        hueVal,
-        satVal,
-        ligVal,
         componentId,
         setTextWidth,
         copiesArray,
         LOOP_SPACING,
+        fontSizeState,
+        ledColorShared,
     } = animation;
     const {text, speed} = display;
 
@@ -81,12 +79,7 @@ const LedDisplayPanel: React.FC<LedDisplayPanelProps> = ({layout, animation, dis
                     overflow: 'hidden',
                     position: 'relative',
                 },
-                isLandscape && {
-                    flex: 1, width: '100%', height: '100%',
-                    borderRadius: 0, padding: 0,
-                    borderWidth: showNativeBorder ? 4 : 0,
-                    backgroundColor: isChaseActive ? '#050505' : 'black',
-                },
+                isLandscape && {flex: 1, width: '100%', borderRadius: 0, padding: 0},
             ]}
         >
             {isChaseActive && (
@@ -96,7 +89,7 @@ const LedDisplayPanel: React.FC<LedDisplayPanelProps> = ({layout, animation, dis
                     {overflow: 'hidden', borderRadius: isLandscape ? 0 : 16},
                 ]}>
                     <LedBorder
-                        color={buildHslString(hueVal.value, satVal.value, ligVal.value)}
+                        colorShared={ledColorShared}
                         isAnimating={true}
                         speed={speed}
                     />
@@ -115,16 +108,8 @@ const LedDisplayPanel: React.FC<LedDisplayPanelProps> = ({layout, animation, dis
                     margin: isChaseActive ? 4 : 0,
                     borderRadius: getDisplayBorderRadius(),
                     justifyContent: 'center',
-                    paddingVertical: 0,
                 },
                 !isChaseActive && {width: '100%'},
-                isLandscape && {
-                    flex: 1,
-                    borderRadius: 0,
-                    paddingVertical: 0,
-                    justifyContent: 'center',
-                    margin: isChaseActive ? 4 : 0,
-                },
             ]}>
                 <Animated.View
                     testID="scrolling-container"
@@ -139,19 +124,45 @@ const LedDisplayPanel: React.FC<LedDisplayPanelProps> = ({layout, animation, dis
                         animatedContainerStyle,
                     ]}
                 >
+                    {/*
+                     * Wrapper de mesure — width:9999 donne au Text 9999px d'espace disponible,
+                     * lui permettant de mesurer sa VRAIE largeur naturelle (non contrainte
+                     * par le layout flex du parent, dont la containing-block-width = screenWidth).
+                     * Position absolute : hors du flux flex, n'affecte pas la mise en page.
+                     */}
+                    <View
+                        pointerEvents="none"
+                        style={styles.measureWrapper}
+                    >
+                        <Animated.Text
+                            style={[
+                                styles.textBase,
+                                {
+                                    fontSize: animation.fontSizeState,
+                                    alignSelf: 'flex-start',
+                                    textAlign: 'left',
+                                }
+                            ]}
+                            onLayout={(e) => animation.setTextWidth(e.nativeEvent.layout.width)}
+                        >
+                            {text}
+                        </Animated.Text>
+                    </View>
+
                     {copiesArray.map((_, index) => (
                         <React.Fragment key={`${componentId}-text-copy-${index}`}>
-                            <Animated.Text
-                                testID="scrolling-text"
-                                onLayout={index === 0
-                                    ? (e) => setTextWidth(e.nativeEvent.layout.width)
-                                    : undefined}
-                                style={[styles.textBase, animatedTextStyle]}
-                                numberOfLines={1}
-                                ellipsizeMode="clip"
-                            >
-                                {text}
-                            </Animated.Text>
+                            <View style={{ width: animation.textWidth > 0 ? animation.textWidth : undefined, overflow: 'visible' }}>
+                                <Animated.Text
+                                    testID="scrolling-text"
+                                    style={[
+                                        styles.textBase,
+                                        animatedTextStyle,
+                                        { textAlign: 'left', width: 9999 }
+                                    ]}
+                                >
+                                    {text}
+                                </Animated.Text>
+                            </View>
                             <View style={{width: LOOP_SPACING}}/>
                         </React.Fragment>
                     ))}

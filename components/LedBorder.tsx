@@ -3,21 +3,27 @@ import {useWindowDimensions, View} from 'react-native';
 import Animated, {
     cancelAnimation,
     Easing,
+    SharedValue,
+    useAnimatedProps,
     useAnimatedStyle,
     useSharedValue,
     withRepeat,
-    withTiming
+    withTiming,
 } from 'react-native-reanimated';
 import {LinearGradient} from 'expo-linear-gradient';
 import {ANIMATION_DURATIONS} from './constants';
 
+// Permet de passer des animatedProps à LinearGradient
+const AnimatedLinearGradient = Animated.createAnimatedComponent(LinearGradient);
+
 interface LedBorderProps {
-    color: string;
+    /** SharedValue<string> de la couleur HSL — calculée dans un worklet, jamais pendant le render. */
+    colorShared: SharedValue<string>;
     isAnimating: boolean;
     speed: number;
 }
 
-const LedBorder: React.FC<LedBorderProps> = ({color, isAnimating, speed}) => {
+const LedBorder: React.FC<LedBorderProps> = ({colorShared, isAnimating, speed}) => {
     const rotation = useSharedValue(0);
     const {width, height} = useWindowDimensions();
     const size = Math.max(width, height) * 2.5;
@@ -46,11 +52,14 @@ const LedBorder: React.FC<LedBorderProps> = ({color, isAnimating, speed}) => {
         return () => cancelAnimation(rotation);
     }, [isAnimating, speed, rotation]);
 
-    const animatedStyle = useAnimatedStyle(() => {
-        return {
-            transform: [{rotate: `${rotation.value}deg`}],
-        };
-    });
+    const animatedRotationStyle = useAnimatedStyle(() => ({
+        transform: [{rotate: `${rotation.value}deg`}],
+    }));
+
+    // Couleur lue dans un worklet via useAnimatedProps — pas pendant le render React.
+    const animatedGradientProps = useAnimatedProps(() => ({
+        colors: [colorShared.value, 'transparent'] as [string, string],
+    }));
 
     if (!isAnimating) return null;
 
@@ -66,14 +75,14 @@ const LedBorder: React.FC<LedBorderProps> = ({color, isAnimating, speed}) => {
                 marginLeft: -size / 2,
                 justifyContent: 'center',
                 alignItems: 'center',
-                zIndex: -1
+                zIndex: -1,
             },
-            animatedStyle
+            animatedRotationStyle,
         ]}>
             <View style={{width: '100%', height: '50%', flexDirection: 'row'}}>
                 <View style={{flex: 1, backgroundColor: 'transparent'}}/>
-                <LinearGradient
-                    colors={[color, 'transparent']}
+                <AnimatedLinearGradient
+                    animatedProps={animatedGradientProps}
                     start={{x: 0, y: 1}}
                     end={{x: 1, y: 0.5}}
                     style={{flex: 1}}

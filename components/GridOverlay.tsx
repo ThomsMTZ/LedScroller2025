@@ -1,15 +1,20 @@
 import React from 'react';
-import {View} from 'react-native';
+import {useWindowDimensions, View} from 'react-native';
 import Svg, {Circle, Defs, Mask, Pattern, Rect} from 'react-native-svg';
 import {styles} from './styles';
 
 const GridOverlay: React.FC = () => {
+    const { width, height } = useWindowDimensions();
+    // Pre-calculate a size large enough to cover the screen in any orientation
+    // For iPhone 8 this is around ~767px, which renders instantly compared to 4000px!
+    const size = Math.max(width, height) + 100;
+    
     const PATTERN_SIZE = 6;
     const RADIUS = 2.5;
 
     return (
         <View style={styles.gridOverlay} pointerEvents="none">
-            <Svg height="100%" width="100%">
+            <Svg height={size} width={size}>
                 <Defs>
                     <Pattern
                         id="ledPattern"
@@ -24,15 +29,15 @@ const GridOverlay: React.FC = () => {
                     </Pattern>
 
                     <Mask id="ledMask">
-                        <Rect x="0" y="0" width="100%" height="100%" fill="url(#ledPattern)"/>
+                        <Rect x="0" y="0" width={size} height={size} fill="url(#ledPattern)"/>
                     </Mask>
                 </Defs>
 
                 <Rect
                     x="0"
                     y="0"
-                    width="100%"
-                    height="100%"
+                    width={size}
+                    height={size}
                     fill="black"
                     mask="url(#ledMask)"
                 />

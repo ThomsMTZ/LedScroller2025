@@ -1,12 +1,17 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {ActivityIndicator, StyleSheet, View} from 'react-native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {Codystar_400Regular, useFonts} from '@expo-google-fonts/codystar';
+import * as SystemUI from 'expo-system-ui';
 import {LedScroller} from '../components';
 
 import {I18nProvider} from '../context/I18nContext';
 
 export default function App() {
+    useEffect(() => {
+        SystemUI.setBackgroundColorAsync('black');
+    }, []);
+
     const [fontsLoaded] = useFonts({
         'LedFont': Codystar_400Regular,
     });
@@ -20,7 +25,7 @@ export default function App() {
     }
 
     return (
-        <GestureHandlerRootView style={{flex: 1}}>
+        <GestureHandlerRootView style={{flex: 1, backgroundColor: 'black'}}>
             <I18nProvider>
                 <LedScroller/>
             </I18nProvider>

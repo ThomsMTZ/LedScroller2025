@@ -14,12 +14,12 @@ describe('useLedSettings Hook', () => {
     it('devrait initialiser avec les valeurs par défaut si le stockage est vide', async () => {
         (AsyncStorage.getItem as jest.Mock).mockResolvedValueOnce(null);
 
-        const {result} = renderHook(() => useLedSettings('BONJOUR 2025'));
+        const {result} = renderHook(() => useLedSettings('Hello World'));
 
         await act(async () => {
         });
 
-        expect(result.current.text).toBe('BONJOUR 2025');
+        expect(result.current.text).toBe('Hello World');
         expect(result.current.speed).toBe(100);
         expect(result.current.selectedColor).toEqual(LED_COLORS[4]); // Cyan par défaut
         expect(result.current.showBorder).toBe(true);

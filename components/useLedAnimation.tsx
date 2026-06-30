@@ -1,13 +1,15 @@
-import React, {useEffect} from 'react';
+import {useEffect, useId, useState} from 'react';
 import {
     cancelAnimation,
     Easing,
     SharedValue,
     useAnimatedStyle,
+    useDerivedValue,
     useSharedValue,
     withRepeat,
     withSequence,
     withTiming,
+    runOnJS,
 } from 'react-native-reanimated';
 import {Gesture} from 'react-native-gesture-handler';
 import {LedColorType} from './types';
@@ -36,13 +38,14 @@ export const useLedAnimation = ({
     isLandscape,
     onDoubleTap,
 }: LedAnimationProps) => {
-    const componentId = React.useId();
+    const componentId = useId();
 
     // --- Délégation des calculs de layout ---
     const layout = useLedLayout({text, isLandscape});
     const {patternWidth, maxFontSize, MIN_FONT_SIZE, textWidth} = layout;
 
-    // --- Shared values ---
+    // --- Shared values & States ---
+    const [fontSizeState, setFontSizeState] = useState<number>(100);
     const translateX: SharedValue<number> = useSharedValue(layout.width);
     const fontSize: SharedValue<number> = useSharedValue(100);
     const savedFontSize: SharedValue<number> = useSharedValue(100);
@@ -51,6 +54,11 @@ export const useLedAnimation = ({
     const hueVal: SharedValue<number> = useSharedValue(selectedColor.hue);
     const satVal: SharedValue<number> = useSharedValue(selectedColor.saturation);
     const ligVal: SharedValue<number> = useSharedValue(selectedColor.lightness);
+
+    // Couleur HSL dérivée dans un worklet — jamais lue pendant le render React.
+    const ledColorShared = useDerivedValue(() =>
+        buildHslString(hueVal.value, satVal.value, ligVal.value)
+    );
 
     // --- Transition couleur ---
     useEffect(() => {
@@ -79,14 +87,14 @@ export const useLedAnimation = ({
     useEffect(() => {
         applyBlink(isTextBlinking, textBlinkOpacity);
         return () => cancelAnimation(textBlinkOpacity);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
     }, [isTextBlinking, textBlinkOpacity]);
 
     // --- Clignotement bordure ---
     useEffect(() => {
         applyBlink(isBorderBlinking, borderBlinkOpacity);
         return () => cancelAnimation(borderBlinkOpacity);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
     }, [isBorderBlinking, borderBlinkOpacity]);
 
     // --- Animation de scroll ---
@@ -120,6 +128,7 @@ export const useLedAnimation = ({
         if (fontSize.value > maxFontSize) {
             fontSize.value = withTiming(maxFontSize, {duration: ANIMATION_DURATIONS.fontSizeAdjust});
             savedFontSize.value = maxFontSize;
+            setFontSizeState(maxFontSize);
         }
     }, [isLandscape, maxFontSize, fontSize, savedFontSize]);
 
@@ -131,6 +140,7 @@ export const useLedAnimation = ({
         })
         .onEnd(() => {
             savedFontSize.value = fontSize.value;
+            runOnJS(setFontSizeState)(fontSize.value);
         });
 
     const doubleTapGesture = Gesture.Tap()
@@ -150,7 +160,6 @@ export const useLedAnimation = ({
     const animatedTextStyle = useAnimatedStyle(() => {
         const hslColor = buildHslString(hueVal.value, satVal.value, ligVal.value);
         return {
-            fontFamily: 'LedFont',
             fontSize: fontSize.value,
             color: hslColor,
             textShadowColor: hslColor,
@@ -185,11 +194,11 @@ export const useLedAnimation = ({
         copiesArray: layout.copiesArray,
         LOOP_SPACING: layout.LOOP_SPACING,
         PORTRAIT_PANEL_HEIGHT: layout.PORTRAIT_PANEL_HEIGHT,
+        textWidth: layout.textWidth,
+        fontSizeState,
 
-        // Shared values exposées pour LedBorder
-        hueVal,
-        satVal,
-        ligVal,
+        // Couleur dérivée pour LedBorder (worklet-safe)
+        ledColorShared,
 
         // Gestures
         composedGestures,

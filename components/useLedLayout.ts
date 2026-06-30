@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react';
+import {useState} from 'react';
 import {useWindowDimensions} from 'react-native';
 
 interface LedLayoutOptions {
@@ -15,11 +15,6 @@ export const useLedLayout = ({text, isLandscape}: LedLayoutOptions) => {
     const {width, height} = useWindowDimensions();
     const [textWidth, setTextWidth] = useState<number>(0);
 
-    // Réinitialise la mesure quand le texte change pour forcer un re-mesurage
-    // au fontSize courant (évite les valeurs périmées)
-    useEffect(() => {
-        setTextWidth(0);
-    }, [text]);
 
     const PORTRAIT_PANEL_HEIGHT = width * 0.6;
     const LOOP_SPACING = width * 0.3;
@@ -36,19 +31,16 @@ export const useLedLayout = ({text, isLandscape}: LedLayoutOptions) => {
     // Compte les caractères visuels réels (chaque emoji = 1 char, pas 2 code units UTF-16)
     const visualLength = [...text].length;
 
-    // Plafond basé sur la hauteur du panneau
-    const maxByHeight = visualLength > 4
-        ? baseMaxFontSize * (4 / visualLength)
-        : baseMaxFontSize;
-
-    // Plafond basé sur la largeur du panneau : les emojis sont quasi-carrés (≈ 1.2× fontSize de large),
-    // ce qui évite que N emojis côte à côte dépassent la largeur visible simultanément
-    const panelWidth = width - 32; // paddingHorizontal: 16 × 2
-    const maxByWidth = visualLength > 0
-        ? panelWidth / (visualLength * 1.2)
-        : baseMaxFontSize;
-
-    const maxFontSize = Math.max(Math.min(maxByHeight, maxByWidth), MIN_FONT_SIZE);
+    // Plafond basé sur la hauteur du panneau uniquement.
+    // Pas de plafond basé sur la largeur : c'est un scroller, le texte n'a pas besoin
+    // de tenir dans la largeur de l'écran — il défile. Un plafond largeur écrasait
+    // injustement maxFontSize dès que le texte contenait 2+ emojis.
+    const maxFontSize = Math.max(
+        visualLength > 4
+            ? baseMaxFontSize * (4 / visualLength)
+            : baseMaxFontSize,
+        MIN_FONT_SIZE
+    );
 
     return {
         width,

@@ -1,23 +1,43 @@
 import React from 'react';
-import {Platform, View} from 'react-native';
-import {BannerAd, BannerAdSize, TestIds} from 'react-native-google-mobile-ads';
+import {NativeModules, Platform, View} from 'react-native';
 
-const AD_UNIT_ID = __DEV__
-    ? TestIds.BANNER
-    : Platform.select({
-        android: 'ca-app-pub-2790650155402757/5652248123',
-        ios: 'ca-app-pub-2790650155402757/6773987013',
-        default: TestIds.BANNER,
-    });
+// react-native-google-mobile-ads est un module natif indisponible dans Expo Go.
+// On garde l'import statique absent et on charge le module en lazy seulement
+// si le module natif est présent, pour éviter le crash au boot.
+const isAdsAvailable = !!NativeModules.RNGoogleMobileAds;
 
-const AdBanner: React.FC = () => (
-    <View style={{width: '100%', alignItems: 'center', paddingVertical: 10, backgroundColor: 'transparent'}}>
-        <BannerAd
-            unitId={AD_UNIT_ID as string}
-            size={BannerAdSize.BANNER}
-            requestOptions={{requestNonPersonalizedAdsOnly: true}}
-        />
-    </View>
-);
+// Chargement lazy : réalisé une seule fois en dehors du composant.
+// Si le module natif est absent, AdsModule reste null et le composant rend null.
+type AdsModuleType = typeof import('react-native-google-mobile-ads');
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const AdsModule: AdsModuleType | null = isAdsAvailable
+    ? require('react-native-google-mobile-ads')
+    : null;
+
+const AD_UNIT_ID = AdsModule
+    ? (__DEV__
+        ? AdsModule.TestIds.BANNER
+        : Platform.select({
+            android: 'ca-app-pub-2790650155402757/5652248123',
+            ios: 'ca-app-pub-2790650155402757/6773987013',
+            default: AdsModule.TestIds.BANNER,
+        }))
+    : null;
+
+const AdBanner: React.FC = () => {
+    if (!AdsModule || !AD_UNIT_ID) return null;
+
+    const {BannerAd, BannerAdSize} = AdsModule;
+
+    return (
+        <View style={{width: '100%', alignItems: 'center', paddingVertical: 10, backgroundColor: 'transparent'}}>
+            <BannerAd
+                unitId={AD_UNIT_ID as string}
+                size={BannerAdSize.BANNER}
+                requestOptions={{requestNonPersonalizedAdsOnly: true}}
+            />
+        </View>
+    );
+};
 
 export default AdBanner;

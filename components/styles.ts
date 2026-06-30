@@ -1,7 +1,5 @@
-import {Dimensions, Platform, StyleSheet} from 'react-native';
+import {Platform, StyleSheet} from 'react-native';
 import {COLORS} from './constants';
-
-const {width} = Dimensions.get('window');
 
 export const styles = StyleSheet.create({
     container: {
@@ -73,11 +71,17 @@ export const styles = StyleSheet.create({
     },
     scroller: {
         flexDirection: 'row',
-        minWidth: width * 2,
+    },
+    measureWrapper: {
+        position: 'absolute',
+        opacity: 0,
+        top: 0,
+        left: 0,
+        width: 9999,
     },
     textBase: {
-        fontWeight: 'bold',
-        fontFamily: 'LedFont',
+        fontFamily: Platform.OS === 'ios' ? 'HelveticaNeue-CondensedBlack' : 'sans-serif-black',
+        fontWeight: '900',
         includeFontPadding: false,
         flexShrink: 0,
     },

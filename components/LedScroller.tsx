@@ -15,7 +15,7 @@ import AdBanner from './AdBanner';
 import {LanguageButton} from './LanguageButton';
 import {useTranslation} from '../context/I18nContext';
 
-const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'BONJOUR 2025'}) => {
+const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'Hello World'}) => {
     const {width, height} = useWindowDimensions();
     const isLandscape = width > height;
     const {t} = useTranslation();

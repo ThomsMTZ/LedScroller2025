@@ -44,3 +44,7 @@ yarn-error.*
 
 # Gemini
 .agents/
+
+# Firebase secrets (contiennent des clés privées — NE PAS commiter)
+google-services.json
+GoogleService-Info.plist
