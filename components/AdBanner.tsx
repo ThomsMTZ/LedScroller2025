@@ -9,8 +9,8 @@ const isAdsAvailable = !!NativeModules.RNGoogleMobileAds;
 // Chargement lazy : réalisé une seule fois en dehors du composant.
 // Si le module natif est absent, AdsModule reste null et le composant rend null.
 type AdsModuleType = typeof import('react-native-google-mobile-ads');
-// eslint-disable-next-line @typescript-eslint/no-require-imports
 const AdsModule: AdsModuleType | null = isAdsAvailable
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     ? require('react-native-google-mobile-ads')
     : null;
 

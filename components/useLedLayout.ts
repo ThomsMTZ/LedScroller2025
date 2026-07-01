@@ -28,9 +28,6 @@ export const useLedLayout = ({text, isLandscape}: LedLayoutOptions) => {
     const baseMaxFontSize = isLandscape ? height * 0.8 : PORTRAIT_PANEL_HEIGHT * 0.8;
     const MIN_FONT_SIZE = 20;
 
-    // Compte les caractères visuels réels (chaque emoji = 1 char, pas 2 code units UTF-16)
-    const visualLength = [...text].length;
-
     // Plafond basé sur la hauteur du panneau uniquement.
     // Pas de plafond basé sur la largeur : c'est un scroller, le texte n'a pas besoin
     // de tenir dans la largeur de l'écran — il défile. Un plafond largeur écrasait

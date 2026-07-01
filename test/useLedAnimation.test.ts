@@ -28,6 +28,7 @@ describe('useLedAnimation Hook', () => {
         selectedColor: {hue: 0, saturation: 100, lightness: 50, name: 'Rouge'},
         isLandscape: false,
         onDoubleTap: jest.fn(),
+        thickness: 900,
     };
 
     it('devrait retourner les styles animés et la configuration des gestes', () => {
@@ -50,20 +51,16 @@ describe('useLedAnimation Hook', () => {
         expect(result.current.copiesArray.length).toBeGreaterThanOrEqual(2);
     });
 
-    it('devrait exposer les shared values hueVal, satVal, ligVal', () => {
+    it('devrait exposer le shared value ledColorShared', () => {
         const {result} = renderHook(() => useLedAnimation(mockProps));
 
-        expect(result.current.hueVal).toBeDefined();
-        expect(result.current.satVal).toBeDefined();
-        expect(result.current.ligVal).toBeDefined();
+        expect(result.current.ledColorShared).toBeDefined();
     });
 
-    it('devrait initialiser hueVal/satVal/ligVal avec les valeurs de selectedColor', () => {
+    it('devrait initialiser ledColorShared avec les valeurs de selectedColor', () => {
         const {result} = renderHook(() => useLedAnimation(mockProps));
 
-        expect(result.current.hueVal.value).toBe(0);    // hue de Rouge
-        expect(result.current.satVal.value).toBe(100);  // saturation
-        expect(result.current.ligVal.value).toBe(50);   // lightness
+        expect(result.current.ledColorShared.value).toBe('hsl(0, 100%, 50%)');
     });
 
     it('devrait exposer animatedBorderOpacityStyle et animatedShadowColorStyle', () => {

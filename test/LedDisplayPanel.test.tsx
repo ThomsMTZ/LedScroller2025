@@ -28,11 +28,8 @@ describe('LedDisplayPanel Component', () => {
         animatedShadowColorStyle: {},
         animatedContainerStyle: {},
         animatedTextStyle: {fontSize: 100},
-        hueVal: mockSharedValue(180),
-        satVal: mockSharedValue(100),
-        ligVal: mockSharedValue(50),
+        ledColorShared: mockSharedValue('hsl(0, 100%, 50%)') as unknown as SharedValue<string>,
         componentId: 'test-id',
-        setTextWidth: jest.fn(),
         copiesArray: [1, 2], // Simule deux copies
         LOOP_SPACING: 50,
     };
@@ -40,6 +37,7 @@ describe('LedDisplayPanel Component', () => {
     const mockDisplay = {
         text: 'TEST',
         speed: 100,
+        thickness: 900,
     };
 
     it('devrait rendre le conteneur principal et le texte', () => {
@@ -48,7 +46,7 @@ describe('LedDisplayPanel Component', () => {
         );
 
         expect(getByTestId('led-display')).toBeTruthy();
-        expect(getAllByText('TEST').length).toBe(2); // Basé sur copiesArray
+        expect(getAllByText('TEST').length).toBe(3); // 1 invisible pour mesurer + 2 copies
     });
 
     it('devrait rendre LedBorder si isChaseActive est true', () => {
@@ -69,21 +67,19 @@ describe('LedDisplayPanel Component', () => {
         expect(UNSAFE_queryByType(LedBorderMock)).toBeNull();
     });
 
-    it('devrait appeler setTextWidth au rendu du premier élément de texte', () => {
-        const setTextWidthMock = jest.fn();
+    it('devrait assigner le fontWeight basé sur thickness', () => {
         const {getAllByTestId} = render(
             <LedDisplayPanel
                 layout={mockLayout}
-                animation={{...mockAnimation, setTextWidth: setTextWidthMock}}
+                animation={mockAnimation}
                 display={mockDisplay}
             />
         );
 
         const firstTextInstance = getAllByTestId('scrolling-text')[0];
-        const mockLayoutEvent = {nativeEvent: {layout: {width: 300}}};
-
-        firstTextInstance.props.onLayout(mockLayoutEvent);
-
-        expect(setTextWidthMock).toHaveBeenCalledWith(300);
+        // font-weight expects string like "900"
+        expect(firstTextInstance.props.style).toEqual(
+            expect.arrayContaining([expect.objectContaining({ fontWeight: "900" })])
+        );
     });
 });

@@ -1,6 +1,9 @@
 module.exports = {
     preset: 'jest-expo',
     setupFilesAfterEnv: ['./jest.setup.ts'],
+    collectCoverage: true,
+    coverageDirectory: 'coverage',
+    coverageReporters: ['lcov', 'text', 'html'],
     transformIgnorePatterns: [
         'node_modules/(?!' +
         [

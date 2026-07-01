@@ -51,13 +51,11 @@ const LedDisplayPanel: React.FC<LedDisplayPanelProps> = ({layout, animation, dis
         animatedContainerStyle,
         animatedTextStyle,
         componentId,
-        setTextWidth,
         copiesArray,
         LOOP_SPACING,
-        fontSizeState,
         ledColorShared,
     } = animation;
-    const {text, speed, thickness} = display;
+    const {text, speed, thickness = 900} = display;
 
     const {width} = useWindowDimensions();
 

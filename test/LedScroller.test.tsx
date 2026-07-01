@@ -23,15 +23,15 @@ jest.mock('../components/useLedAnimation', () => ({
 
 // Mock du composant enfant principal
 jest.mock('../components/LedDisplayPanel', () => {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const {View} = require('react-native');
-    return (props: any) => <View testID="mock-led-display-panel" {...props} />;
+    return function MockLedDisplayPanel(props: any) { return <View testID="mock-led-display-panel" {...props} />; };
 });
 
 jest.mock('../components/SettingsModal/SettingsModal', () => {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const {View} = require('react-native');
-    return (props: any) => props.visible ? <View testID="mock-settings-modal"/> : null;
+    return function MockSettingsModal(props: any) { return props.visible ? <View testID="mock-settings-modal"/> : null; };
 });
 
 describe('LedScroller Component', () => {

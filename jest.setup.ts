@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 import 'react-native-gesture-handler/jestSetup';
 
 // 1. Mock de Reanimated
@@ -66,3 +67,6 @@ jest.mock('react-native-google-mobile-ads', () => ({
     BannerAdSize: {BANNER: 'BANNER'},
     TestIds: {BANNER: 'test-banner'}
 }));
+
+// 9. Mock du Slider
+jest.mock('@react-native-community/slider', () => 'Slider');

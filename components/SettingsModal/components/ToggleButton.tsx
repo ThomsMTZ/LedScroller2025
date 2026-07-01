@@ -6,7 +6,7 @@ import {COLORS} from '../../constants';
 
 interface ToggleButtonProps {
     label: string;
-    icon: any;
+    icon: keyof typeof Ionicons.glyphMap;
     isActive: boolean;
     onPress: () => void;
     testID: string;
