@@ -18,4 +18,5 @@ export interface SettingsState {
     isBorderBlinking: boolean;
     isTextBlinking: boolean;
     isReverseScroll: boolean;
+    thickness: number;
 }

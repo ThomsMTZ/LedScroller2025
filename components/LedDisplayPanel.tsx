@@ -32,6 +32,7 @@ interface LedAnimationStyles {
 interface LedDisplayProps {
     text: string;
     speed: number;
+    thickness: number;
 }
 
 interface LedDisplayPanelProps {
@@ -56,7 +57,7 @@ const LedDisplayPanel: React.FC<LedDisplayPanelProps> = ({layout, animation, dis
         fontSizeState,
         ledColorShared,
     } = animation;
-    const {text, speed} = display;
+    const {text, speed, thickness} = display;
 
     const {width} = useWindowDimensions();
 
@@ -139,6 +140,7 @@ const LedDisplayPanel: React.FC<LedDisplayPanelProps> = ({layout, animation, dis
                                 styles.textBase,
                                 {
                                     fontSize: animation.fontSizeState,
+                                    fontWeight: thickness.toString() as any,
                                     alignSelf: 'flex-start',
                                     textAlign: 'left',
                                 }
@@ -157,7 +159,7 @@ const LedDisplayPanel: React.FC<LedDisplayPanelProps> = ({layout, animation, dis
                                     style={[
                                         styles.textBase,
                                         animatedTextStyle,
-                                        { textAlign: 'left', width: 9999 }
+                                        { textAlign: 'left', width: 9999, fontWeight: thickness.toString() as any }
                                     ]}
                                 >
                                     {text}

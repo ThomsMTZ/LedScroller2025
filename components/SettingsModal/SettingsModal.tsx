@@ -11,6 +11,7 @@ import {SpeedSection} from "./components/SpeedSection";
 import {BorderSection} from "./components/BorderSection";
 import {DisplayTextSection} from "./components/DisplayTextSection";
 import {OrientationSection} from "./components/OrientationSection";
+import {TextAppearanceSection} from "./components/TextAppearanceSection";
 import {SettingsModalProps} from './types';
 import {useTranslation} from '../../context/I18nContext';
 
@@ -22,7 +23,13 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
     const {t} = useTranslation();
 
     return (
-        <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
+        <Modal 
+            visible={visible} 
+            transparent 
+            animationType="slide" 
+            onRequestClose={onClose}
+            supportedOrientations={['portrait', 'landscape', 'landscape-left', 'landscape-right']}
+        >
             <View style={styles.modalOverlay}>
                 <TouchableOpacity style={{flex: 1}} activeOpacity={1} onPress={onClose}/>
 
@@ -40,6 +47,7 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
                                     keyboardShouldPersistTaps="handled">
                             <MessageSection/>
                             <BorderSection/>
+                            <TextAppearanceSection/>
                             <DisplayTextSection/>
                             <SpeedSection/>
                             <OrientationSection/>

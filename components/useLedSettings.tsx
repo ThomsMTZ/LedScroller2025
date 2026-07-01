@@ -15,6 +15,7 @@ const DEFAULT_SETTINGS: SettingsState = {
     isBorderBlinking: false,
     isTextBlinking: false,
     isReverseScroll: false,
+    thickness: 900,
 };
 
 export const useLedSettings = (initialText: string = 'Hello World') => {
@@ -100,6 +101,10 @@ export const useLedSettings = (initialText: string = 'Hello World') => {
             setSettings(s => ({...s, speed}));
             void analytics.logSpeedChanged(speed);
         }, [analytics]),
+
+        onThicknessChange: useCallback((thickness: number) => {
+            setSettings(s => ({...s, thickness}));
+        }, []),
 
         onColorChange: useCallback((color: LedColorType) => {
             setSettings(s => ({...s, selectedColor: color}));

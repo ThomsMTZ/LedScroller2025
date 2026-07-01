@@ -35,12 +35,7 @@ export const useLedLayout = ({text, isLandscape}: LedLayoutOptions) => {
     // Pas de plafond basé sur la largeur : c'est un scroller, le texte n'a pas besoin
     // de tenir dans la largeur de l'écran — il défile. Un plafond largeur écrasait
     // injustement maxFontSize dès que le texte contenait 2+ emojis.
-    const maxFontSize = Math.max(
-        visualLength > 4
-            ? baseMaxFontSize * (4 / visualLength)
-            : baseMaxFontSize,
-        MIN_FONT_SIZE
-    );
+    const maxFontSize = Math.max(baseMaxFontSize, MIN_FONT_SIZE);
 
     return {
         width,

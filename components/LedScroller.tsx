@@ -77,7 +77,7 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'Hello World'}) 
                     <LedDisplayPanel
                         layout={{isLandscape, showNativeBorder, isChaseActive}}
                         animation={animation}
-                        display={{text: settings.text, speed: settings.speed}}
+                        display={{text: settings.text, speed: settings.speed, thickness: settings.thickness}}
                     />
 
                     {!isLandscape && <HintContainer/>}
@@ -102,6 +102,13 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'Hello World'}) 
                 onSpeedChange={settings.onSpeedChange}
                 selectedColor={settings.selectedColor}
                 onColorChange={settings.onColorChange}
+                thickness={settings.thickness}
+                onThicknessChange={settings.onThicknessChange}
+                fontSize={animation.fontSizeState}
+                maxFontSize={animation.maxFontSize}
+                minFontSize={animation.minFontSize}
+                onFontSizeChange={animation.setFontSize}
+                onFontSizeChangeEnd={animation.setFontSizeEnd}
                 isLandscapeLocked={settings.isLandscapeLocked}
                 onToggleOrientation={settings.onToggleOrientation}
                 isReverseScroll={settings.isReverseScroll}

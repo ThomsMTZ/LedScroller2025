@@ -23,6 +23,8 @@ export interface Translations {
     speedLabel: string;
     speedSlow: string;
     speedFast: string;
+    textSizeLabel: string;
+    textThicknessLabel: string;
     orientationLabel: string;
     orientationLocked: string;
     orientationAuto: string;

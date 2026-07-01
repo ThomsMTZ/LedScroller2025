@@ -23,6 +23,8 @@ export const es: Translations = {
     speedLabel: '⚡ Velocidad',
     speedSlow: 'Lento',
     speedFast: 'Rápido',
+    textSizeLabel: 'Tamaño del texto',
+    textThicknessLabel: 'Grosor del texto',
     orientationLabel: '🔄 Orientación y Dirección',
     orientationLocked: 'Modo Horizontal Forzado',
     orientationAuto: 'Rotación Automática',

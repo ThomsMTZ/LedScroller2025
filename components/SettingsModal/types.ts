@@ -9,6 +9,13 @@ export interface SettingsModalProps {
     onSpeedChange: (speed: number) => void;
     selectedColor: LedColorType;
     onColorChange: (color: LedColorType) => void;
+    thickness: number;
+    onThicknessChange: (thickness: number) => void;
+    fontSize: number;
+    maxFontSize: number;
+    minFontSize: number;
+    onFontSizeChange: (fontSize: number) => void;
+    onFontSizeChangeEnd: (fontSize: number) => void;
 
     // --- BORDURE ---
     showBorder: boolean;

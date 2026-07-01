@@ -80,8 +80,7 @@ export const styles = StyleSheet.create({
         width: 9999,
     },
     textBase: {
-        fontFamily: Platform.OS === 'ios' ? 'HelveticaNeue-CondensedBlack' : 'sans-serif-black',
-        fontWeight: '900',
+        fontFamily: Platform.OS === 'ios' ? 'System' : 'sans-serif',
         includeFontPadding: false,
         flexShrink: 0,
     },

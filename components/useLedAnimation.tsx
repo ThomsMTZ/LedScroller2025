@@ -195,7 +195,16 @@ export const useLedAnimation = ({
         LOOP_SPACING: layout.LOOP_SPACING,
         PORTRAIT_PANEL_HEIGHT: layout.PORTRAIT_PANEL_HEIGHT,
         textWidth: layout.textWidth,
+        maxFontSize: layout.maxFontSize,
+        minFontSize: layout.MIN_FONT_SIZE,
         fontSizeState,
+        setFontSize: (size: number) => { 
+            fontSize.value = size; 
+        },
+        setFontSizeEnd: (size: number) => {
+            savedFontSize.value = size;
+            runOnJS(setFontSizeState)(size);
+        },
 
         // Couleur dérivée pour LedBorder (worklet-safe)
         ledColorShared,
