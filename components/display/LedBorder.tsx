@@ -3,8 +3,6 @@ import {useWindowDimensions, View} from 'react-native';
 import Animated, {
     cancelAnimation,
     Easing,
-    SharedValue,
-    useAnimatedProps,
     useAnimatedStyle,
     useSharedValue,
     withRepeat,
