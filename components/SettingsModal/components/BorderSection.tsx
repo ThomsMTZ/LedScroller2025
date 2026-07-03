@@ -1,5 +1,4 @@
 import React from "react";
-import {styles} from "../styles";
 import {View} from "react-native";
 import {ToggleButton} from "./ToggleButton";
 import {RainbowColorPicker} from "./RainbowColorPicker";

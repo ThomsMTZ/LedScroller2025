@@ -3,12 +3,12 @@ import {TouchableOpacity, View} from 'react-native';
 import {styles} from '../styles';
 import {LED_COLORS} from '../../constants';
 import {useSettings} from "../../../context/SettingsContext";
-import {useTranslation} from "../../../context/I18nContext";
+
 import {RainbowColorPicker} from './RainbowColorPicker';
 
 const ColorSection: React.FC = () => {
     const {selectedColor, onColorChange} = useSettings();
-    const {t} = useTranslation();
+
     return (
         <View>
             <View style={styles.colorGrid}>

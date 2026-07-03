@@ -1,4 +1,3 @@
-import {LedColorType} from "../types";
 
 export interface SettingsModalProps {
     fontSize: number;

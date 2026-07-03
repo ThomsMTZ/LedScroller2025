@@ -1,6 +1,6 @@
 import React from 'react';
-import {Modal, Text, TouchableOpacity, useWindowDimensions, View} from 'react-native';
-import {ScrollView} from 'react-native';
+import {Modal, Text, TouchableOpacity, useWindowDimensions, View,ScrollView} from 'react-native';
+
 import {Ionicons} from '@expo/vector-icons';
 import {styles} from './styles';
 import {COLORS} from '../constants';

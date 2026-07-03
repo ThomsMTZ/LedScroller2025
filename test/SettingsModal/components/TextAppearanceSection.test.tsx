@@ -84,4 +84,37 @@ describe('TextAppearanceSection Component', () => {
         fireEvent(thicknessSlider, 'valueChange', 700);
         expect(mockOnThicknessChange).toHaveBeenCalledWith(700);
     });
+
+    it('devrait appeler changeFontSize via les boutons + et -', () => {
+        const {getByTestId} = render(<TextAppearanceSection 
+            fontSize={200}
+            maxFontSize={400}
+            minFontSize={20}
+            onFontSizeChange={mockOnFontSizeChange}
+            onFontSizeChangeEnd={mockOnFontSizeChangeEnd}
+        />);
+        
+        fireEvent.press(getByTestId('btn-size-minus'));
+        expect(mockOnFontSizeChange).toHaveBeenCalledWith(180); // 200 - 20
+        expect(mockOnFontSizeChangeEnd).toHaveBeenCalledWith(180);
+
+        fireEvent.press(getByTestId('btn-size-plus'));
+        expect(mockOnFontSizeChange).toHaveBeenCalledWith(220); // 200 + 20
+    });
+
+    it('devrait appeler changeThickness via les boutons + et -', () => {
+        const {getByTestId} = render(<TextAppearanceSection 
+            fontSize={200}
+            maxFontSize={400}
+            minFontSize={20}
+            onFontSizeChange={mockOnFontSizeChange}
+            onFontSizeChangeEnd={mockOnFontSizeChangeEnd}
+        />);
+        
+        fireEvent.press(getByTestId('btn-thick-minus'));
+        expect(mockOnThicknessChange).toHaveBeenCalledWith(800); // 900 - 100
+
+        fireEvent.press(getByTestId('btn-thick-plus'));
+        expect(mockOnThicknessChange).toHaveBeenCalledWith(900); // max 900
+    });
 });

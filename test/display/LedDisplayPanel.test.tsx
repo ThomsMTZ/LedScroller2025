@@ -1,7 +1,6 @@
 import React from 'react';
 import {render} from '@testing-library/react-native';
 import LedDisplayPanel from '../../components/display/LedDisplayPanel';
-import {SharedValue} from 'react-native-reanimated';
 
 // Mocks pour les composants enfants et les dépendances
 jest.mock('../../components/display/LedBorder', () => 'LedBorder');
@@ -13,7 +12,6 @@ jest.mock('react-native-reanimated', () => {
 });
 
 describe('LedDisplayPanel Component', () => {
-    const mockSharedValue = (v: number) => ({value: v}) as unknown as SharedValue<number>;
 
     const mockLayout = {
         isLandscape: false,
@@ -28,7 +26,6 @@ describe('LedDisplayPanel Component', () => {
         animatedShadowColorStyle: {},
         animatedContainerStyle: {},
         animatedTextStyle: {fontSize: 100},
-        ledColorShared: {value: 'hsl(0, 100%, 50%)'} as any,
         borderColorShared: {value: 'hsl(0, 100%, 50%)'} as any,
         componentId: 'test-id',
         copiesArray: [1, 2],

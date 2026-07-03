@@ -54,7 +54,6 @@ const LedDisplayPanel: React.FC<LedDisplayPanelProps> = ({layout, animation, dis
         componentId,
         copiesArray,
         LOOP_SPACING,
-        ledColorShared,
         borderColorShared,
     } = animation;
     const {text, speed, thickness = 900} = display;

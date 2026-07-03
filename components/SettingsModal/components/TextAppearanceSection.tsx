@@ -28,7 +28,7 @@ export const TextAppearanceSection: React.FC<SettingsModalProps> = (props) => {
             <View style={{ marginBottom: 20 }}>
                 <Text style={[styles.label, { fontSize: 14, color: COLORS.textMuted }]}>{t.textSizeLabel}</Text>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <TouchableOpacity onPress={() => changeFontSize(-20)} style={{ padding: 10 }}>
+                    <TouchableOpacity testID="btn-size-minus" onPress={() => changeFontSize(-20)} style={{ padding: 10 }}>
                         <Ionicons name="remove" size={24} color={COLORS.text} />
                     </TouchableOpacity>
                     <Slider
@@ -44,7 +44,7 @@ export const TextAppearanceSection: React.FC<SettingsModalProps> = (props) => {
                         maximumTrackTintColor={COLORS.border}
                         thumbTintColor={currentHsl}
                     />
-                    <TouchableOpacity onPress={() => changeFontSize(20)} style={{ padding: 10 }}>
+                    <TouchableOpacity testID="btn-size-plus" onPress={() => changeFontSize(20)} style={{ padding: 10 }}>
                         <Ionicons name="add" size={24} color={COLORS.text} />
                     </TouchableOpacity>
                 </View>
@@ -53,7 +53,7 @@ export const TextAppearanceSection: React.FC<SettingsModalProps> = (props) => {
             <View>
                 <Text style={[styles.label, { fontSize: 14, color: COLORS.textMuted }]}>{t.textThicknessLabel}</Text>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                    <TouchableOpacity onPress={() => changeThickness(-100)} style={{ padding: 10 }}>
+                    <TouchableOpacity testID="btn-thick-minus" onPress={() => changeThickness(-100)} style={{ padding: 10 }}>
                         <Ionicons name="remove" size={24} color={COLORS.text} />
                     </TouchableOpacity>
                     <Slider
@@ -68,7 +68,7 @@ export const TextAppearanceSection: React.FC<SettingsModalProps> = (props) => {
                         maximumTrackTintColor={COLORS.border}
                         thumbTintColor={currentHsl}
                     />
-                    <TouchableOpacity onPress={() => changeThickness(100)} style={{ padding: 10 }}>
+                    <TouchableOpacity testID="btn-thick-plus" onPress={() => changeThickness(100)} style={{ padding: 10 }}>
                         <Ionicons name="add" size={24} color={COLORS.text} />
                     </TouchableOpacity>
                 </View>
