@@ -46,7 +46,7 @@ describe('LedDisplayPanel Component', () => {
         );
 
         expect(getByTestId('led-display')).toBeTruthy();
-        expect(getAllByText('TEST').length).toBe(3); // 1 invisible pour mesurer + 2 copies
+        expect(getAllByText('TEST')).toHaveLength(3); // 1 invisible pour mesurer + 2 copies
     });
 
     it('devrait rendre LedBorder si isChaseActive est true', () => {

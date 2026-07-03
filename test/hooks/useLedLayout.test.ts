@@ -55,7 +55,7 @@ describe('useLedLayout Hook', () => {
         const patternWidth = textWidth + LOOP_SPACING; // 1025
         const copiesNeeded = Math.ceil(width / patternWidth) + 1; // ceil(750 / 1025) + 1 = 1 + 1 = 2
 
-        expect(result.current.copiesArray.length).toBe(copiesNeeded);
+        expect(result.current.copiesArray).toHaveLength(copiesNeeded);
     });
 
     it('devrait retourner au moins 2 copies même si le texte est très petit', () => {
