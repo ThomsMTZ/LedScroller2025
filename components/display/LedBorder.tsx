@@ -13,17 +13,14 @@ import Animated, {
 import {LinearGradient} from 'expo-linear-gradient';
 import {ANIMATION_DURATIONS} from '../constants';
 
-// Permet de passer des animatedProps à LinearGradient
-const AnimatedLinearGradient = Animated.createAnimatedComponent(LinearGradient);
-
 interface LedBorderProps {
-    /** SharedValue<string> de la couleur HSL — calculée dans un worklet, jamais pendant le render. */
-    colorShared: SharedValue<string>;
+    /** Chaîne de couleur HSL pour le dégradé de la bordure. */
+    colorStr: string;
     isAnimating: boolean;
     speed: number;
 }
 
-const LedBorder: React.FC<LedBorderProps> = ({colorShared, isAnimating, speed}) => {
+const LedBorder: React.FC<LedBorderProps> = ({colorStr, isAnimating, speed}) => {
     const rotation = useSharedValue(0);
     const {width, height} = useWindowDimensions();
     const size = Math.max(width, height) * 2.5;
@@ -56,10 +53,7 @@ const LedBorder: React.FC<LedBorderProps> = ({colorShared, isAnimating, speed}) 
         transform: [{rotate: `${rotation.value}deg`}],
     }));
 
-    // Couleur lue dans un worklet via useAnimatedProps — pas pendant le render React.
-    const animatedGradientProps = useAnimatedProps(() => ({
-        colors: [colorShared.value, 'transparent'] as [string, string],
-    }));
+
 
     if (!isAnimating) return null;
 
@@ -81,8 +75,8 @@ const LedBorder: React.FC<LedBorderProps> = ({colorShared, isAnimating, speed}) 
         ]}>
             <View style={{width: '100%', height: '50%', flexDirection: 'row'}}>
                 <View style={{flex: 1, backgroundColor: 'transparent'}}/>
-                <AnimatedLinearGradient
-                    animatedProps={animatedGradientProps}
+                <LinearGradient
+                    colors={[colorStr, 'transparent']}
                     start={{x: 0, y: 1}}
                     end={{x: 1, y: 0.5}}
                     style={{flex: 1}}

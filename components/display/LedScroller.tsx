@@ -14,6 +14,7 @@ import SettingsButton from '../ui/SettingsButton';
 import AdBanner from '../ui/AdBanner';
 import {LanguageButton} from '../ui/LanguageButton';
 import {useTranslation} from '../../context/I18nContext';
+import {buildHslString} from '../../utils/colorUtils';
 
 const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'Hello World'}) => {
     const {width, height} = useWindowDimensions();
@@ -77,7 +78,12 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'Hello World'}) 
                     <LedDisplayPanel
                         layout={{isLandscape, showNativeBorder, isChaseActive}}
                         animation={animation}
-                        display={{text: settings.text, speed: settings.speed, thickness: settings.thickness}}
+                        display={{
+                            text: settings.text, 
+                            speed: settings.speed, 
+                            thickness: settings.thickness,
+                            borderColorStr: buildHslString(settings.borderColor.hue, settings.borderColor.saturation, settings.borderColor.lightness)
+                        }}
                     />
 
                     {!isLandscape && <HintContainer/>}

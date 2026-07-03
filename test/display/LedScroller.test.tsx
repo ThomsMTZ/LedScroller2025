@@ -10,7 +10,8 @@ jest.mock('../../context/SettingsContext', () => ({
         text: 'Mocked Text',
         isSettingsOpen: false,
         onOpenSettings: jest.fn(),
-        // ... autres props si nécessaires pour le rendu
+        borderColor: { hue: 0, saturation: 100, lightness: 50 },
+        selectedColor: { hue: 0, saturation: 100, lightness: 50 },
     })),
 }));
 
@@ -52,6 +53,8 @@ describe('LedScroller Component', () => {
             onOpenSettings: jest.fn(),
             showBorder: true,
             isBorderChase: true,
+            borderColor: { hue: 0, saturation: 100, lightness: 50 },
+            selectedColor: { hue: 0, saturation: 100, lightness: 50 },
         });
         useLedAnimationMock.mockReturnValue({
             composedGestures: {},

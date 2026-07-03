@@ -34,6 +34,7 @@ interface LedDisplayProps {
     text: string;
     speed: number;
     thickness: number;
+    borderColorStr: string;
 }
 
 interface LedDisplayPanelProps {
@@ -54,9 +55,8 @@ const LedDisplayPanel: React.FC<LedDisplayPanelProps> = ({layout, animation, dis
         componentId,
         copiesArray,
         LOOP_SPACING,
-        borderColorShared,
     } = animation;
-    const {text, speed, thickness = 900} = display;
+    const {text, speed, thickness = 900, borderColorStr} = display;
 
     const {width} = useWindowDimensions();
 
@@ -89,7 +89,7 @@ const LedDisplayPanel: React.FC<LedDisplayPanelProps> = ({layout, animation, dis
                     {overflow: 'hidden', borderRadius: isLandscape ? 0 : 16},
                 ]}>
                     <LedBorder
-                        colorShared={borderColorShared}
+                        colorStr={borderColorStr}
                         isAnimating={true}
                         speed={speed}
                     />
