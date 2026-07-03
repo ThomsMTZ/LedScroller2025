@@ -3,6 +3,7 @@ import {SettingsModalProps} from '../components/SettingsModal/types';
 
 export interface SettingsContextType extends Omit<SettingsModalProps, 'visible' | 'onClose'> {
     currentHsl: string;
+    currentBorderHsl: string;
 }
 
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);

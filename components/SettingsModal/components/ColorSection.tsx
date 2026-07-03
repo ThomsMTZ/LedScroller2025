@@ -1,17 +1,16 @@
 import React from 'react';
-import {Text, TouchableOpacity, View} from 'react-native';
+import {TouchableOpacity, View} from 'react-native';
 import {styles} from '../styles';
 import {LED_COLORS} from '../../constants';
 import {useSettings} from "../../../context/SettingsContext";
 import {useTranslation} from "../../../context/I18nContext";
+import {RainbowColorPicker} from './RainbowColorPicker';
 
 const ColorSection: React.FC = () => {
     const {selectedColor, onColorChange} = useSettings();
     const {t} = useTranslation();
     return (
-        <View style={styles.section}>
-            <Text style={styles.label}>{t.colorLabel}</Text>
-
+        <View>
             <View style={styles.colorGrid}>
                 {LED_COLORS.map((color) => {
                     const isSelected = selectedColor.name === color.name;
@@ -41,8 +40,12 @@ const ColorSection: React.FC = () => {
                     );
                 })}
             </View>
+            <RainbowColorPicker
+                color={selectedColor}
+                onChange={onColorChange}
+            />
         </View>
     );
 };
 
-export default ColorSection;
+export default ColorSection;

@@ -22,9 +22,7 @@ export const TextAppearanceSection: React.FC = () => {
     };
 
     return (
-        <View style={styles.section}>
-            <Text style={styles.label}>Taille & Épaisseur</Text>
-
+        <View>
             <View style={{ marginBottom: 20 }}>
                 <Text style={[styles.label, { fontSize: 14, color: COLORS.textMuted }]}>{t.textSizeLabel}</Text>
                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>

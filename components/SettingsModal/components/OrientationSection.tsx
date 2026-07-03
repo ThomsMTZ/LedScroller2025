@@ -1,5 +1,4 @@
-import {styles} from "../styles";
-import {Text, View} from "react-native";
+import {View} from "react-native";
 import React from "react";
 import {ToggleButton} from "./ToggleButton";
 import {useSettings} from "../../../context/SettingsContext";
@@ -10,8 +9,7 @@ export const OrientationSection: React.FC = () => {
     const {isLandscapeLocked, onToggleOrientation, currentHsl} = useSettings();
     const {t} = useTranslation();
     return (
-        <View style={styles.section}>
-            <Text style={styles.label}>{t.orientationLabel}</Text>
+        <View>
             <ToggleButton
                 label={isLandscapeLocked ? t.orientationLocked : t.orientationAuto}
                 icon={'lock-closed'}
@@ -22,4 +20,4 @@ export const OrientationSection: React.FC = () => {
             />
         </View>
     );
-};
+};

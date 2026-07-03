@@ -1,5 +1,6 @@
 import React from 'react';
-import {Modal, ScrollView, Text, TouchableOpacity, useWindowDimensions, View} from 'react-native';
+import {Modal, Text, TouchableOpacity, useWindowDimensions, View} from 'react-native';
+import {ScrollView} from 'react-native';
 import {Ionicons} from '@expo/vector-icons';
 import {styles} from './styles';
 import {COLORS} from '../constants';
@@ -12,6 +13,7 @@ import {BorderSection} from "./components/BorderSection";
 import {DisplayTextSection} from "./components/DisplayTextSection";
 import {OrientationSection} from "./components/OrientationSection";
 import {TextAppearanceSection} from "./components/TextAppearanceSection";
+import {AccordionSection} from "./components/AccordionSection";
 import {SettingsModalProps} from './types';
 import {useTranslation} from '../../context/I18nContext';
 
@@ -20,6 +22,7 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
     const {height: screenHeight} = useWindowDimensions();
 
     const currentHsl = `hsl(${settingsValues.selectedColor.hue}, ${settingsValues.selectedColor.saturation}%, ${settingsValues.selectedColor.lightness}%)`;
+    const currentBorderHsl = `hsl(${settingsValues.borderColor.hue}, ${settingsValues.borderColor.saturation}%, ${settingsValues.borderColor.lightness}%)`;
     const {t} = useTranslation();
 
     return (
@@ -42,16 +45,30 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
                         </TouchableOpacity>
                     </View>
 
-                    <SettingsProvider value={{...settingsValues, currentHsl}}>
+                    <SettingsProvider value={{...settingsValues, currentHsl, currentBorderHsl}}>
                         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{paddingBottom: 20}}
                                     keyboardShouldPersistTaps="handled">
-                            <MessageSection/>
-                            <BorderSection/>
-                            <TextAppearanceSection/>
-                            <DisplayTextSection/>
-                            <SpeedSection/>
-                            <OrientationSection/>
-                            <ColorSection/>
+                            <AccordionSection title={t.messageLabel} defaultOpen={true}>
+                                <MessageSection/>
+                            </AccordionSection>
+                            <AccordionSection title={t.colorLabel}>
+                                <ColorSection/>
+                            </AccordionSection>
+                            <AccordionSection title={t.borderLabel}>
+                                <BorderSection/>
+                            </AccordionSection>
+                            <AccordionSection title="✨ Taille & Épaisseur">
+                                <TextAppearanceSection/>
+                            </AccordionSection>
+                            <AccordionSection title={t.textEffectsLabel}>
+                                <DisplayTextSection/>
+                            </AccordionSection>
+                            <AccordionSection title={t.speedLabel}>
+                                <SpeedSection/>
+                            </AccordionSection>
+                            <AccordionSection title={t.orientationLabel}>
+                                <OrientationSection/>
+                            </AccordionSection>
                         </ScrollView>
                     </SettingsProvider>
 
@@ -61,4 +78,4 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
     );
 };
 
-export default SettingsModal;
+export default SettingsModal;

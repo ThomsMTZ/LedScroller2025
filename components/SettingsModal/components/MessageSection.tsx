@@ -21,9 +21,7 @@ export const MessageSection: React.FC = () => {
     const {t} = useTranslation();
 
     return (
-        <View style={styles.section}>
-            <Text style={styles.label}>{t.messageLabel}</Text>
-
+        <View>
             <View style={[styles.input, {
                 flexDirection: 'row',
                 alignItems: 'center',
@@ -72,4 +70,4 @@ export const MessageSection: React.FC = () => {
             )}
         </View>
     );
-};
+};

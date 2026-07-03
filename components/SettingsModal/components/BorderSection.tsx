@@ -1,7 +1,8 @@
 import React from "react";
 import {styles} from "../styles";
-import {Text, View} from "react-native";
+import {View} from "react-native";
 import {ToggleButton} from "./ToggleButton";
+import {RainbowColorPicker} from "./RainbowColorPicker";
 import {useSettings} from "../../../context/SettingsContext";
 import {useTranslation} from "../../../context/I18nContext";
 
@@ -14,13 +15,14 @@ export const BorderSection: React.FC = () => {
         onToggleBorder,
         onToggleBorderChase,
         onToggleBorderBlinking,
-        currentHsl
+        currentHsl,
+        borderColor,
+        onBorderColorChange,
     } = useSettings();
     const {t} = useTranslation();
 
     return (
-        <View style={styles.section}>
-            <Text style={styles.label}>{t.borderLabel}</Text>
+        <View>
             <ToggleButton
                 label={showBorder ? t.borderShown : t.borderHidden}
                 icon={'square'}
@@ -48,8 +50,13 @@ export const BorderSection: React.FC = () => {
                         testID={'blink-border-button'}
                         currentHsl={currentHsl}
                     />
+
+                    <RainbowColorPicker
+                        color={borderColor}
+                        onChange={onBorderColorChange}
+                    />
                 </>
             )}
         </View>
     );
-};
+};

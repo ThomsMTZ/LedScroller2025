@@ -1,5 +1,4 @@
-import {Text, View} from "react-native";
-import {styles} from "../styles";
+import {View} from "react-native";
 import React from "react";
 import {ToggleButton} from "./ToggleButton";
 import {useSettings} from "../../../context/SettingsContext";
@@ -11,8 +10,7 @@ export const DisplayTextSection: React.FC = () => {
     const {t} = useTranslation();
 
     return (
-        <View style={styles.section}>
-            <Text style={styles.label}>{t.textEffectsLabel}</Text>
+        <View>
             <ToggleButton
                 label={isTextBlinking ? t.textBlink : t.textFixed}
                 icon={'flash'}
@@ -31,4 +29,4 @@ export const DisplayTextSection: React.FC = () => {
             />
         </View>
     );
-};
+};

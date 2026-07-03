@@ -3,8 +3,8 @@ import {Translations} from '../types';
 export const fr: Translations = {
     appTitle: 'Pixel Scroller',
     appSubtitle: '2026 Edition',
-    hintDoubleTap: 'Double-tap: Options',
-    hintPinch: 'Pinch: Zoom',
+    hintDoubleTap: 'Double touche : Options',
+    hintPinch: 'Pincer : Zoom',
     settingsTitle: '⚙️ Config',
     messageLabel: '💬 Message',
     messagePlaceholder: 'Entrez votre message...',
