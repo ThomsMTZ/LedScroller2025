@@ -1,4 +1,4 @@
-import React, {createContext, useContext} from 'react';
+import React, {createContext, useContext, useMemo} from 'react';
 import {useLedSettings} from '../hooks/useLedSettings';
 
 export type SettingsContextType = ReturnType<typeof useLedSettings> & {
@@ -13,7 +13,9 @@ export const SettingsProvider: React.FC<{ value?: Partial<SettingsContextType>, 
     const currentHsl = `hsl(${settings.selectedColor.hue}, ${settings.selectedColor.saturation}%, ${settings.selectedColor.lightness}%)`;
     const currentBorderHsl = `hsl(${settings.borderColor.hue}, ${settings.borderColor.saturation}%, ${settings.borderColor.lightness}%)`;
 
-    const contextValue = value ? { ...settings, currentHsl, currentBorderHsl, ...value } : { ...settings, currentHsl, currentBorderHsl };
+    const contextValue = useMemo(() => {
+        return value ? { ...settings, currentHsl, currentBorderHsl, ...value } : { ...settings, currentHsl, currentBorderHsl };
+    }, [settings, currentHsl, currentBorderHsl, value]);
 
     return (
         <SettingsContext.Provider value={contextValue as SettingsContextType}>
