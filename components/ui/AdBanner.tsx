@@ -1,15 +1,15 @@
 import React from 'react';
-import {NativeModules, Platform, View} from 'react-native';
+import {Platform, View} from 'react-native';
+import Constants, { ExecutionEnvironment } from 'expo-constants';
 
-// react-native-google-mobile-ads est un module natif indisponible dans Expo Go.
-// On garde l'import statique absent et on charge le module en lazy seulement
-// si le module natif est présent, pour éviter le crash au boot.
-const isAdsAvailable = !!NativeModules.RNGoogleMobileAds;
+// Dans la nouvelle architecture (TurboModules), NativeModules.RNGoogleMobileAds
+// peut être indéfini. On utilise Constants pour détecter Expo Go.
+const isExpoGo = Constants.executionEnvironment === ExecutionEnvironment.StoreClient;
 
 // Chargement lazy : réalisé une seule fois en dehors du composant.
-// Si le module natif est absent, AdsModule reste null et le composant rend null.
+// Si on est dans Expo Go, AdsModule reste null et le composant rend null.
 type AdsModuleType = typeof import('react-native-google-mobile-ads');
-const AdsModule: AdsModuleType | null = isAdsAvailable
+const AdsModule: AdsModuleType | null = !isExpoGo
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     ? require('react-native-google-mobile-ads')
     : null;
