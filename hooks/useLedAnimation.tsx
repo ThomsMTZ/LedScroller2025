@@ -12,9 +12,9 @@ import {
     runOnJS,
 } from 'react-native-reanimated';
 import {Gesture} from 'react-native-gesture-handler';
-import {LedColorType} from '../types';
-import {ANIMATION_DURATIONS} from '../constants';
-import {buildHslString, buildHslaString} from '../../utils/colorUtils';
+import {LedColorType} from '../components/types';
+import {ANIMATION_DURATIONS} from '../components/constants';
+import {buildHslString, buildHslaString} from '../utils/colorUtils';
 import {useLedLayout} from './useLedLayout';
 
 interface LedAnimationProps {

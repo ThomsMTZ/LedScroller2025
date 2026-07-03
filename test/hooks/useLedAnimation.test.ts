@@ -1,5 +1,5 @@
 import {renderHook} from '@testing-library/react-native';
-import {useLedAnimation} from '../../components/hooks/useLedAnimation';
+import {useLedAnimation} from '../../hooks/useLedAnimation';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 jest.mock('react-native-reanimated', () => require('react-native-reanimated/mock'));

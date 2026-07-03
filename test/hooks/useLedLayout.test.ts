@@ -1,5 +1,5 @@
 import {renderHook} from '@testing-library/react-native';
-import {useLedLayout} from '../../components/hooks/useLedLayout';
+import {useLedLayout} from '../../hooks/useLedLayout';
 import * as RN from 'react-native';
 
 describe('useLedLayout Hook', () => {

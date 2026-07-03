@@ -1,6 +1,6 @@
 import {act, renderHook} from '@testing-library/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useLedSettings} from '../../components/hooks/useLedSettings';
+import {useLedSettings} from '../../hooks/useLedSettings';
 import {LED_COLORS} from "../../components";
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports

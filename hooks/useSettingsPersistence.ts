@@ -1,6 +1,6 @@
 import {useCallback} from 'react';
-import {PersistedSettings, StorageService} from '../../services/StorageService';
-import {SettingsState} from '../types';
+import {PersistedSettings, StorageService} from '../services/StorageService';
+import {SettingsState} from '../components/types';
 import {MessageHistoryState} from './useMessageHistory';
 
 interface PersistencePayload {

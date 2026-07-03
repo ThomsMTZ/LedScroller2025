@@ -2,7 +2,7 @@ import React from 'react';
 import {render} from '@testing-library/react-native';
 import LedScroller from '../../components/display/LedScroller';
 import {useSettings} from '../../context/SettingsContext';
-import {useLedAnimation} from '../../components/hooks/useLedAnimation';
+import {useLedAnimation} from '../../hooks/useLedAnimation';
 
 // Mocks des hooks
 jest.mock('../../context/SettingsContext', () => ({
@@ -14,7 +14,7 @@ jest.mock('../../context/SettingsContext', () => ({
     })),
 }));
 
-jest.mock('../../components/hooks/useLedAnimation', () => ({
+jest.mock('../../hooks/useLedAnimation', () => ({
     useLedAnimation: jest.fn(() => ({
         composedGestures: {},
         // ... autres props si nécessaires pour le rendu

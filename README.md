@@ -107,16 +107,16 @@ LedScroller2025/
 │   │   ├── LedDisplayPanel.tsx # Renders the entire LED panel, text, and effects
 │   │   ├── LedBorder.tsx       # Animated "chase" border effect
 │   │   └── GridOverlay.tsx     # Static grid overlay for LED effect
-│   ├── hooks/              # Custom React hooks (logic, state, animations)
-│   │   ├── useLedSettings.tsx
-│   │   ├── useLedAnimation.tsx
-│   │   └── ...
 │   ├── ui/                 # Reusable UI elements (buttons, banners)
 │   │   ├── LanguageButton.tsx
 │   │   ├── SettingsButton.tsx
 │   │   └── ...
 │   └── index.ts            # Main component exports
 ├── context/                # React Contexts (Settings, i18n)
+├── hooks/                  # Custom React hooks (logic, state, animations)
+│   ├── useLedSettings.tsx
+│   ├── useLedAnimation.tsx
+│   └── ...
 ├── services/               # Global Singleton Services
 │   ├── AnalyticsService.ts # Firebase Analytics wrapper
 │   └── StorageService.ts   # AsyncStorage persistence
@@ -140,12 +140,12 @@ LedScroller2025/
     - Rendering the `LedBorder` or a native border.
     - Applying all animated styles.
 
-- **`context/SettingsContext.tsx` & `useLedSettings.tsx`**: Global state management to prevent prop drilling.
+- **`context/SettingsContext.tsx` & `hooks/useLedSettings.tsx`**: Global state management to prevent prop drilling.
     - `useLedSettings` centralizes application state and business logic (text, speed, color).
     - Handles loading and saving settings via `StorageService`.
     - `SettingsContext` provides this state globally to all components.
 
-- **`components/hooks/useLedAnimation.tsx`**: A custom hook dedicated to handling all `react-native-reanimated` logic.
+- **`hooks/useLedAnimation.tsx`**: A custom hook dedicated to handling all `react-native-reanimated` logic.
     - Creates and manages all shared values (e.g., `translateX`, `fontSize`).
     - Defines the animations for scrolling, blinking, and color transitions.
     - Sets up gesture handlers (`pinch`, `double-tap`).

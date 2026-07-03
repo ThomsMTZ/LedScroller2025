@@ -1,10 +1,10 @@
 import {useCallback, useEffect, useRef, useState} from 'react';
-import {LedColorType, SettingsState} from '../types';
-import {LED_COLORS, ANIMATION_DURATIONS} from '../constants';
+import {LedColorType, SettingsState} from '../components/types';
+import {LED_COLORS, ANIMATION_DURATIONS} from '../components/constants';
 import {useMessageHistory} from './useMessageHistory';
 import {useOrientation} from './useOrientation';
 import {useSettingsPersistence} from './useSettingsPersistence';
-import {AnalyticsService} from '../../services/AnalyticsService';
+import {AnalyticsService} from '../services/AnalyticsService';
 
 const DEFAULT_SETTINGS: SettingsState = {
     text: 'Hello World',

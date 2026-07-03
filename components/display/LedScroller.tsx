@@ -8,7 +8,7 @@ import {COLORS} from '../constants';
 import HintContainer from '../ui/HintContainer';
 import SettingsModal from '../SettingsModal/SettingsModal';
 import {useSettings} from '../../context/SettingsContext';
-import {useLedAnimation} from '../hooks/useLedAnimation';
+import {useLedAnimation} from '../../hooks/useLedAnimation';
 import LedDisplayPanel from './LedDisplayPanel';
 import SettingsButton from '../ui/SettingsButton';
 import AdBanner from '../ui/AdBanner';

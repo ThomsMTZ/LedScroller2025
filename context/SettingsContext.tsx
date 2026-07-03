@@ -1,5 +1,5 @@
 import React, {createContext, useContext} from 'react';
-import {useLedSettings} from '../components/hooks/useLedSettings';
+import {useLedSettings} from '../hooks/useLedSettings';
 
 export type SettingsContextType = ReturnType<typeof useLedSettings> & {
     currentHsl: string;
