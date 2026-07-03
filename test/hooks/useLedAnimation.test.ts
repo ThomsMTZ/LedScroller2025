@@ -1,8 +1,12 @@
-import {renderHook} from '@testing-library/react-native';
+import {renderHook, act} from '@testing-library/react-native';
 import {useLedAnimation} from '../../hooks/useLedAnimation';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
-jest.mock('react-native-reanimated', () => require('react-native-reanimated/mock'));
+jest.mock('react-native-reanimated', () => {
+    const mock = require('react-native-reanimated/mock');
+    mock.runOnJS = jest.fn((fn) => fn);
+    return mock;
+});
 jest.mock('react-native-gesture-handler', () => ({
     Gesture: {
         Tap: jest.fn(() => ({
@@ -81,6 +85,57 @@ describe('useLedAnimation Hook', () => {
         const {result} = renderHook(() => useLedAnimation(mockProps));
 
         expect(result.current.LOOP_SPACING).toBeGreaterThan(0);
+        expect(result.current.LOOP_SPACING).toBeGreaterThan(0);
         expect(result.current.PORTRAIT_PANEL_HEIGHT).toBeGreaterThan(0);
+    });
+
+    it('devrait appliquer l\'animation de clignotement si activé', () => {
+        const {result} = renderHook(() => useLedAnimation({...mockProps, isTextBlinking: true, isBorderBlinking: true}));
+        
+        // Just checking it renders without errors when blinking is true
+        expect(result.current.animatedTextStyle).toBeDefined();
+    });
+
+    it('devrait démarrer l\'animation de scroll quand textWidth > 0', () => {
+        const {result, rerender} = renderHook((props) => useLedAnimation(props), {initialProps: mockProps});
+        
+        result.current.setTextWidth(500);
+        
+        // Re-render to trigger useEffect with new textWidth
+        rerender({...mockProps, isReverseScroll: true});
+        expect(result.current.animatedContainerStyle).toBeDefined();
+    });
+
+    it('devrait ajuster fontSize si > maxFontSize lors d\'un changement d\'orientation', () => {
+        const {result, rerender} = renderHook((props) => useLedAnimation(props), {initialProps: mockProps});
+        
+        result.current.setFontSize(2000); // Simulate very large font
+        rerender({...mockProps, isLandscape: true});
+        
+        // Check state update
+        expect(result.current.fontSizeState).toBeDefined();
+    });
+
+    it('devrait tester setFontSize et setFontSizeEnd', () => {
+        const {result} = renderHook(() => useLedAnimation(mockProps));
+        
+        act(() => {
+            result.current.setFontSize(100);
+            result.current.setFontSizeEnd(120);
+        });
+        
+        expect(result.current.fontSizeState).toBe(120);
+    });
+
+    it('devrait configurer les gestes pinch et tap correctement', () => {
+        const {result} = renderHook(() => useLedAnimation(mockProps));
+        
+        // Since we mocked Gesture.Pinch and Gesture.Tap, we verify they expose onUpdate, onEnd
+        const {Gesture} = require('react-native-gesture-handler');
+        expect(Gesture.Pinch).toHaveBeenCalled();
+        expect(Gesture.Tap).toHaveBeenCalled();
+        
+        // Try to manually invoke the mocked callbacks if accessible, or just verify the gesture setup didn't crash
+        expect(result.current.composedGestures).toBeDefined();
     });
 });

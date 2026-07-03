@@ -186,4 +186,41 @@ describe('useLedSettings Hook', () => {
 
         expect(result.current.recentMessages.length).toBeLessThanOrEqual(5);
     });
+
+    it('devrait bloquer le mode paysage au chargement si isLandscapeLocked est true', async () => {
+        const mockSavedSettings = {
+            coreSettings: { text: 'Landscape' },
+            history: { recentMessages: [], favoriteMessages: [] },
+            isLandscapeLocked: true,
+        };
+        (AsyncStorage.getItem as jest.Mock).mockResolvedValueOnce(JSON.stringify(mockSavedSettings));
+
+        const {result} = renderHook(() => useLedSettings());
+        await act(async () => {});
+
+        expect(result.current.isLandscapeLocked).toBe(true);
+    });
+
+    it('devrait changer les autres paramètres et couleurs', async () => {
+        (AsyncStorage.getItem as jest.Mock).mockResolvedValueOnce(null);
+        const {result} = renderHook(() => useLedSettings());
+        await act(async () => {});
+
+        act(() => {
+            result.current.onThicknessChange(12);
+            result.current.onColorChange(LED_COLORS[1]);
+            result.current.onBorderColorChange(LED_COLORS[2]);
+            result.current.onSpeedChange(500);
+            result.current.onToggleBorderChase();
+            result.current.onToggleBorderBlinking();
+            result.current.onToggleOrientation();
+        });
+
+        expect(result.current.thickness).toBe(12);
+        expect(result.current.selectedColor).toEqual(LED_COLORS[1]);
+        expect(result.current.borderColor).toEqual(LED_COLORS[2]);
+        expect(result.current.speed).toBe(500);
+        expect(result.current.isBorderChase).toBe(true);
+        expect(result.current.isBorderBlinking).toBe(true);
+    });
 });
