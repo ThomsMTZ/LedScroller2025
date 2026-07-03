@@ -14,15 +14,17 @@ const AdsModule: AdsModuleType | null = isAdsAvailable
     ? require('react-native-google-mobile-ads')
     : null;
 
-const AD_UNIT_ID = AdsModule
-    ? (__DEV__
-        ? AdsModule.TestIds.BANNER
-        : Platform.select({
-            android: 'ca-app-pub-2790650155402757/5652248123',
-            ios: 'ca-app-pub-2790650155402757/6773987013',
-            default: AdsModule.TestIds.BANNER,
-        }))
-    : null;
+const getAdUnitId = () => {
+    if (!AdsModule) return null;
+    if (__DEV__) return AdsModule.TestIds.BANNER;
+    return Platform.select({
+        android: 'ca-app-pub-2790650155402757/5652248123',
+        ios: 'ca-app-pub-2790650155402757/6773987013',
+        default: AdsModule.TestIds.BANNER,
+    });
+};
+
+const AD_UNIT_ID = getAdUnitId();
 
 const AdBanner: React.FC = () => {
     if (!AdsModule || !AD_UNIT_ID) return null;

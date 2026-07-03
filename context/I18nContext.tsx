@@ -1,4 +1,4 @@
-import React, {createContext, useContext, useEffect, useState} from 'react';
+import React, {createContext, useContext, useEffect, useState, useMemo, useCallback} from 'react';
 import * as Localization from 'expo-localization';
 import {Locale, Translations} from '../i18n/types';
 import {fr} from '../i18n/translations/fr';
@@ -31,17 +31,17 @@ const getDeviceLocale = (): Locale => {
 };
 
 export const I18nProvider: React.FC<{children: React.ReactNode}> = ({children}) => {
-    const [locale, setLocaleState] = useState<Locale>('fr');
+    const [currentLocale, setCurrentLocale] = useState<Locale>('fr');
     const [isLoaded, setIsLoaded] = useState(false);
 
     useEffect(() => {
         const loadLocale = async () => {
             try {
                 const storedLocale = await StorageService.getLocale();
-                setLocaleState(storedLocale ?? getDeviceLocale());
+                setCurrentLocale(storedLocale ?? getDeviceLocale());
             } catch (error) {
                 console.error('Failed to load locale', error);
-                setLocaleState(getDeviceLocale());
+                setCurrentLocale(getDeviceLocale());
             } finally {
                 setIsLoaded(true);
             }
@@ -49,15 +49,21 @@ export const I18nProvider: React.FC<{children: React.ReactNode}> = ({children}) 
         void loadLocale();
     }, []);
 
-    const setLocale = async (newLocale: Locale): Promise<void> => {
-        setLocaleState(newLocale);
+    const setLocale = useCallback(async (newLocale: Locale): Promise<void> => {
+        setCurrentLocale(newLocale);
         await StorageService.saveLocale(newLocale);
-    };
+    }, []);
+
+    const contextValue = useMemo(() => ({
+        locale: currentLocale,
+        setLocale,
+        t: TRANSLATIONS[currentLocale]
+    }), [currentLocale, setLocale]);
 
     if (!isLoaded) return null;
 
     return (
-        <I18nContext.Provider value={{locale, setLocale, t: TRANSLATIONS[locale]}}>
+        <I18nContext.Provider value={contextValue}>
             {children}
         </I18nContext.Provider>
     );
