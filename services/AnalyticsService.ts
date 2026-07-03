@@ -35,56 +35,44 @@ async function logEvent(name: string, params?: Record<string, string | number | 
 }
 
 // ---------------------------------------------------------------------------
-// Hook public
+// Service public
 // ---------------------------------------------------------------------------
 
-export const useAnalytics = () => {
+export const AnalyticsService = {
 
     /** Modal Paramètres ouvert */
-    const logSettingsOpened = (trigger: SettingsTrigger): Promise<void> =>
-        logEvent('settings_opened', { trigger });
+    logSettingsOpened: (trigger: SettingsTrigger): Promise<void> =>
+        logEvent('settings_opened', { trigger }),
 
     /** Modal Paramètres fermé */
-    const logSettingsClosed = (textLength: number): Promise<void> =>
-        logEvent('settings_closed', { text_length: textLength });
+    logSettingsClosed: (textLength: number): Promise<void> =>
+        logEvent('settings_closed', { text_length: textLength }),
 
     /** Texte modifié et validé (à la fermeture du modal) */
-    const logMessageChanged = (textLength: number, isFromRecent: boolean): Promise<void> =>
-        logEvent('message_changed', { text_length: textLength, is_from_recent: isFromRecent });
+    logMessageChanged: (textLength: number, isFromRecent: boolean): Promise<void> =>
+        logEvent('message_changed', { text_length: textLength, is_from_recent: isFromRecent }),
 
     /** Couleur LED changée */
-    const logColorChanged = (colorName: string): Promise<void> =>
-        logEvent('color_changed', { color_name: colorName });
+    logColorChanged: (colorName: string): Promise<void> =>
+        logEvent('color_changed', { color_name: colorName }),
 
     /** Vitesse de défilement modifiée (appeler à la fin du sliding) */
-    const logSpeedChanged = (speedValue: number): Promise<void> =>
-        logEvent('speed_changed', { speed_value: speedValue });
+    logSpeedChanged: (speedValue: number): Promise<void> =>
+        logEvent('speed_changed', { speed_value: speedValue }),
 
     /** Verrouillage de l'orientation basculé */
-    const logOrientationToggled = (locked: boolean): Promise<void> =>
-        logEvent('orientation_toggled', { locked });
+    logOrientationToggled: (locked: boolean): Promise<void> =>
+        logEvent('orientation_toggled', { locked }),
 
     /** Effet visuel (border, blink, etc.) activé/désactivé */
-    const logEffectToggled = (effect: EffectName, enabled: boolean): Promise<void> =>
-        logEvent('effect_toggled', { effect, enabled });
+    logEffectToggled: (effect: EffectName, enabled: boolean): Promise<void> =>
+        logEvent('effect_toggled', { effect, enabled }),
 
     /** Message ajouté ou retiré des favoris */
-    const logFavoriteToggled = (action: 'add' | 'remove'): Promise<void> =>
-        logEvent('favorite_toggled', { action });
+    logFavoriteToggled: (action: 'add' | 'remove'): Promise<void> =>
+        logEvent('favorite_toggled', { action }),
 
     /** Message récent sélectionné depuis l'historique */
-    const logRecentMessageSelected = (textLength: number): Promise<void> =>
-        logEvent('recent_message_selected', { text_length: textLength });
-
-    return {
-        logSettingsOpened,
-        logSettingsClosed,
-        logMessageChanged,
-        logColorChanged,
-        logSpeedChanged,
-        logOrientationToggled,
-        logEffectToggled,
-        logFavoriteToggled,
-        logRecentMessageSelected,
-    };
+    logRecentMessageSelected: (textLength: number): Promise<void> =>
+        logEvent('recent_message_selected', { text_length: textLength }),
 };

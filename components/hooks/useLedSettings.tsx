@@ -4,7 +4,7 @@ import {LED_COLORS, ANIMATION_DURATIONS} from '../constants';
 import {useMessageHistory} from './useMessageHistory';
 import {useOrientation} from './useOrientation';
 import {useSettingsPersistence} from './useSettingsPersistence';
-import {useAnalytics} from '../../utils/useAnalytics';
+import {AnalyticsService} from '../../services/AnalyticsService';
 
 const DEFAULT_SETTINGS: SettingsState = {
     text: 'Hello World',
@@ -29,7 +29,6 @@ export const useLedSettings = (initialText: string = 'Hello World') => {
     const {recentMessages, favoriteMessages, addToRecents, toggleFavorite, loadHistory} = useMessageHistory();
     const {isLandscapeLocked, setIsLandscapeLocked, toggleOrientation, lockLandscape} = useOrientation();
     const persistence = useSettingsPersistence();
-    const analytics = useAnalytics();
 
     // Ref pour tracker si le texte vient d'un message récent sélectionné
     const isFromRecentRef = useRef<boolean>(false);
@@ -68,27 +67,27 @@ export const useLedSettings = (initialText: string = 'Hello World') => {
     // --- Actions ---
     const handleOpenSettings = useCallback(() => {
         setSettingsOpen(true);
-        void analytics.logSettingsOpened('button');
-    }, [analytics]);
+        void AnalyticsService.logSettingsOpened('button');
+    }, []);
 
     const handleCloseSettings = useCallback(() => {
         setSettingsOpen(false);
         addToRecents(settings.text);
-        void analytics.logSettingsClosed(settings.text.length);
-        void analytics.logMessageChanged(settings.text.length, isFromRecentRef.current);
+        void AnalyticsService.logSettingsClosed(settings.text.length);
+        void AnalyticsService.logMessageChanged(settings.text.length, isFromRecentRef.current);
         isFromRecentRef.current = false;
-    }, [settings.text, addToRecents, analytics]);
+    }, [settings.text, addToRecents]);
 
     // Mémorisée avec useCallback pour éviter la re-création à chaque render
-    const createToggle = useCallback((key: keyof SettingsState, effectName: Parameters<typeof analytics.logEffectToggled>[0]) =>
+    const createToggle = useCallback((key: keyof SettingsState, effectName: Parameters<typeof AnalyticsService.logEffectToggled>[0]) =>
         () => {
             setSettings(s => {
                 const newValue = !s[key];
-                void analytics.logEffectToggled(effectName, newValue as boolean);
+                void AnalyticsService.logEffectToggled(effectName, newValue as boolean);
                 return {...s, [key]: newValue};
             });
         },
-    [analytics]);
+    []);
 
     return {
         ...settings,
@@ -100,8 +99,8 @@ export const useLedSettings = (initialText: string = 'Hello World') => {
 
         onSpeedChange: useCallback((speed: number) => {
             setSettings(s => ({...s, speed}));
-            void analytics.logSpeedChanged(speed);
-        }, [analytics]),
+            void AnalyticsService.logSpeedChanged(speed);
+        }, []),
 
         onThicknessChange: useCallback((thickness: number) => {
             setSettings(s => ({...s, thickness}));
@@ -109,8 +108,8 @@ export const useLedSettings = (initialText: string = 'Hello World') => {
 
         onColorChange: useCallback((color: LedColorType) => {
             setSettings(s => ({...s, selectedColor: color}));
-            void analytics.logColorChanged(color.name);
-        }, [analytics]),
+            void AnalyticsService.logColorChanged(color.name);
+        }, []),
 
         onBorderColorChange: useCallback((color: LedColorType) => {
             setSettings(s => ({...s, borderColor: color}));
@@ -119,8 +118,8 @@ export const useLedSettings = (initialText: string = 'Hello World') => {
         // Actions
         onToggleOrientation: useCallback(() => {
             toggleOrientation();
-            void analytics.logOrientationToggled(!isLandscapeLocked);
-        }, [toggleOrientation, analytics, isLandscapeLocked]),
+            void AnalyticsService.logOrientationToggled(!isLandscapeLocked);
+        }, [toggleOrientation, isLandscapeLocked]),
 
         onOpenSettings: handleOpenSettings,
         onCloseSettings: handleCloseSettings,
@@ -138,13 +137,13 @@ export const useLedSettings = (initialText: string = 'Hello World') => {
         onToggleFavorite: useCallback((msg: string) => {
             const isFavorite = favoriteMessages.includes(msg);
             toggleFavorite(msg);
-            void analytics.logFavoriteToggled(isFavorite ? 'remove' : 'add');
-        }, [favoriteMessages, toggleFavorite, analytics]),
+            void AnalyticsService.logFavoriteToggled(isFavorite ? 'remove' : 'add');
+        }, [favoriteMessages, toggleFavorite]),
 
         onSelectRecentMessage: useCallback((text: string) => {
             isFromRecentRef.current = true;
             setSettings(s => ({...s, text}));
-            void analytics.logRecentMessageSelected(text.length);
-        }, [analytics]),
+            void AnalyticsService.logRecentMessageSelected(text.length);
+        }, []),
     };
 };

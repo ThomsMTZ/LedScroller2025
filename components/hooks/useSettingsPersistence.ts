@@ -1,5 +1,5 @@
 import {useCallback} from 'react';
-import {PersistedSettings, StorageService} from '../../utils/storageService';
+import {PersistedSettings, StorageService} from '../../services/StorageService';
 import {SettingsState} from '../types';
 import {MessageHistoryState} from './useMessageHistory';
 

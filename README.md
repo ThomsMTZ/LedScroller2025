@@ -117,6 +117,9 @@ LedScroller2025/
 │   │   └── ...
 │   └── index.ts            # Main component exports
 ├── context/                # React Contexts (Settings, i18n)
+├── services/               # Global Singleton Services
+│   ├── AnalyticsService.ts # Firebase Analytics wrapper
+│   └── StorageService.ts   # AsyncStorage persistence
 ├── i18n/                   # Translations and localization files
 ├── test/                   # Unit tests
 ├── assets/                 # Fonts, images

@@ -4,7 +4,7 @@ import {Locale, Translations} from '../i18n/types';
 import {fr} from '../i18n/translations/fr';
 import {en} from '../i18n/translations/en';
 import {es} from '../i18n/translations/es';
-import {StorageService} from '../utils/storageService';
+import {StorageService} from '../services/StorageService';
 
 const TRANSLATIONS: Record<Locale, Translations> = { fr, en, es };
 
