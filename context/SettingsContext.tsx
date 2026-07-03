@@ -1,19 +1,22 @@
 import React, {createContext, useContext} from 'react';
-import {SettingsModalProps} from '../components/SettingsModal/types';
+import {useLedSettings} from '../components/hooks/useLedSettings';
 
-export interface SettingsContextType extends Omit<SettingsModalProps, 'visible' | 'onClose'> {
+export type SettingsContextType = ReturnType<typeof useLedSettings> & {
     currentHsl: string;
     currentBorderHsl: string;
-}
+};
 
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
 
-export const SettingsProvider: React.FC<{ value: SettingsContextType, children: React.ReactNode }> = ({
-                                                                                                          value,
-                                                                                                          children
-                                                                                                      }) => {
+export const SettingsProvider: React.FC<{ value?: Partial<SettingsContextType>, children: React.ReactNode }> = ({ value, children }) => {
+    const settings = useLedSettings();
+    const currentHsl = `hsl(${settings.selectedColor.hue}, ${settings.selectedColor.saturation}%, ${settings.selectedColor.lightness}%)`;
+    const currentBorderHsl = `hsl(${settings.borderColor.hue}, ${settings.borderColor.saturation}%, ${settings.borderColor.lightness}%)`;
+
+    const contextValue = value ? { ...settings, currentHsl, currentBorderHsl, ...value } : { ...settings, currentHsl, currentBorderHsl };
+
     return (
-        <SettingsContext.Provider value={value}>
+        <SettingsContext.Provider value={contextValue as SettingsContextType}>
             {children}
         </SettingsContext.Provider>
     );

@@ -1,12 +1,12 @@
 import React from 'react';
 import {render} from '@testing-library/react-native';
 import LedScroller from '../../components/display/LedScroller';
-import {useLedSettings} from '../../components/hooks/useLedSettings';
+import {useSettings} from '../../context/SettingsContext';
 import {useLedAnimation} from '../../components/hooks/useLedAnimation';
 
 // Mocks des hooks
-jest.mock('../../components/hooks/useLedSettings', () => ({
-    useLedSettings: jest.fn(() => ({
+jest.mock('../../context/SettingsContext', () => ({
+    useSettings: jest.fn(() => ({
         text: 'Mocked Text',
         isSettingsOpen: false,
         onOpenSettings: jest.fn(),
@@ -31,17 +31,22 @@ jest.mock('../../components/display/LedDisplayPanel', () => {
 jest.mock('../../components/SettingsModal/SettingsModal', () => {
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const {View} = require('react-native');
-    return function MockSettingsModal(props: any) { return props.visible ? <View testID="mock-settings-modal"/> : null; };
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const {useSettings} = require('../../context/SettingsContext');
+    return function MockSettingsModal() { 
+        const {isSettingsOpen} = useSettings();
+        return isSettingsOpen ? <View testID="mock-settings-modal"/> : null; 
+    };
 });
 
 describe('LedScroller Component', () => {
-    const useLedSettingsMock = useLedSettings as jest.Mock;
+    const useSettingsMock = useSettings as jest.Mock;
     const useLedAnimationMock = useLedAnimation as jest.Mock;
 
     beforeEach(() => {
         jest.clearAllMocks();
         // Configuration par défaut pour les mocks des hooks
-        useLedSettingsMock.mockReturnValue({
+        useSettingsMock.mockReturnValue({
             text: 'Default Text',
             isSettingsOpen: false,
             onOpenSettings: jest.fn(),
@@ -69,8 +74,8 @@ describe('LedScroller Component', () => {
     });
 
     it('devrait rendre le SettingsModal quand isSettingsOpen est true', () => {
-        useLedSettingsMock.mockReturnValue({
-            ...useLedSettingsMock(),
+        useSettingsMock.mockReturnValue({
+            ...useSettingsMock(),
             isSettingsOpen: true,
         });
 

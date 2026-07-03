@@ -7,7 +7,7 @@ import {LedScrollerProps} from '../types';
 import {COLORS} from '../constants';
 import HintContainer from '../ui/HintContainer';
 import SettingsModal from '../SettingsModal/SettingsModal';
-import {useLedSettings} from '../hooks/useLedSettings';
+import {useSettings} from '../../context/SettingsContext';
 import {useLedAnimation} from '../hooks/useLedAnimation';
 import LedDisplayPanel from './LedDisplayPanel';
 import SettingsButton from '../ui/SettingsButton';
@@ -21,8 +21,7 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'Hello World'}) 
     const {t} = useTranslation();
 
 
-    // --- Settings ---
-    const settings = useLedSettings(initialText);
+    const settings = useSettings();
 
     // --- Animation ---
     const animation = useLedAnimation({
@@ -95,39 +94,11 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'Hello World'}) 
             )}
 
             <SettingsModal
-                visible={settings.isSettingsOpen}
-                onClose={settings.onCloseSettings}
-                text={settings.text}
-                onTextChange={settings.onTextChange}
-                speed={settings.speed}
-                onSpeedChange={settings.onSpeedChange}
-                selectedColor={settings.selectedColor}
-                onColorChange={settings.onColorChange}
-                borderColor={settings.borderColor}
-                onBorderColorChange={settings.onBorderColorChange}
-                thickness={settings.thickness}
-                onThicknessChange={settings.onThicknessChange}
                 fontSize={animation.fontSizeState}
                 maxFontSize={animation.maxFontSize}
                 minFontSize={animation.minFontSize}
                 onFontSizeChange={animation.setFontSize}
                 onFontSizeChangeEnd={animation.setFontSizeEnd}
-                isLandscapeLocked={settings.isLandscapeLocked}
-                onToggleOrientation={settings.onToggleOrientation}
-                isReverseScroll={settings.isReverseScroll}
-                onToggleReverseScroll={settings.onToggleReverseScroll}
-                showBorder={settings.showBorder}
-                onToggleBorder={settings.onToggleBorder}
-                isBorderChase={settings.isBorderChase}
-                onToggleBorderChase={settings.onToggleBorderChase}
-                isBorderBlinking={settings.isBorderBlinking}
-                onToggleBorderBlinking={settings.onToggleBorderBlinking}
-                isTextBlinking={settings.isTextBlinking}
-                onToggleTextBlinking={settings.onToggleTextBlinking}
-                recentMessages={settings.recentMessages}
-                favoriteMessages={settings.favoriteMessages}
-                onToggleFavorite={settings.onToggleFavorite}
-                onSelectRecentMessage={settings.onSelectRecentMessage}
             />
 
             {isLandscape && <SettingsButton variant="landscape" onPress={settings.onOpenSettings} />}

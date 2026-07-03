@@ -4,7 +4,7 @@ import {ScrollView} from 'react-native';
 import {Ionicons} from '@expo/vector-icons';
 import {styles} from './styles';
 import {COLORS} from '../constants';
-import {SettingsProvider} from '../../context/SettingsContext';
+import {useSettings} from '../../context/SettingsContext';
 
 import ColorSection from './components/ColorSection';
 import {MessageSection} from "./components/MessageSection";
@@ -18,34 +18,30 @@ import {SettingsModalProps} from './types';
 import {useTranslation} from '../../context/I18nContext';
 
 const SettingsModal: React.FC<SettingsModalProps> = (props) => {
-    const {visible, onClose, ...settingsValues} = props;
+    const {isSettingsOpen, onCloseSettings} = useSettings();
     const {height: screenHeight} = useWindowDimensions();
-
-    const currentHsl = `hsl(${settingsValues.selectedColor.hue}, ${settingsValues.selectedColor.saturation}%, ${settingsValues.selectedColor.lightness}%)`;
-    const currentBorderHsl = `hsl(${settingsValues.borderColor.hue}, ${settingsValues.borderColor.saturation}%, ${settingsValues.borderColor.lightness}%)`;
     const {t} = useTranslation();
 
     return (
         <Modal 
-            visible={visible} 
+            visible={isSettingsOpen} 
             transparent 
             animationType="slide" 
-            onRequestClose={onClose}
+            onRequestClose={onCloseSettings}
             supportedOrientations={['portrait', 'landscape', 'landscape-left', 'landscape-right']}
         >
             <View style={styles.modalOverlay}>
-                <TouchableOpacity style={{flex: 1}} activeOpacity={1} onPress={onClose}/>
+                <TouchableOpacity style={{flex: 1}} activeOpacity={1} onPress={onCloseSettings}/>
 
                 <View style={[styles.modalContent, {maxHeight: screenHeight * 0.85}]}>
                     <View style={styles.headerModal}>
                         <Text style={styles.modalTitle}>{t.settingsTitle}</Text>
 
-                        <TouchableOpacity testID="close-modal-button" style={styles.closeButton} onPress={onClose}>
+                        <TouchableOpacity testID="close-modal-button" style={styles.closeButton} onPress={onCloseSettings}>
                             <Ionicons name="close" size={24} color={COLORS.text}/>
                         </TouchableOpacity>
                     </View>
 
-                    <SettingsProvider value={{...settingsValues, currentHsl, currentBorderHsl}}>
                         <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{paddingBottom: 20}}
                                     keyboardShouldPersistTaps="handled">
                             <AccordionSection title={t.messageLabel} defaultOpen={true}>
@@ -58,7 +54,7 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
                                 <BorderSection/>
                             </AccordionSection>
                             <AccordionSection title="✨ Taille & Épaisseur">
-                                <TextAppearanceSection/>
+                                <TextAppearanceSection {...props} />
                             </AccordionSection>
                             <AccordionSection title={t.textEffectsLabel}>
                                 <DisplayTextSection/>
@@ -70,7 +66,6 @@ const SettingsModal: React.FC<SettingsModalProps> = (props) => {
                                 <OrientationSection/>
                             </AccordionSection>
                         </ScrollView>
-                    </SettingsProvider>
 
                 </View>
             </View>

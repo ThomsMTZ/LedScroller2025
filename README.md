@@ -140,11 +140,10 @@ LedScroller2025/
     - Rendering the `LedBorder` or a native border.
     - Applying all animated styles.
 
-- **`components/hooks/useLedSettings.tsx`**: A custom hook that centralizes all application state and business logic.
-    - Manages settings like text, speed, color, etc.
-    - Handles loading and saving settings to `AsyncStorage`.
-    - Provides functions to update the state.
-    - This hook makes the components cleaner by abstracting away the state management logic.
+- **`context/SettingsContext.tsx` & `useLedSettings.tsx`**: Global state management to prevent prop drilling.
+    - `useLedSettings` centralizes application state and business logic (text, speed, color).
+    - Handles loading and saving settings via `StorageService`.
+    - `SettingsContext` provides this state globally to all components.
 
 - **`components/hooks/useLedAnimation.tsx`**: A custom hook dedicated to handling all `react-native-reanimated` logic.
     - Creates and manages all shared values (e.g., `translateX`, `fontSize`).

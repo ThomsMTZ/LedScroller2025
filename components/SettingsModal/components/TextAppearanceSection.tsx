@@ -4,11 +4,13 @@ import {Text, View, TouchableOpacity} from "react-native";
 import Slider from "@react-native-community/slider";
 import {COLORS} from "../../constants";
 import {useSettings} from "../../../context/SettingsContext";
+import {SettingsModalProps} from "../types";
 import {useTranslation} from "../../../context/I18nContext";
 import {Ionicons} from "@expo/vector-icons";
 
-export const TextAppearanceSection: React.FC = () => {
-    const {fontSize, maxFontSize, minFontSize, onFontSizeChange, onFontSizeChangeEnd, thickness, onThicknessChange, currentHsl} = useSettings();
+export const TextAppearanceSection: React.FC<SettingsModalProps> = (props) => {
+    const {fontSize, maxFontSize, minFontSize, onFontSizeChange, onFontSizeChangeEnd} = props;
+    const {thickness, onThicknessChange, currentHsl} = useSettings();
     const {t} = useTranslation();
 
     const changeFontSize = (delta: number) => {

@@ -6,6 +6,7 @@ import * as SystemUI from 'expo-system-ui';
 import {LedScroller} from '../components';
 
 import {I18nProvider} from '../context/I18nContext';
+import {SettingsProvider} from '../context/SettingsContext';
 
 export default function App() {
     useEffect(() => {
@@ -27,7 +28,9 @@ export default function App() {
     return (
         <GestureHandlerRootView style={{flex: 1, backgroundColor: 'black'}}>
             <I18nProvider>
-                <LedScroller/>
+                <SettingsProvider>
+                    <LedScroller/>
+                </SettingsProvider>
             </I18nProvider>
         </GestureHandlerRootView>
     );

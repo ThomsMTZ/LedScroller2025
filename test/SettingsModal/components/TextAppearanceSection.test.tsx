@@ -42,14 +42,26 @@ describe('TextAppearanceSection Component', () => {
     });
 
     it('devrait se rendre correctement et afficher les labels', () => {
-        const {getByText} = render(<TextAppearanceSection />);
+        const {getByText} = render(<TextAppearanceSection 
+            fontSize={200}
+            maxFontSize={400}
+            minFontSize={20}
+            onFontSizeChange={mockOnFontSizeChange}
+            onFontSizeChangeEnd={mockOnFontSizeChangeEnd}
+        />);
 
         expect(getByText('Taille du texte')).toBeTruthy();
         expect(getByText('Épaisseur du texte')).toBeTruthy();
     });
 
     it('devrait appeler onFontSizeChange et onFontSizeChangeEnd via les boutons et le slider', () => {
-        const {getByTestId} = render(<TextAppearanceSection />);
+        const {getByTestId} = render(<TextAppearanceSection 
+            fontSize={200}
+            maxFontSize={400}
+            minFontSize={20}
+            onFontSizeChange={mockOnFontSizeChange}
+            onFontSizeChangeEnd={mockOnFontSizeChangeEnd}
+        />);
         const sizeSlider = getByTestId('size-slider');
 
         fireEvent(sizeSlider, 'valueChange', 250);
@@ -60,7 +72,13 @@ describe('TextAppearanceSection Component', () => {
     });
 
     it('devrait appeler onThicknessChange via le slider épaisseur', () => {
-        const {getByTestId} = render(<TextAppearanceSection />);
+        const {getByTestId} = render(<TextAppearanceSection 
+            fontSize={200}
+            maxFontSize={400}
+            minFontSize={20}
+            onFontSizeChange={mockOnFontSizeChange}
+            onFontSizeChangeEnd={mockOnFontSizeChangeEnd}
+        />);
         const thicknessSlider = getByTestId('thickness-slider');
 
         fireEvent(thicknessSlider, 'valueChange', 700);
