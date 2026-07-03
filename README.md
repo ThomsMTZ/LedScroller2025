@@ -3,6 +3,7 @@
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
 [![Expo SDK](https://img.shields.io/badge/Expo-SDK%2054-blue.svg)](https://expo.dev/)
 [![React Native](https://img.shields.io/badge/React%20Native-0.81.5-blue.svg)](https://reactnative.dev/)
+[![SonarCloud Quality Gate](https://img.shields.io/badge/SonarCloud-Quality%20Checked-orange.svg)](https://sonarcloud.io/)
 
 A dynamic LED-style scrolling text display application built with React Native and Expo. Create mesmerizing scrolling
 text animations with customizable colors, speeds, and sizes - perfect for creating digital signage, message boards, or
