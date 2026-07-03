@@ -90,6 +90,7 @@ The app displays scrolling text in a neon LED style with a grid overlay. Users c
 - **[React Native Gesture Handler](https://docs.swmansion.com/react-native-gesture-handler/)** (~2.28.0) - For touch
   interactions.
 - **[Expo Router](https://expo.github.io/router/)** (~6.0.21) - For routing.
+- **[SonarQube](https://www.sonarsource.com/products/sonarqube/) / SonarCloud** - For continuous code quality and security analysis.
 
 ## Project Structure
 
