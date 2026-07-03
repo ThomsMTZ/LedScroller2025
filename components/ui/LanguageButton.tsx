@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
 import {Text, TouchableOpacity, View, StyleSheet, Modal, Pressable} from 'react-native';
-import {COLORS} from './constants';
-import {useTranslation} from '../context/I18nContext';
-import {Locale} from '../i18n/types';
+import {COLORS} from '../constants';
+import {useTranslation} from '../../context/I18nContext';
+import {Language} from '../../i18n/types';
 
 export const LanguageButton: React.FC = () => {
     const {locale, setLocale} = useTranslation();

@@ -1,15 +1,16 @@
 import {useCallback, useEffect, useRef, useState} from 'react';
-import {LedColorType, SettingsState} from './types';
-import {LED_COLORS, ANIMATION_DURATIONS} from './constants';
+import {LedColorType, SettingsState} from '../types';
+import {LED_COLORS, ANIMATION_DURATIONS} from '../constants';
 import {useMessageHistory} from './useMessageHistory';
 import {useOrientation} from './useOrientation';
 import {useSettingsPersistence} from './useSettingsPersistence';
-import {useAnalytics} from '../utils/useAnalytics';
+import {useAnalytics} from '../../utils/useAnalytics';
 
 const DEFAULT_SETTINGS: SettingsState = {
     text: 'Hello World',
     speed: 100,
     selectedColor: LED_COLORS[4],
+    borderColor: LED_COLORS[4],
     showBorder: true,
     isBorderChase: false,
     isBorderBlinking: false,
@@ -110,6 +111,10 @@ export const useLedSettings = (initialText: string = 'Hello World') => {
             setSettings(s => ({...s, selectedColor: color}));
             void analytics.logColorChanged(color.name);
         }, [analytics]),
+
+        onBorderColorChange: useCallback((color: LedColorType) => {
+            setSettings(s => ({...s, borderColor: color}));
+        }, []),
 
         // Actions
         onToggleOrientation: useCallback(() => {

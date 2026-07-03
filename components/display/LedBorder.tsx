@@ -11,7 +11,8 @@ import Animated, {
     withTiming,
 } from 'react-native-reanimated';
 import {LinearGradient} from 'expo-linear-gradient';
-import {ANIMATION_DURATIONS} from './constants';
+import {ANIMATION_DURATIONS} from '../constants';
+import {styles} from '../styles';
 
 // Permet de passer des animatedProps à LinearGradient
 const AnimatedLinearGradient = Animated.createAnimatedComponent(LinearGradient);

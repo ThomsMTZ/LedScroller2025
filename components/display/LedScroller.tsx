@@ -2,18 +2,18 @@ import React from 'react';
 import {StatusBar, Text, useWindowDimensions, View,} from 'react-native';
 import {GestureDetector} from 'react-native-gesture-handler';
 import {LinearGradient} from 'expo-linear-gradient';
-import {styles} from './styles';
-import {LedScrollerProps} from './types';
-import {COLORS} from './constants';
-import HintContainer from './HintContainer';
-import SettingsModal from './SettingsModal/SettingsModal';
-import {useLedSettings} from './useLedSettings';
-import {useLedAnimation} from './useLedAnimation';
+import {styles} from '../styles';
+import {LedScrollerProps} from '../types';
+import {COLORS} from '../constants';
+import HintContainer from '../ui/HintContainer';
+import SettingsModal from '../SettingsModal/SettingsModal';
+import {useLedSettings} from '../hooks/useLedSettings';
+import {useLedAnimation} from '../hooks/useLedAnimation';
 import LedDisplayPanel from './LedDisplayPanel';
-import SettingsButton from './SettingsButton';
-import AdBanner from './AdBanner';
-import {LanguageButton} from './LanguageButton';
-import {useTranslation} from '../context/I18nContext';
+import SettingsButton from '../ui/SettingsButton';
+import AdBanner from '../ui/AdBanner';
+import {LanguageButton} from '../ui/LanguageButton';
+import {useTranslation} from '../../context/I18nContext';
 
 const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'Hello World'}) => {
     const {width, height} = useWindowDimensions();
@@ -32,6 +32,7 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'Hello World'}) 
         isTextBlinking: settings.isTextBlinking,
         isBorderBlinking: settings.isBorderBlinking,
         selectedColor: settings.selectedColor,
+        borderColor: settings.borderColor,
         isLandscape,
         onDoubleTap: settings.onOpenSettings,
     });
@@ -102,6 +103,8 @@ const LedScroller: React.FC<LedScrollerProps> = ({initialText = 'Hello World'}) 
                 onSpeedChange={settings.onSpeedChange}
                 selectedColor={settings.selectedColor}
                 onColorChange={settings.onColorChange}
+                borderColor={settings.borderColor}
+                onBorderColorChange={settings.onBorderColorChange}
                 thickness={settings.thickness}
                 onThicknessChange={settings.onThicknessChange}
                 fontSize={animation.fontSizeState}

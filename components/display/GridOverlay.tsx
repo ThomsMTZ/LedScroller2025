@@ -1,7 +1,7 @@
 import React from 'react';
 import {useWindowDimensions, View} from 'react-native';
 import Svg, {Defs, Pattern, Rect, Path} from 'react-native-svg';
-import {styles} from './styles';
+import {styles} from '../styles';
 
 const GridOverlay: React.FC = () => {
     const { width, height } = useWindowDimensions();

@@ -10,15 +10,17 @@ eye-catching displays on your mobile device.
 
 ## Features
 
-- 🎨 **Customizable Text Color**: Choose from a full spectrum of colors using an intuitive hue slider.
+- 🎨 **Rainbow Color Pickers**: Choose precise colors for your text and border using an intuitive hue slider.
+- 🌍 **Multi-language Support**: Fully translated in English, French, and Spanish with a dropdown menu.
+- 🗂 **Organized Settings**: Settings are grouped in expandable accordion sections to keep the UI clean.
 - ⚡ **Adjustable Speed Control**: Fine-tune the scrolling speed to your preference.
-- 📏 **Pinch-to-Zoom**: Dynamically resize text using intuitive pinch gestures.
-- 🎯 **LED Grid Overlay**: Authentic retro LED display aesthetic.
+- 🤏 **Pinch-to-Zoom**: Dynamically resize text using intuitive pinch gestures.
+- 🔲 **LED Grid Overlay**: Authentic retro LED display aesthetic.
 - ⚙️ **Settings Modal**: Easy-to-access configuration via double-tap gesture.
-- 🌈 **Smooth Animations**: Powered by React Native Reanimated for silky-smooth 60fps animations.
+- 🚀 **Smooth Animations**: Powered by React Native Reanimated for silky-smooth 60fps animations.
 - 📱 **Cross-Platform**: Runs on iOS, Android, and Web.
-- 🎭 **Custom LED Font**: Uses the Codystar font for an authentic LED display look.
-- 🕒 **Message History & Favorites**: Easily access recently used messages and save your favorites.
+- 🔠 **Custom LED Font**: Uses the Codystar font for an authentic LED display look.
+- 📜 **Message History & Favorites**: Easily access recently used messages and save your favorites.
 - 🔄 **Scroll Direction & Orientation**: Toggle right-to-left/left-to-right scrolling and lock landscape mode.
 - ✨ **Advanced LED Effects**: Enable blinking text, blinking borders, or dynamic chase border animations.
 
@@ -100,52 +102,54 @@ LedScroller2025/
 │   └── index.tsx           # App entry point, renders LedScroller
 ├── components/
 │   ├── SettingsModal/      # The settings modal and its sub-components
-│   ├── LedDisplayPanel.tsx # Renders the entire LED panel, text, and effects
-│   ├── LedScroller.tsx     # Main component: orchestrates hooks and UI
-│   ├── useLedSettings.tsx  # Hook for managing all user settings and state
-│   ├── useLedAnimation.tsx # Hook for managing all Reanimated animations
-│   ├── LedBorder.tsx       # Animated "chase" border effect
-│   ├── GridOverlay.tsx     # Static grid overlay for LED effect
-│   └── ...                 # Other shared components
-├── test/
-│   ├── LedDisplayPanel.test.tsx
-│   ├── LedScroller.test.tsx
-│   ├── useLedSettings.test.ts
-│   └── useLedAnimation.test.ts
-│   └── ...                 # Other test files
-├── assets/
-├── ...                     # Other configuration files
+│   ├── display/            # Visual and rendering components
+│   │   ├── LedScroller.tsx     # Main component: orchestrates hooks and UI
+│   │   ├── LedDisplayPanel.tsx # Renders the entire LED panel, text, and effects
+│   │   ├── LedBorder.tsx       # Animated "chase" border effect
+│   │   └── GridOverlay.tsx     # Static grid overlay for LED effect
+│   ├── hooks/              # Custom React hooks (logic, state, animations)
+│   │   ├── useLedSettings.tsx
+│   │   ├── useLedAnimation.tsx
+│   │   └── ...
+│   ├── ui/                 # Reusable UI elements (buttons, banners)
+│   │   ├── LanguageButton.tsx
+│   │   ├── SettingsButton.tsx
+│   │   └── ...
+│   └── index.ts            # Main component exports
+├── context/                # React Contexts (Settings, i18n)
+├── i18n/                   # Translations and localization files
+├── test/                   # Unit tests
+├── assets/                 # Fonts, images
 └── README.md
 ```
 
 ### Core Components & Hooks
 
-- **`LedScroller.tsx`**: The main screen component. It acts as an orchestrator. It doesn't contain much JSX, but
+- **`components/display/LedScroller.tsx`**: The main screen component. It acts as an orchestrator. It doesn't contain much JSX, but
   instead:
     - Initializes the `useLedSettings` and `useLedAnimation` hooks.
     - Passes state and animation values down to child components.
     - Renders the main layout, `LedDisplayPanel`, and `SettingsModal`.
 
-- **`LedDisplayPanel.tsx`**: A purely presentational component that is responsible for rendering the entire visual part
+- **`components/display/LedDisplayPanel.tsx`**: A purely presentational component that is responsible for rendering the entire visual part
   of the LED display. It receives all necessary props from `LedScroller` and contains the logic for:
     - Displaying the scrolling text (`Animated.Text`).
     - Rendering the `LedBorder` or a native border.
     - Applying all animated styles.
 
-- **`useLedSettings.tsx`**: A custom hook that centralizes all application state and business logic.
+- **`components/hooks/useLedSettings.tsx`**: A custom hook that centralizes all application state and business logic.
     - Manages settings like text, speed, color, etc.
     - Handles loading and saving settings to `AsyncStorage`.
     - Provides functions to update the state.
     - This hook makes the components cleaner by abstracting away the state management logic.
 
-- **`useLedAnimation.tsx`**: A custom hook dedicated to handling all `react-native-reanimated` logic.
+- **`components/hooks/useLedAnimation.tsx`**: A custom hook dedicated to handling all `react-native-reanimated` logic.
     - Creates and manages all shared values (e.g., `translateX`, `fontSize`).
     - Defines the animations for scrolling, blinking, and color transitions.
     - Sets up gesture handlers (`pinch`, `double-tap`).
     - Returns animated styles to be applied to the components.
 
-- **`SettingsModal/`**: The modal view for all user-configurable settings. It is self-contained and communicates with
-  the rest of the app via props passed from `LedScroller`.
+- **`components/SettingsModal/`**: The modal view for all user-configurable settings. It is self-contained and uses expandable sections.
 
 This architecture promotes a clean separation of concerns, making the project easier to maintain and debug.
 

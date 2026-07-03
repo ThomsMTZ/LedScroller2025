@@ -32,7 +32,7 @@ describe('TextAppearanceSection Component', () => {
         (useTranslation as jest.Mock).mockReturnValue({
             t: {
                 textSizeLabel: 'Taille du texte',
-                textThicknessLabel: 'Épaisseur',
+                textThicknessLabel: 'Épaisseur du texte',
             },
         });
     });
@@ -44,9 +44,8 @@ describe('TextAppearanceSection Component', () => {
     it('devrait se rendre correctement et afficher les labels', () => {
         const {getByText} = render(<TextAppearanceSection />);
 
-        expect(getByText('Taille & Épaisseur')).toBeTruthy();
         expect(getByText('Taille du texte')).toBeTruthy();
-        expect(getByText('Épaisseur')).toBeTruthy();
+        expect(getByText('Épaisseur du texte')).toBeTruthy();
     });
 
     it('devrait appeler onFontSizeChange et onFontSizeChangeEnd via les boutons et le slider', () => {

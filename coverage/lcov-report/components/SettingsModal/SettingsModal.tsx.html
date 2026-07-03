@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>6/6</span>
+                <span class='fraction'>7/7</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>6/6</span>
+                <span class='fraction'>7/7</span>
             </div>
         
             
@@ -126,7 +126,27 @@
 <a name='L61'></a><a href='#L61'>61</a>
 <a name='L62'></a><a href='#L62'>62</a>
 <a name='L63'></a><a href='#L63'>63</a>
-<a name='L64'></a><a href='#L64'>64</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L64'></a><a href='#L64'>64</a>
+<a name='L65'></a><a href='#L65'>65</a>
+<a name='L66'></a><a href='#L66'>66</a>
+<a name='L67'></a><a href='#L67'>67</a>
+<a name='L68'></a><a href='#L68'>68</a>
+<a name='L69'></a><a href='#L69'>69</a>
+<a name='L70'></a><a href='#L70'>70</a>
+<a name='L71'></a><a href='#L71'>71</a>
+<a name='L72'></a><a href='#L72'>72</a>
+<a name='L73'></a><a href='#L73'>73</a>
+<a name='L74'></a><a href='#L74'>74</a>
+<a name='L75'></a><a href='#L75'>75</a>
+<a name='L76'></a><a href='#L76'>76</a>
+<a name='L77'></a><a href='#L77'>77</a>
+<a name='L78'></a><a href='#L78'>78</a>
+<a name='L79'></a><a href='#L79'>79</a>
+<a name='L80'></a><a href='#L80'>80</a>
+<a name='L81'></a><a href='#L81'>81</a>
+<a name='L82'></a><a href='#L82'>82</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -149,8 +169,24 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -190,7 +226,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import React from 'react';
-import {Modal, ScrollView, Text, TouchableOpacity, useWindowDimensions, View} from 'react-native';
+import {Modal, Text, TouchableOpacity, useWindowDimensions, View} from 'react-native';
+import {ScrollView} from 'react-native';
 import {Ionicons} from '@expo/vector-icons';
 import {styles} from './styles';
 import {COLORS} from '../constants';
@@ -203,6 +240,7 @@ import {BorderSection} from "./components/BorderSection";
 import {DisplayTextSection} from "./components/DisplayTextSection";
 import {OrientationSection} from "./components/OrientationSection";
 import {TextAppearanceSection} from "./components/TextAppearanceSection";
+import {AccordionSection} from "./components/AccordionSection";
 import {SettingsModalProps} from './types';
 import {useTranslation} from '../../context/I18nContext';
 &nbsp;
@@ -211,6 +249,7 @@ const SettingsModal: React.FC&lt;SettingsModalProps&gt; = (props) =&gt; {
     const {height: screenHeight} = useWindowDimensions();
 &nbsp;
     const currentHsl = `hsl(${settingsValues.selectedColor.hue}, ${settingsValues.selectedColor.saturation}%, ${settingsValues.selectedColor.lightness}%)`;
+    const currentBorderHsl = `hsl(${settingsValues.borderColor.hue}, ${settingsValues.borderColor.saturation}%, ${settingsValues.borderColor.lightness}%)`;
     const {t} = useTranslation();
 &nbsp;
     return (
@@ -233,16 +272,30 @@ const SettingsModal: React.FC&lt;SettingsModalProps&gt; = (props) =&gt; {
                         &lt;/TouchableOpacity&gt;
                     &lt;/View&gt;
 &nbsp;
-                    &lt;SettingsProvider value={{...settingsValues, currentHsl}}&gt;
+                    &lt;SettingsProvider value={{...settingsValues, currentHsl, currentBorderHsl}}&gt;
                         &lt;ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{paddingBottom: 20}}
                                     keyboardShouldPersistTaps="handled"&gt;
-                            &lt;MessageSection/&gt;
-                            &lt;BorderSection/&gt;
-                            &lt;TextAppearanceSection/&gt;
-                            &lt;DisplayTextSection/&gt;
-                            &lt;SpeedSection/&gt;
-                            &lt;OrientationSection/&gt;
-                            &lt;ColorSection/&gt;
+                            &lt;AccordionSection title={t.messageLabel} defaultOpen={true}&gt;
+                                &lt;MessageSection/&gt;
+                            &lt;/AccordionSection&gt;
+                            &lt;AccordionSection title={t.colorLabel}&gt;
+                                &lt;ColorSection/&gt;
+                            &lt;/AccordionSection&gt;
+                            &lt;AccordionSection title={t.borderLabel}&gt;
+                                &lt;BorderSection/&gt;
+                            &lt;/AccordionSection&gt;
+                            &lt;AccordionSection title="✨ Taille &amp; Épaisseur"&gt;
+                                &lt;TextAppearanceSection/&gt;
+                            &lt;/AccordionSection&gt;
+                            &lt;AccordionSection title={t.textEffectsLabel}&gt;
+                                &lt;DisplayTextSection/&gt;
+                            &lt;/AccordionSection&gt;
+                            &lt;AccordionSection title={t.speedLabel}&gt;
+                                &lt;SpeedSection/&gt;
+                            &lt;/AccordionSection&gt;
+                            &lt;AccordionSection title={t.orientationLabel}&gt;
+                                &lt;OrientationSection/&gt;
+                            &lt;/AccordionSection&gt;
                         &lt;/ScrollView&gt;
                     &lt;/SettingsProvider&gt;
 &nbsp;
@@ -252,14 +305,15 @@ const SettingsModal: React.FC&lt;SettingsModalProps&gt; = (props) =&gt; {
     );
 };
 &nbsp;
-export default SettingsModal;</pre></td></tr></table></pre>
+export default SettingsModal;
+&nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
             </div><!-- /wrapper -->
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-07-01T11:26:06.987Z
+                at 2026-07-03T09:07:44.588Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

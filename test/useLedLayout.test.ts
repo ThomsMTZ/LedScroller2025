@@ -1,5 +1,5 @@
 import {renderHook} from '@testing-library/react-native';
-import {useLedLayout} from '../components/useLedLayout';
+import {useLedLayout} from '../components/hooks/useLedLayout';
 import * as RN from 'react-native';
 
 describe('useLedLayout Hook', () => {
@@ -13,7 +13,6 @@ describe('useLedLayout Hook', () => {
 
     it('devrait calculer maxFontSize correctement en mode portrait', () => {
         const {result} = renderHook(() => useLedLayout({
-            textWidth: 100,
             isLandscape: false,
             text: 'Hello',
         }));
@@ -26,7 +25,6 @@ describe('useLedLayout Hook', () => {
 
     it('devrait calculer maxFontSize correctement en mode paysage', () => {
         const {result} = renderHook(() => useLedLayout({
-            textWidth: 100,
             isLandscape: true,
             text: 'Hello',
         }));
@@ -37,7 +35,6 @@ describe('useLedLayout Hook', () => {
 
     it('devrait retourner la constante MIN_FONT_SIZE', () => {
         const {result} = renderHook(() => useLedLayout({
-            textWidth: 100,
             isLandscape: true,
             text: 'Hello',
         }));

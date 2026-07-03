@@ -12,9 +12,9 @@ import {
     runOnJS,
 } from 'react-native-reanimated';
 import {Gesture} from 'react-native-gesture-handler';
-import {LedColorType} from './types';
-import {ANIMATION_DURATIONS} from './constants';
-import {buildHslString, buildHslaString} from '../utils/colorUtils';
+import {LedColorType} from '../types';
+import {ANIMATION_DURATIONS} from '../constants';
+import {buildHslString, buildHslaString} from '../../utils/colorUtils';
 import {useLedLayout} from './useLedLayout';
 
 interface LedAnimationProps {
@@ -24,6 +24,7 @@ interface LedAnimationProps {
     isTextBlinking: boolean;
     isBorderBlinking: boolean;
     selectedColor: LedColorType;
+    borderColor: LedColorType;
     isLandscape: boolean;
     onDoubleTap: () => void;
 }
@@ -35,6 +36,7 @@ export const useLedAnimation = ({
     isTextBlinking,
     isBorderBlinking,
     selectedColor,
+    borderColor,
     isLandscape,
     onDoubleTap,
 }: LedAnimationProps) => {
@@ -54,18 +56,32 @@ export const useLedAnimation = ({
     const hueVal: SharedValue<number> = useSharedValue(selectedColor.hue);
     const satVal: SharedValue<number> = useSharedValue(selectedColor.saturation);
     const ligVal: SharedValue<number> = useSharedValue(selectedColor.lightness);
+    const borderHueVal: SharedValue<number> = useSharedValue(borderColor.hue);
+    const borderSatVal: SharedValue<number> = useSharedValue(borderColor.saturation);
+    const borderLigVal: SharedValue<number> = useSharedValue(borderColor.lightness);
 
     // Couleur HSL dérivée dans un worklet — jamais lue pendant le render React.
     const ledColorShared = useDerivedValue(() =>
         buildHslString(hueVal.value, satVal.value, ligVal.value)
     );
 
-    // --- Transition couleur ---
+    const borderColorShared = useDerivedValue(() =>
+        buildHslString(borderHueVal.value, borderSatVal.value, borderLigVal.value)
+    );
+
+    // --- Transition couleur texte ---
     useEffect(() => {
         hueVal.value = withTiming(selectedColor.hue, {duration: ANIMATION_DURATIONS.colorTransition});
         satVal.value = withTiming(selectedColor.saturation, {duration: ANIMATION_DURATIONS.colorTransition});
         ligVal.value = withTiming(selectedColor.lightness, {duration: ANIMATION_DURATIONS.colorTransition});
     }, [selectedColor, hueVal, satVal, ligVal]);
+
+    // --- Transition couleur bordure ---
+    useEffect(() => {
+        borderHueVal.value = withTiming(borderColor.hue, {duration: ANIMATION_DURATIONS.colorTransition});
+        borderSatVal.value = withTiming(borderColor.saturation, {duration: ANIMATION_DURATIONS.colorTransition});
+        borderLigVal.value = withTiming(borderColor.lightness, {duration: ANIMATION_DURATIONS.colorTransition});
+    }, [borderColor, borderHueVal, borderSatVal, borderLigVal]);
 
     // --- Helper : applique ou stoppe l'animation de clignotement sur une SharedValue ---
     const applyBlink = (enabled: boolean, sv: SharedValue<number>): void => {
@@ -176,14 +192,14 @@ export const useLedAnimation = ({
     const animatedBorderColorStyle = useAnimatedStyle(() => {
         const alpha = isBorderBlinking ? borderBlinkOpacity.value : 1;
         return {
-            borderColor: buildHslaString(hueVal.value, satVal.value, ligVal.value, alpha),
+            borderColor: buildHslaString(borderHueVal.value, borderSatVal.value, borderLigVal.value, alpha),
         };
     });
 
     const animatedShadowColorStyle = useAnimatedStyle(() => {
         const alpha = isBorderBlinking ? borderBlinkOpacity.value : 1;
         return {
-            shadowColor: buildHslaString(hueVal.value, satVal.value, ligVal.value, alpha),
+            shadowColor: buildHslaString(borderHueVal.value, borderSatVal.value, borderLigVal.value, alpha),
         };
     });
 
@@ -208,6 +224,7 @@ export const useLedAnimation = ({
 
         // Couleur dérivée pour LedBorder (worklet-safe)
         ledColorShared,
+        borderColorShared,
 
         // Gestures
         composedGestures,

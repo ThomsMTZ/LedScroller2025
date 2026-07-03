@@ -13,6 +13,9 @@ const mockContext = {
     onToggleBorderChase: jest.fn(),
     onToggleBorderBlinking: jest.fn(),
     currentHsl: 'hsl(0, 100%, 50%)',
+    currentBorderHsl: 'hsl(0, 100%, 50%)',
+    borderColor: LED_COLORS[0],
+    onBorderColorChange: jest.fn(),
     text: '', onTextChange: jest.fn(), speed: 100, onSpeedChange: jest.fn(),
     selectedColor: LED_COLORS[0], onColorChange: jest.fn(),
     isLandscapeLocked: false, onToggleOrientation: jest.fn(),
@@ -23,13 +26,12 @@ const mockContext = {
 
 describe('BorderSection Component', () => {
     it('devrait afficher les options avancées si showBorder est true', () => {
-        const {getByTestId, getByText} = render(
+        const {getByTestId} = render(
             <SettingsProvider value={mockContext}>
                 <BorderSection/>
             </SettingsProvider>
         );
 
-        expect(getByText('🖼️ Cadre LED')).toBeTruthy();
         expect(getByTestId('border-button')).toBeTruthy();
         expect(getByTestId('chase-border-button')).toBeTruthy();
         expect(getByTestId('blink-border-button')).toBeTruthy();

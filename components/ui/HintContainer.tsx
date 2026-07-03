@@ -2,9 +2,9 @@ import React from 'react';
 import {Text, View} from 'react-native';
 import Animated, {FadeIn} from 'react-native-reanimated';
 import {Ionicons} from '@expo/vector-icons';
-import {styles} from './styles';
-import {COLORS} from './constants';
-import {useTranslation} from '../context/I18nContext';
+import {styles} from '../styles';
+import {COLORS} from '../constants';
+import {useTranslation} from '../../context/I18nContext';
 
 const HintContainer: React.FC = () => {
     const {t} = useTranslation();

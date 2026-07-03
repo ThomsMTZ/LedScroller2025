@@ -1,11 +1,11 @@
 import React from 'react';
 import {render} from '@testing-library/react-native';
-import LedDisplayPanel from '../components/LedDisplayPanel';
+import LedDisplayPanel from '../components/display/LedDisplayPanel';
 import {SharedValue} from 'react-native-reanimated';
 
 // Mocks pour les composants enfants et les dépendances
-jest.mock('../components/LedBorder', () => 'LedBorder');
-jest.mock('../components/GridOverlay', () => 'GridOverlay');
+jest.mock('../components/display/LedBorder', () => 'LedBorder');
+jest.mock('../components/display/GridOverlay', () => 'GridOverlay');
 jest.mock('react-native-reanimated', () => {
     const Reanimated = jest.requireActual('react-native-reanimated/mock');
     Reanimated.useSharedValue = jest.fn((v) => ({value: v}));
@@ -22,16 +22,19 @@ describe('LedDisplayPanel Component', () => {
     };
 
     const mockAnimation = {
-        PORTRAIT_PANEL_HEIGHT: 200,
+        PORTRAIT_PANEL_HEIGHT: 800,
         animatedBorderColorStyle: {},
         animatedBorderOpacityStyle: {},
         animatedShadowColorStyle: {},
         animatedContainerStyle: {},
         animatedTextStyle: {fontSize: 100},
-        ledColorShared: mockSharedValue('hsl(0, 100%, 50%)') as unknown as SharedValue<string>,
+        ledColorShared: {value: 'hsl(0, 100%, 50%)'} as any,
+        borderColorShared: {value: 'hsl(0, 100%, 50%)'} as any,
         componentId: 'test-id',
-        copiesArray: [1, 2], // Simule deux copies
+        copiesArray: [1, 2],
         LOOP_SPACING: 50,
+        setTextWidth: jest.fn(),
+        textWidth: 0,
     };
 
     const mockDisplay = {
@@ -54,7 +57,7 @@ describe('LedDisplayPanel Component', () => {
             <LedDisplayPanel layout={{...mockLayout, isChaseActive: true}} animation={mockAnimation} display={mockDisplay}/>
         );
         // eslint-disable-next-line @typescript-eslint/no-require-imports
-        const LedBorderMock = require('../components/LedBorder').default ?? require('../components/LedBorder');
+        const LedBorderMock = require('../components/display/LedBorder').default ?? require('../components/display/LedBorder');
         expect(UNSAFE_getByType(LedBorderMock)).toBeTruthy();
     });
 
@@ -63,7 +66,7 @@ describe('LedDisplayPanel Component', () => {
             <LedDisplayPanel layout={{...mockLayout, isChaseActive: false}} animation={mockAnimation} display={mockDisplay}/>
         );
         // eslint-disable-next-line @typescript-eslint/no-require-imports
-        const LedBorderMock = require('../components/LedBorder').default ?? require('../components/LedBorder');
+        const LedBorderMock = require('../components/display/LedBorder').default ?? require('../components/display/LedBorder');
         expect(UNSAFE_queryByType(LedBorderMock)).toBeNull();
     });
 

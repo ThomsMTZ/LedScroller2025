@@ -1,11 +1,11 @@
 import React from 'react';
 import {render} from '@testing-library/react-native';
-import LedScroller from '../components/LedScroller';
-import {useLedSettings} from '../components/useLedSettings';
-import {useLedAnimation} from '../components/useLedAnimation';
+import LedScroller from '../components/display/LedScroller';
+import {useLedSettings} from '../components/hooks/useLedSettings';
+import {useLedAnimation} from '../components/hooks/useLedAnimation';
 
 // Mocks des hooks
-jest.mock('../components/useLedSettings', () => ({
+jest.mock('../components/hooks/useLedSettings', () => ({
     useLedSettings: jest.fn(() => ({
         text: 'Mocked Text',
         isSettingsOpen: false,
@@ -14,7 +14,7 @@ jest.mock('../components/useLedSettings', () => ({
     })),
 }));
 
-jest.mock('../components/useLedAnimation', () => ({
+jest.mock('../components/hooks/useLedAnimation', () => ({
     useLedAnimation: jest.fn(() => ({
         composedGestures: {},
         // ... autres props si nécessaires pour le rendu
@@ -22,7 +22,7 @@ jest.mock('../components/useLedAnimation', () => ({
 }));
 
 // Mock du composant enfant principal
-jest.mock('../components/LedDisplayPanel', () => {
+jest.mock('../components/display/LedDisplayPanel', () => {
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const {View} = require('react-native');
     return function MockLedDisplayPanel(props: any) { return <View testID="mock-led-display-panel" {...props} />; };

@@ -13,6 +13,7 @@ export interface SettingsState {
     text: string;
     speed: number;
     selectedColor: LedColorType;
+    borderColor: LedColorType;
     showBorder: boolean;
     isBorderChase: boolean;
     isBorderBlinking: boolean;

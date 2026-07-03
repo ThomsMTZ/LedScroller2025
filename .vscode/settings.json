@@ -2,5 +2,6 @@
     "sonarlint.connectedMode.project": {
         "connectionId": "thomsmtz",
         "projectKey": "ThomsMTZ_LedScroller2025"
-    }
+    },
+    "java.compile.nullAnalysis.mode": "automatic"
 }

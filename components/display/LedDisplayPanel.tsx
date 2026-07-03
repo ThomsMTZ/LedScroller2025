@@ -1,7 +1,7 @@
 import React from 'react';
 import Animated, {AnimatedStyle, SharedValue} from 'react-native-reanimated';
 import {StyleSheet, TextStyle, useWindowDimensions, View, ViewStyle} from 'react-native';
-import {styles} from './styles';
+import {styles} from '../styles';
 import GridOverlay from './GridOverlay';
 import LedBorder from './LedBorder';
 
@@ -27,6 +27,7 @@ interface LedAnimationStyles {
     textWidth: number;
     /** Couleur HSL dérivée dans un worklet — jamais lue pendant le render React. */
     ledColorShared: SharedValue<string>;
+    borderColorShared: SharedValue<string>;
 }
 
 interface LedDisplayProps {
@@ -54,6 +55,7 @@ const LedDisplayPanel: React.FC<LedDisplayPanelProps> = ({layout, animation, dis
         copiesArray,
         LOOP_SPACING,
         ledColorShared,
+        borderColorShared,
     } = animation;
     const {text, speed, thickness = 900} = display;
 
@@ -88,7 +90,7 @@ const LedDisplayPanel: React.FC<LedDisplayPanelProps> = ({layout, animation, dis
                     {overflow: 'hidden', borderRadius: isLandscape ? 0 : 16},
                 ]}>
                     <LedBorder
-                        colorShared={ledColorShared}
+                        colorShared={borderColorShared}
                         isAnimating={true}
                         speed={speed}
                     />

@@ -1,8 +1,8 @@
 import React from 'react';
 import {TouchableOpacity} from 'react-native';
 import {Ionicons} from '@expo/vector-icons';
-import {styles} from './styles';
-import {COLORS} from './constants';
+import {styles} from '../styles';
+import {COLORS} from '../constants';
 
 interface SettingsButtonProps {
     onPress: () => void;

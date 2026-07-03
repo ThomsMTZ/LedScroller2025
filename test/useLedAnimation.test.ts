@@ -1,5 +1,5 @@
 import {renderHook} from '@testing-library/react-native';
-import {useLedAnimation} from "../components/useLedAnimation";
+import {useLedAnimation} from '../components/hooks/useLedAnimation';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 jest.mock('react-native-reanimated', () => require('react-native-reanimated/mock'));
@@ -26,6 +26,7 @@ describe('useLedAnimation Hook', () => {
         isTextBlinking: false,
         isBorderBlinking: false,
         selectedColor: {hue: 0, saturation: 100, lightness: 50, name: 'Rouge'},
+        borderColor: {hue: 0, saturation: 100, lightness: 50, name: 'Rouge'},
         isLandscape: false,
         onDoubleTap: jest.fn(),
         thickness: 900,
