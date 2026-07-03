@@ -1,5 +1,5 @@
 import React from 'react';
-import {ScrollView, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import {Text, TextInput, TouchableOpacity, View} from 'react-native';
 import {Ionicons} from '@expo/vector-icons';
 import {styles} from '../styles';
 import {COLORS} from '../../constants';
@@ -47,10 +47,9 @@ export const MessageSection: React.FC = () => {
                 )}
             </View>
 
-            {/* ScrollView Historique & Favoris (avec tes clés uniques optimisées) */}
+            {/* Historique & Favoris (affichage en grille flexible) */}
             {(recentMessages.length > 0 || favoriteMessages.length > 0) && (
-                <ScrollView testID="history-list" horizontal showsHorizontalScrollIndicator={false}
-                            style={styles.historyContainer}>
+                <View testID="history-list" style={styles.historyContainer}>
                     {favoriteMessages.map((msg) => (
                         <TouchableOpacity key={`fav-${msg}`} style={[styles.historyChip, {borderColor: currentHsl}]}
                                           onPress={() => onSelectRecentMessage(msg)}
@@ -66,7 +65,7 @@ export const MessageSection: React.FC = () => {
                             <Text style={styles.historyChipText} numberOfLines={1} ellipsizeMode="tail">{msg}</Text>
                         </TouchableOpacity>
                     ))}
-                </ScrollView>
+                </View>
             )}
         </View>
     );

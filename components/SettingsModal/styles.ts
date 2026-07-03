@@ -115,15 +115,15 @@ export const styles = StyleSheet.create({
     },
     historyContainer: {
         flexDirection: 'row',
+        flexWrap: 'wrap',
+        gap: 10,
         marginTop: 12,
-        paddingBottom: 4,
     },
     historyChip: {
         backgroundColor: 'rgba(0, 0, 0, 0.4)',
         paddingHorizontal: 16,
         paddingVertical: 8,
         borderRadius: 20,
-        marginRight: 10,
         borderWidth: 1,
         borderColor: COLORS.border,
         justifyContent: 'center',
