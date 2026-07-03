@@ -1,9 +1,9 @@
 import React from 'react';
 import {fireEvent, render} from '@testing-library/react-native';
 import {TouchableOpacity} from 'react-native';
-import {SettingsProvider} from "../../context/SettingsContext";
-import ColorSection from "../../components/SettingsModal/components/ColorSection";
-import {LED_COLORS} from "../../components";
+import {SettingsProvider} from "../../../context/SettingsContext";
+import ColorSection from "../../../components/SettingsModal/components/ColorSection";
+import {LED_COLORS} from "../../../components";
 
 const mockContext = {
     selectedColor: LED_COLORS[0],

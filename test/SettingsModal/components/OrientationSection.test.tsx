@@ -1,8 +1,8 @@
 import React from 'react';
 import {fireEvent, render} from '@testing-library/react-native';
-import {LED_COLORS} from "../../components";
-import {SettingsProvider} from "../../context/SettingsContext";
-import {OrientationSection} from "../../components/SettingsModal/components/OrientationSection";
+import {LED_COLORS} from "../../../components";
+import {SettingsProvider} from "../../../context/SettingsContext";
+import {OrientationSection} from "../../../components/SettingsModal/components/OrientationSection";
 
 const mockContext = {
     isLandscapeLocked: false,

@@ -1,14 +1,14 @@
 import React from 'react';
 import {render, fireEvent} from '@testing-library/react-native';
-import {TextAppearanceSection} from '../../components/SettingsModal/components/TextAppearanceSection';
-import {useSettings} from '../../context/SettingsContext';
-import {useTranslation} from '../../context/I18nContext';
+import {TextAppearanceSection} from '../../../components/SettingsModal/components/TextAppearanceSection';
+import {useSettings} from '../../../context/SettingsContext';
+import {useTranslation} from '../../../context/I18nContext';
 
-jest.mock('../../context/SettingsContext', () => ({
+jest.mock('../../../context/SettingsContext', () => ({
     useSettings: jest.fn(),
 }));
 
-jest.mock('../../context/I18nContext', () => ({
+jest.mock('../../../context/I18nContext', () => ({
     useTranslation: jest.fn(),
 }));
 

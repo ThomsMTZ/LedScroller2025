@@ -1,8 +1,8 @@
 import React from 'react';
 import {fireEvent, render} from '@testing-library/react-native';
-import {LED_COLORS} from "../../components";
-import {SettingsProvider} from "../../context/SettingsContext";
-import {SpeedSection} from "../../components/SettingsModal/components/SpeedSection";
+import {LED_COLORS} from "../../../components";
+import {SettingsProvider} from "../../../context/SettingsContext";
+import {SpeedSection} from "../../../components/SettingsModal/components/SpeedSection";
 
 const mockContext = {
     speed: 120,

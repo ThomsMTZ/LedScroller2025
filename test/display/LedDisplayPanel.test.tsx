@@ -1,11 +1,11 @@
 import React from 'react';
 import {render} from '@testing-library/react-native';
-import LedDisplayPanel from '../components/display/LedDisplayPanel';
+import LedDisplayPanel from '../../components/display/LedDisplayPanel';
 import {SharedValue} from 'react-native-reanimated';
 
 // Mocks pour les composants enfants et les dépendances
-jest.mock('../components/display/LedBorder', () => 'LedBorder');
-jest.mock('../components/display/GridOverlay', () => 'GridOverlay');
+jest.mock('../../components/display/LedBorder', () => 'LedBorder');
+jest.mock('../../components/display/GridOverlay', () => 'GridOverlay');
 jest.mock('react-native-reanimated', () => {
     const Reanimated = jest.requireActual('react-native-reanimated/mock');
     Reanimated.useSharedValue = jest.fn((v) => ({value: v}));
@@ -57,7 +57,7 @@ describe('LedDisplayPanel Component', () => {
             <LedDisplayPanel layout={{...mockLayout, isChaseActive: true}} animation={mockAnimation} display={mockDisplay}/>
         );
         // eslint-disable-next-line @typescript-eslint/no-require-imports
-        const LedBorderMock = require('../components/display/LedBorder').default ?? require('../components/display/LedBorder');
+        const LedBorderMock = require('../../components/display/LedBorder').default ?? require('../../components/display/LedBorder');
         expect(UNSAFE_getByType(LedBorderMock)).toBeTruthy();
     });
 
@@ -66,7 +66,7 @@ describe('LedDisplayPanel Component', () => {
             <LedDisplayPanel layout={{...mockLayout, isChaseActive: false}} animation={mockAnimation} display={mockDisplay}/>
         );
         // eslint-disable-next-line @typescript-eslint/no-require-imports
-        const LedBorderMock = require('../components/display/LedBorder').default ?? require('../components/display/LedBorder');
+        const LedBorderMock = require('../../components/display/LedBorder').default ?? require('../../components/display/LedBorder');
         expect(UNSAFE_queryByType(LedBorderMock)).toBeNull();
     });
 

@@ -1,8 +1,8 @@
 import React from 'react';
 import {render} from '@testing-library/react-native';
-import {LED_COLORS} from "../../components";
-import {SettingsProvider} from "../../context/SettingsContext";
-import {BorderSection} from "../../components/SettingsModal/components/BorderSection";
+import {LED_COLORS} from "../../../components";
+import {SettingsProvider} from "../../../context/SettingsContext";
+import {BorderSection} from "../../../components/SettingsModal/components/BorderSection";
 
 
 const mockContext = {

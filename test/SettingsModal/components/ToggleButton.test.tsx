@@ -1,6 +1,6 @@
 import React from 'react';
 import {fireEvent, render} from '@testing-library/react-native';
-import {ToggleButton} from "../../components/SettingsModal/components/ToggleButton";
+import {ToggleButton} from "../../../components/SettingsModal/components/ToggleButton";
 
 describe('ToggleButton Component', () => {
     const mockProps = {

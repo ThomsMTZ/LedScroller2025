@@ -1,8 +1,8 @@
 import React from 'react';
 import {fireEvent, render} from '@testing-library/react-native';
-import {SettingsProvider} from "../../context/SettingsContext";
-import {DisplayTextSection} from "../../components/SettingsModal/components/DisplayTextSection";
-import {LED_COLORS} from "../../components";
+import {SettingsProvider} from "../../../context/SettingsContext";
+import {DisplayTextSection} from "../../../components/SettingsModal/components/DisplayTextSection";
+import {LED_COLORS} from "../../../components";
 
 const mockContext = {
     isTextBlinking: true,
